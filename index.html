@@ -428,7 +428,7 @@
       position: relative;
       box-shadow: 0 4px 24px 0 var(--form-shadow-color);
       border-radius: 24px;
-      padding: 64px 0 64px 0;
+      padding: 32px 0 48px 0;
       margin-bottom: 12px;
       width: 420px;
       max-width: 92vw;
@@ -892,7 +892,7 @@
         margin-bottom: 4px !important;
       }
       form.expanded {
-        padding: 32px 0 32px 0;
+        padding: 24px 0 32px 0;
         width: 92vw;
         max-width: 92vw;
         min-width: 280px;
@@ -908,6 +908,24 @@
       }
     }
 
+    /* Instagram styling */
+    @media (max-width: 600px) {
+      .nav-instagram {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 16px;
+      }
+      .nav-instagram img {
+        width: 32px;
+        height: 32px;
+      }
+      .nav-group .nav-instagram {
+        display: none !important;
+      }
+      .instagram-footer {
+        display: none !important;
+      }
+    }
 
 
     /* Wave Text Container Styles */
@@ -1016,7 +1034,7 @@
   <footer id="footer" aria-label="Site copyright">
 
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
-      <a class="instagram-footer" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Jorobean Instagram" style="display:block;margin:0 auto 8px auto;position:static;">
+      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram" style="margin-bottom: 8px;">
         <img src="instagram-icon.svg" alt="Instagram" />
       </a>
       <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>
