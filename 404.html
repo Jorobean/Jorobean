@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 - Page Not Found</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: #faf7f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h1 {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    .background-404 {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden;
+      background-image: url("data:image/svg+xml,%3Csvg width='240' height='120' viewBox='0 0 240 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='0' y='90' font-size='90' font-family='Arial' font-weight='bold' fill='rgba(17,17,17,0.10)'%3E404%3C/text%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 16vw 8vw;
+    }
+
+    @media (max-width: 600px) {
+      .background-404 {
+        background-image: url("data:image/svg+xml,%3Csvg width='900' height='450' viewBox='0 0 900 450' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%' y='70%' dominant-baseline='middle' text-anchor='middle' font-size='400' font-family='Arial' font-weight='bold' fill='rgba(17,17,17,0.10)'%3E404%3C/text%3E%3C/svg%3E");
+        background-size: 100vw 70vw;
+        background-repeat: repeat-y;
+        background-position: center -20vw;
+      }
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    p {
+      font-size: 20px;
+      color: #222;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .mobile-break {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .mobile-break {
+        display: inline;
+      }
+    }
+
+    img {
+      width: 400px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      animation: pulse-heart 1.2s infinite cubic-bezier(0.4,0,0.6,1);
+      transform-origin: 50% 60%;
+    }
+
+    @keyframes pulse-heart {
+      0% {
+        transform: scale(1);
+      }
+      20% {
+        transform: scale(1.007);
+      }
+      40% {
+        transform: scale(0.993);
+      }
+      60% {
+        transform: scale(1.007);
+      }
+      80% {
+        transform: scale(0.993);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    a.button:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-404"></div>
+  <div class="content">
+    <h1>404</h1>
+    <p>Got Lost?<span class="mobile-break"><br></span> The page you’re looking for doesn’t exist.</p>
+    <a href="/">
+      <img src="broken-heart.png" alt="Broken Heart" />
+    </a>
+    <a href="/" class="button">Return to Homepage</a>
+  </div>
+</body>
+</html>

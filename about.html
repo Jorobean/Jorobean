@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | Jorobean</title>
+  <meta name="robots" content="index, follow" />
+  <meta name="description" content="Learn more about Jorobean — a 3D-printed footwear brand built on love and individuality.">
+  <link rel="canonical" href="https://jorobean.com/about" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="About | Jorobean">
+  <meta property="og:description" content="A 3D-printed footwear brand built on individuality, bold design, and love.">
+  <meta property="og:image" content="https://jorobean.com/images/og-image.jpg">
+  <meta property="og:url" content="https://jorobean.com/about">
+  <meta property="og:type" content="website">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Jorobean",
+    "url": "https://jorobean.com",
+    "logo": "https://jorobean.com/logo.png",
+    "founder": {
+      "@type": "Person",
+      "name": "Kerry L.",
+      "jobTitle": "Founder & CEO",
+      "image": "https://jorobean.com/images/kerry.jpg",
+      "sameAs": [
+        "https://www.linkedin.com/in/kerry-l",
+        "https://www.instagram.com/jorobean"
+      ]
+    },
+    "description": "Jorobean is a creative footwear brand focused on 3D-printed shoes that reflect individuality and self-expression.",
+    "foundingDate": "2024",
+    "sameAs": [
+      "https://www.instagram.com/jorobean"
+    ]
+  }
+  </script>
+
+  <style>
+    @keyframes noise {
+      0%, 100% { background-position: 0 0; }
+      10% { background-position: -5% -10%; }
+      20% { background-position: -15% 5%; }
+      30% { background-position: 7% -25%; }
+      40% { background-position: 20% 25%; }
+      50% { background-position: -25% 10%; }
+      60% { background-position: 15% 5%; }
+      70% { background-position: 0% 15%; }
+      80% { background-position: 25% 35%; }
+      90% { background-position: -10% 10%; }
+    }
+
+    .noise-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArvhWHAAAACHRSTlMoADBAYICg8BzPx/QAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAWSURBVDjLY2AYBaNgFIyCUTAKRgEZAAAJIAABGZqyqAAAAABJRU5ErkJggg==");
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 1;
+      animation: noise .2s infinite;
+    }
+
+    body {
+      margin: 0;
+      padding: 120px 20px 60px;
+      font-family: Arial, sans-serif;
+      background-color: #e1e1e1;
+      color: #0b0b0b;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .logo-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 2000;
+      padding: 10px;
+      pointer-events: none;
+    }
+
+    .logo {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      pointer-events: all;
+    }
+
+    .logo-centered {
+      max-width: 520px;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .logo-corner {
+      width: 100px;
+      left: 16px;
+      top: 16px;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    body.scrolled .logo-centered {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    body.scrolled .logo-corner {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (max-width: 600px) {
+      .logo-centered {
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+      .logo-corner {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      .logo-corner {
+        width: 70px;
+        left: 8px;
+        top: 8px;
+      }
+    }
+
+    .founder-img {
+      width: 140px;
+      border-radius: 50%;
+      margin: 20px 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.5s;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .founder-img:hover {
+      transform: translateY(3px) scale(0.95);
+      box-shadow:
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 10px; /* Reduced from auto to 10px */
+      padding: 10px 0 0 0; /* Less padding above, none below */
+      font-size: 0.8rem;
+      color: #555;
+      width: 100%;
+      text-align: center;
+    }
+
+    .instagram {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0;
+      padding-top: 32px; /* Added padding above the Instagram logo */
+    }
+
+    .instagram img {
+      width: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .instagram:hover img {
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise-overlay"></div>
+  <div class="logo-container">
+    <a href="/" class="logo logo-centered">
+      <img src="logo.svg" alt="Jorobean Logo" style="width: 100%; height: auto;" />
+    </a>
+    <a href="/" class="logo logo-corner">
+      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+    </a>
+  </div>
+
+  <a href="https://www.linkedin.com/in/kerry-l" target="_blank" rel="noopener">
+    <img src="kerry.jpg" alt="Kerry L." title="Kerry L., Founder of Jorobean" class="founder-img" />
+  </a>
+
+  <p><strong>Jorobean</strong> is a 3D-printed footwear brand built on individuality, bold design, and love. Our goal is to make shoes that speak — about you, for you.</p>
+
+  <p>Founded by Kerry L., Jorobean blends personal style with future-focused design. Every pair is digitally crafted and 3D-printed with intention, turning creative energy into wearable art.</p>
+
+  <p>This page will evolve with us — more about our story, process, and people is coming soon.</p>
+
+  <p><em>Wear the Love.</em></p>
+
+  <a class="instagram" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Jorobean Instagram">
+    <img src="instagram-icon.svg" alt="Instagram Icon" style="width:32px; margin-bottom:8px;" />
+  </a>
+
+  <footer>© <span id="year"></span> Jorobean — All rights reserved.</footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="js/noiseEffect.js"></script>
+  <script type="module">
+    window.addEventListener('DOMContentLoaded', () => {
+      import('./js/logoScroll.js').then(module => {
+        module.initLogoScroll();
+      });
+    });
+  </script>
+</body>
+</html>
