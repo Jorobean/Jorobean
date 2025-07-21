@@ -962,10 +962,8 @@
     <a href="#" class="logo logo-corner">
       <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
-    <div class="nav-group">
-      <a href="about.html" class="nav-button">About</a>
+        <div class="nav-group">
       <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram">
-        <img src="instagram-icon.svg" alt="Instagram" />
       </a>
     </div>
   </div>
@@ -1014,23 +1012,20 @@
 
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
       <a class="instagram-footer" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Jorobean Instagram" style="display:block;margin:0 auto 8px auto;position:static;">
-        <img src="instagram-icon.svg" alt="Instagram Icon" style="width:32px;" />
       </a>
       <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>
       <div class="form-expanded-content">
-        <input type="text" id="name" name="name" placeholder="Name" autocomplete="name" />
-        <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" required />
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <input type="email" id="email" name="email" placeholder="Your Email" required>
         <div class="button-group">
-          <button type="button" id="cancelBtn" class="cancel-btn" onclick="this.closest('form').classList.remove('expanded')">Cancel</button>
+          <button type="button" id="closeBtn" class="cancel-btn">Cancel</button>
           <button type="submit" id="submitBtn">
             <span class="btn-text">Submit</span>
-            <div class="spinner" id="spinner"></div>
+            <span id="spinner" class="spinner"></span>
           </button>
         </div>
       </div>
-    </form>
-    
-    <div class="signup-lead" style="margin-top:16px;max-width:320px;margin-left:auto;margin-right:auto;">
+    </form>    <div class="signup-lead" style="margin-top:16px;max-width:320px;margin-left:auto;margin-right:auto;">
       Be the first to know when we launch!<br>We respect your privacy. No spam, ever.
     </div>
     <div id="copyright"></div>

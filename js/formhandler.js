@@ -84,9 +84,17 @@ export function initFormHandler() {
   if (closeBtn) {
     closeBtn.addEventListener('click', function(e) {
       e.preventDefault();
+      e.stopPropagation();
       form.classList.remove('expanded');
+      nameInput.value = '';
+      emailInput.value = '';
+      button.disabled = false;
+      btnText.style.display = "inline-block";
+      spinner.style.display = "none";
       restoreAfterClose();
     });
+  } else {
+    console.warn('Close button not found in the DOM. Make sure you have an element with id="closeBtn"');
   }
 
   // Form submission
