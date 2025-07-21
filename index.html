@@ -1,0 +1,1117 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <!-- Apple mobile web app: status bar color -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#e1e1e1">
+  <title>Coming Soon</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-389249CNNF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    // Configure GA4 with custom dimensions
+    gtag('config', 'G-389249CNNF', {
+      'custom_map': {
+        'dimension1': 'device_type',
+        'dimension2': 'user_language',
+        'dimension3': 'visitor_type',
+        'dimension4': 'traffic_source'
+      }
+    });
+
+    // Set custom dimensions
+    gtag('event', 'page_view', {
+      'device_type': /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+      'user_language': navigator.language || navigator.userLanguage,
+      'visitor_type': localStorage.getItem('returning_visitor') ? 'returning' : 'new',
+      'traffic_source': document.referrer || 'direct'
+    });
+
+    // Mark as returning visitor for next time
+    localStorage.setItem('returning_visitor', 'true');
+  </script>
+
+  <!-- ✅ Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <!-- Optional: Safari pinned tab -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000"> -->
+
+  <link rel="canonical" href="https://jorobean.com">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Wear The Love. The Jorobean store is launching soon. Stay updated and be the first to know!">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="Jorobean — Coming Soon">
+  <meta property="og:description" content="Wear The Love. Get ready for the Jorobean launch.">
+  <meta property="og:image" content="https://jorobean.com/logo.png">
+  <meta property="og:url" content="https://jorobean.com">
+  <meta property="og:type" content="website">
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Jorobean",
+    "url": "https://jorobean.com",
+    "description": "Wear The Love. Get ready for the Jorobean launch.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://jorobean.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-color: #e1e1e1;
+      --text-color: #0b0b0b;
+      --noise-opacity: 0.08;
+      --form-bg: #e1e1e1;
+      --input-bg: #ffffff;
+      --input-border: #ccc;
+      --cancel-btn-bg: #666;
+      --cancel-btn-hover: #777;
+      --footer-text: #555;
+      --privacy-text: #666;
+      --box-shadow-color: rgba(0, 0, 0, 0.1);
+      --form-shadow-color: rgba(0, 0, 0, 0.2);
+      --signup-lead-color: #222;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ffffff;
+        --noise-opacity: 0.12;
+        --form-bg: #151515;
+        --input-bg: #2d2d2d;
+        --input-border: #404040;
+        --cancel-btn-bg: #404040;
+        --cancel-btn-hover: #505050;
+        --footer-text: #bbb;
+        --privacy-text: #999;
+        --box-shadow-color: rgba(0, 0, 0, 0.3);
+        --form-shadow-color: rgba(0, 0, 0, 0.4);
+        --signup-lead-color: #f0f0f0;
+      }
+
+      .nav-instagram img,
+      .instagram-footer img {
+        filter: brightness(0) invert(1);
+      }
+
+      .logo-centered .logo-img {
+        content: url('logoalt.svg');
+      }
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    @keyframes noise {
+      0%, 100% { background-position: 0 0; }
+      10% { background-position: -5% -10%; }
+      20% { background-position: -15% 5%; }
+      30% { background-position: 7% -25%; }
+      40% { background-position: 20% 25%; }
+      50% { background-position: -25% 10%; }
+      60% { background-position: 15% 5%; }
+      70% { background-position: 0% 15%; }
+      80% { background-position: 25% 35%; }
+      90% { background-position: -10% 10%; }
+    }
+
+    .noise-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArvhWHAAAACHRSTlMoADBAYICg8BzPx/QAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAWSURBVDjLY2AYBaNgFIyCUTAKRgEZAAAJIAABGZqyqAAAAABJRU5ErkJggg==");
+      opacity: var(--noise-opacity);
+      pointer-events: none;
+      z-index: 1;
+      animation: noise .2s infinite;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: 80px; /* add padding so content doesn't hide under logo */
+    }
+
+    .logo-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px;
+      pointer-events: none;
+    }
+
+    .logo {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      pointer-events: all;
+    }
+
+    .logo-centered {
+      max-width: 520px;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .logo-corner {
+      width: 100px;
+      left: 16px;
+      top: 16px;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+      pointer-events: all;
+    }
+
+    .nav-group > a {
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 2001;
+    }
+
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-button {
+      background: #b71111;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-instagram:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+
+    form.expanded ~ .logo-container .logo-centered,
+    #notifyForm.expanded ~ .logo-container .logo-centered {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    form.expanded ~ .logo-container .logo-corner,
+    #notifyForm.expanded ~ .logo-container .logo-corner {
+      opacity: 1 !important;
+      visibility: visible !important;
+      z-index: 2000;
+    }
+
+    form.expanded ~ .logo-container .nav-group,
+    #notifyForm.expanded ~ .logo-container .nav-group {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    body.scrolled .logo-centered {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    body.scrolled .logo-corner {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+    }
+
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-button {
+      background: #b71111;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-instagram:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .content-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.3s ease-out;
+      position: relative; /* For proper stacking */
+      z-index: 1;
+    }
+
+    .shoe-container {
+      width: min(80vw, 600px);
+      height: clamp(180px, 28vw, 340px);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wave-shoe-img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      margin: clamp(15px, 3vw, 25px) 0 0 0;
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(.4,0,.2,1);
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.9s;
+      font-weight: bold;
+      letter-spacing: 0.01em;
+    }
+
+    #form-container {
+      margin-top: 0;
+      margin-bottom: 24px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 60px;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 1.2s;
+    }
+    
+    @media screen and (max-height: 600px) {
+      #form-container {
+        position: relative;
+        bottom: auto;
+        margin: 20px auto;
+      }
+    }
+
+    form.expanded {
+      z-index: 1000;
+      background: var(--form-bg);
+      position: relative;
+      box-shadow: 0 4px 24px 0 var(--form-shadow-color);
+      border-radius: 24px;
+      padding: 64px 0 64px 0;
+      margin-bottom: 12px;
+      width: 420px;
+      max-width: 92vw;
+      min-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+      /* No idle animation */
+      transform-origin: center center;
+      transition: box-shadow 0.2s;
+    }
+
+
+    /* Dynamic tilt handled by JS. Only box-shadow on hover/focus for feedback. */
+    form.expanded:hover,
+    form.expanded:focus-within {
+      box-shadow: 0 8px 32px 0 var(--form-shadow-color);
+    }
+
+
+    @media (max-width: 600px) {
+      form.expanded {
+        transform-origin: 12% 10%;
+      }
+    }
+
+    @keyframes floating-tilt {
+      0% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      12% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      24% {
+        transform: rotate(1.3deg) translateY(-3px) scale(1.01);
+      }
+      36% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      50% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      62% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      74% {
+        transform: rotate(-2.7deg) translateY(3px) scale(0.99);
+      }
+      86% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      100% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+    }
+
+    @keyframes floating-tilt-strong {
+      0% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+      12% {
+        transform: rotate(2.2deg) translateY(-7px) scale(1.025);
+      }
+      24% {
+        transform: rotate(4deg) translateY(-10px) scale(1.03);
+      }
+      36% {
+        transform: rotate(2.2deg) translateY(-7px) scale(1.025);
+      }
+      50% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+      62% {
+        transform: rotate(-5.2deg) translateY(7px) scale(0.985);
+      }
+      74% {
+        transform: rotate(-7deg) translateY(10px) scale(0.98);
+      }
+      86% {
+        transform: rotate(-5.2deg) translateY(7px) scale(0.985);
+      }
+      100% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+    }
+
+    @media (max-width: 600px) {
+      form.expanded {
+        transform-origin: 12% 10%;
+      }
+    }
+
+    @keyframes floating-tilt {
+      0% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      12% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      24% {
+        transform: rotate(1.3deg) translateY(-3px) scale(1.01);
+      }
+      36% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      50% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      62% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      74% {
+        transform: rotate(-2.7deg) translateY(3px) scale(0.99);
+      }
+      86% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      100% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+    }
+
+    form.expanded::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.0) 60%, rgba(255,255,255,0.35) 70%, rgba(255,255,255,0.0) 80%);
+      transform: rotate(0deg);
+      pointer-events: none;
+      z-index: 1001;
+      animation: glint-panel 2.8s linear infinite;
+    }
+
+    @keyframes glint-panel {
+      0% {
+        transform: translate(-100%, -100%) rotate(15deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.2;
+      }
+      40% {
+        opacity: 0.7;
+      }
+      60% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translate(100%, 100%) rotate(15deg);
+        opacity: 0;
+      }
+    }
+
+    .signup-lead {
+      font-size: 1em;
+      color: var(--signup-lead-color);
+      margin-bottom: 18px;
+      margin-top: 0;
+      transform-origin: center center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: 9999px;
+      width: 280px;
+      max-width: calc(100% - 48px);
+      margin: 0 auto;
+      box-shadow: 0 4px 10px var(--box-shadow-color);
+      text-align: left;
+      transition: all 0.3s ease;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+
+    #name,
+    #email {
+      display: none;
+      opacity: 0;
+    }
+
+    @keyframes shine-reverse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .stay-updated-btn {
+      background: linear-gradient(
+        120deg,
+        #b71111 40%,
+        #d32f2f 50%,
+        #b71111 60%
+      );
+      background-size: 200% 100%;
+      animation: shine-reverse 10s cubic-bezier(.4,0,.2,1) infinite;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 9999px;
+      font-size: 1rem;
+      width: 260px;
+      max-width: 90vw;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .stay-updated-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .stay-updated-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-expanded-content {
+      display: none;
+      width: 100%;
+    }
+
+    form.expanded .form-expanded-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    form.expanded .stay-updated-btn {
+      display: none;
+    }
+
+    form.expanded #name,
+    form.expanded #email {
+      display: block;
+      opacity: 1;
+    }
+
+    .button-group {
+      display: none;
+      width: 100%;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    form.expanded .button-group {
+      display: flex;
+    }
+
+    button {
+      background: #b71111;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      max-width: 110px;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .cancel-btn {
+      background: var(--cancel-btn-bg);
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background: var(--cancel-btn-hover);
+    }
+
+    #submitBtn {
+      background: #b71111;
+    }
+
+    #submitBtn:hover {
+      background: #d32f2f;
+    }
+
+    .spinner {
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .instagram-footer {
+      position: static !important;
+      margin: 0 auto 18px auto !important;
+      z-index: 1;
+      display: block;
+    }
+
+    body.scrolled .instagram-footer {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .instagram-footer {
+        display: none !important;
+      }
+    }
+
+    .nav-group {
+      pointer-events: all;
+    }
+
+    .nav-group a {
+      cursor: pointer;
+    }
+
+    footer {
+      flex-shrink: 0;
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--footer-text);
+      text-align: center;
+      user-select: none;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      min-height: 180px;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    #privacyNote {
+      font-size: 0.8rem;
+      color: var(--privacy-text);
+      margin-top: 12px;
+      max-width: 280px;
+    }
+
+    @media (max-width: 600px) {
+      .logo-centered {
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+      .logo-corner {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      .nav-group {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      #form-container {
+        position: static;
+        margin: 20px auto;
+        padding-bottom: 20px;
+      }
+      .signup-lead {
+        font-size: 0.93em;
+        margin-top: 6px;
+        margin-bottom: 6px;
+      }
+      
+      /* Adjust form position when virtual keyboard is likely open */
+      @media (max-height: 500px) {
+        body {
+          padding-top: 10px;
+        }
+        #form-container {
+          margin: 10px auto;
+        }
+        .content-wrapper {
+          display: none;
+        }
+      }
+      .logo-container {
+        padding: 8px;
+      }
+      .logo-corner {
+        width: 70px;
+        left: 8px;
+        top: 8px;
+        z-index: 2000;
+      }
+      .nav-group {
+        top: 12px;
+        right: 12px;
+        gap: 12px;
+      }
+      .nav-button {
+        display: none;
+      }
+      .nav-instagram {
+        width: 40px;
+        height: 40px;
+      }
+      .nav-instagram img {
+        width: 30px;
+        height: 30px;
+      }
+      body {
+        padding-top: 18px;
+      }
+      .content-wrapper {
+        position: relative !important;
+        top: unset !important;
+        left: unset !important;
+        transform: unset !important;
+        margin-top: 2vh !important;
+        margin-bottom: 2vh !important;
+      }
+      .silhouette-container {
+        width: 92vw;
+        height: clamp(140px, 22vw, 260px);
+        margin: 0 auto;
+      }
+      .silhouette-img,
+      .wave-shoe-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      h1 {
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        margin: clamp(15px, 3vw, 25px) 0 0.3em 0;
+      }
+      .instagram {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+      }
+      form.expanded {
+        padding: 32px 0 32px 0;
+        width: 92vw;
+        max-width: 92vw;
+        min-width: 280px;
+        margin: 0 auto;
+      }
+      footer {
+        padding: 24px 0 16px 0;
+        font-size: 0.7rem;
+      }
+      #privacyNote {
+        font-size: 0.65rem;
+        margin-top: 3px;
+      }
+    }
+
+
+
+    /* Wave Text Container Styles */
+    .wave-text-container {
+      position: relative;
+      width: 100%;
+      height: 64px;
+      margin: clamp(15px, 3vw, 25px) 0 0 0;
+      outline: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wave-text-svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      max-width: 900px;
+      width: 100%;
+      height: 64px;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .wave-text-svg.active {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    @media (max-width: 600px) {
+      .wave-text-container {
+        height: 44px;
+      }
+      .wave-text-svg {
+        height: 44px;
+      }
+    }
+
+
+  </style>
+  <!-- Import Cabin Condensed font -->
+  <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
+</head>
+<body>
+  <div class="noise-overlay"></div>
+  <div class="logo-container">
+    <a href="#" class="logo logo-centered">
+      <img src="logo.svg" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
+    </a>
+    <a href="#" class="logo logo-corner">
+      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+    </a>
+    <div class="nav-group">
+      <a href="about.html" class="nav-button">About</a>
+      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram">
+        <img src="instagram-icon.svg" alt="Instagram" />
+      </a>
+    </div>
+  </div>
+  <div style="height:0.5vh;"></div>
+  <div class="content-wrapper">
+    <div class="shoe-container">
+      <img class="wave-shoe-img" src="wave-shoe.svg" alt="Wave Shoe" />
+    </div>
+    <div class="wave-text-container" tabindex="0" aria-label="WAVE reveal">
+      <!-- Default text -->
+      <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
+        <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" font-family="'Cabin Condensed', Arial, sans-serif">COMING SOON</text>
+      </svg>
+      <!-- WAVE liquid effect text -->
+      <svg class="wave-text-svg wave-effect" viewBox="0 0 220 38">
+        <defs>
+          <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0463d3"/>
+            <stop offset="100%" stop-color="#7cb9ff"/>
+          </linearGradient>
+          <pattern id="wave" x="0" y="-2" width="220" height="38" patternUnits="userSpaceOnUse">
+            <path id="wavePath" d="M-110 18 Q-95 10 -80 18 T-50 18 T-20 18 T10 18 T40 18 T70 18 T100 18 T130 18 T160 18 T190 18 T220 18 V38 H-110z" fill="url(#gradient)">
+              <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  values="0,0;110,0;110,38;0,38;0,0"
+                  keyTimes="0;0.5;0.6;0.62;1"
+                  dur="6s"
+                  repeatCount="indefinite" />
+              <animate
+                  attributeName="opacity"
+                  values="1;1;0;0;1"
+                  keyTimes="0;0.5;0.6;0.62;1"
+                  dur="6s"
+                  repeatCount="indefinite" />
+            </path>
+          </pattern>
+        </defs>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" font-family="'Cabin Condensed', Arial, sans-serif">WAVE</text>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" font-family="'Cabin Condensed', Arial, sans-serif" stroke="currentColor" stroke-width="0">WAVE</text>
+      </svg>
+    </div>
+  </div>
+  
+  <footer id="footer" aria-label="Site copyright">
+
+    <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
+      <a class="instagram-footer" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Jorobean Instagram" style="display:block;margin:0 auto 8px auto;position:static;">
+        <img src="instagram-icon.svg" alt="Instagram Icon" style="width:32px;" />
+      </a>
+      <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>
+      <div class="form-expanded-content">
+        <input type="text" id="name" name="name" placeholder="Name" autocomplete="name" />
+        <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" required />
+        <div class="button-group">
+          <button type="button" id="cancelBtn" class="cancel-btn" onclick="this.closest('form').classList.remove('expanded')">Cancel</button>
+          <button type="submit" id="submitBtn">
+            <span class="btn-text">Submit</span>
+            <div class="spinner" id="spinner"></div>
+          </button>
+        </div>
+      </div>
+    </form>
+    
+    <div class="signup-lead" style="margin-top:16px;max-width:320px;margin-left:auto;margin-right:auto;">
+      Be the first to know when we launch!<br>We respect your privacy. No spam, ever.
+    </div>
+    <div id="copyright"></div>
+  </footer>
+  <!-- Only one Instagram icon above for better mobile layout -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/waveEffect.js"></script>
+  <script type="module" src="js/formHandler.js"></script>
+  <script type="module" src="js/tiltEffect.js"></script>
+  <script type="module" src="js/logoScroll.js"></script>
+  <script>
+    document.getElementById("copyright").textContent =
+      `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
+
+    // Analytics Event Tracking
+    function trackEvent(eventName, eventParams = {}) {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, eventParams);
+      }
+    }
+
+    // Form handling - only allow closing through cancel button
+    const form = document.getElementById('notifyForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Track form submission
+    form.addEventListener('submit', function(e) {
+      trackEvent('newsletter_signup', {
+        'event_category': 'engagement',
+        'event_label': 'newsletter'
+      });
+    });
+
+    // Track Stay Updated button click
+    document.getElementById('starterInput').addEventListener('click', function() {
+      trackEvent('stay_updated_click', {
+        'event_category': 'engagement',
+        'event_label': 'stay_updated_button'
+      });
+    });
+
+    function restoreAfterClose() {
+      const contentWrapper = document.querySelector('.content-wrapper');
+      if (contentWrapper) {
+        if (contentWrapper.style.display === 'none') {
+          contentWrapper.style.opacity = 0;
+          contentWrapper.style.display = '';
+          setTimeout(() => {
+            contentWrapper.style.opacity = 1;
+          }, 10);
+        } else {
+          contentWrapper.style.opacity = 1;
+        }
+      }
+      // Switch back to centered logo only if we're at the top of the page
+      if (window.scrollY <= 25) {
+        document.body.classList.remove('scrolled');
+      }
+    }
+    
+    if (form && cancelBtn) {
+      // Handle cancel button click
+      cancelBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        form.classList.remove('expanded');
+        restoreAfterClose();
+      });
+      
+      // Prevent form from closing when clicking outside
+      document.addEventListener('click', function(e) {
+        if (form.classList.contains('expanded')) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    }
+
+    // No hover/tap effects needed since the wave shoe is always visible
+  </script>
+
+  <!-- Dynamic effects are now handled by modules -->
+</body>
+</html>
