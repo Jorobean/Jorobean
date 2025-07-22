@@ -11,35 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Jorobean">
   <title>Coming Soon</title>
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-389249CNNF"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    
-    // Configure GA4 with custom dimensions
-    gtag('config', 'G-389249CNNF', {
-      'custom_map': {
-        'dimension1': 'device_type',
-        'dimension2': 'user_language',
-        'dimension3': 'visitor_type',
-        'dimension4': 'traffic_source'
-      }
-    });
-
-    // Set custom dimensions
-    gtag('event', 'page_view', {
-      'device_type': /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
-      'user_language': navigator.language || navigator.userLanguage,
-      'visitor_type': localStorage.getItem('returning_visitor') ? 'returning' : 'new',
-      'traffic_source': document.referrer || 'direct'
-    });
-
-    // Mark as returning visitor for next time
-    localStorage.setItem('returning_visitor', 'true');
-  </script>
-
+  <!-- Cookie Consent + Analytics loaded after consent -->
   <!-- ✅ Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -333,23 +305,34 @@
       will-change: transform;
       transition: transform 0.3s ease-out;
       position: relative; /* For proper stacking */
-      z-index: 1;
+      z-index: 0;
+      margin-bottom: 0;
+    }
+
+    @media (min-width: 601px) {
+      .content-wrapper {
+        padding: 32px 32px 0 32px;
+        margin-bottom: -80px;
+      }
     }
 
     .shoe-container {
-      width: min(80vw, 600px);
-      height: clamp(180px, 32vw, 400px);
+      width: min(98vw, 1200px);
+      height: clamp(400px, 45vw, 600px);
       margin: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: visible;
+      gap: 60px;
+      margin-bottom: 20px;
     }
     
     @media (max-width: 600px) {
       .shoe-container {
-        height: clamp(180px, 36vw, 380px);
+        height: clamp(280px, 50vw, 500px);
       }
     }
 
@@ -357,13 +340,13 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(1.4);
       width: 100%;
       height: auto;
       max-height: 100%;
       object-fit: contain;
       opacity: 1;
-      padding: 20px;
+      padding: 0;
     }
 
     h1 {
@@ -379,11 +362,11 @@
 
     #form-container {
       margin-top: 0;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 60px;
+      bottom: 24px;
       width: 100vw;
       display: flex;
       flex-direction: column;
@@ -765,6 +748,8 @@
       align-items: center;
       padding: 16px 0;
       min-height: 180px;
+      position: relative;
+      z-index: 2;
     }
 
     @keyframes fadeIn {
@@ -781,7 +766,7 @@
     @media (max-width: 600px) {
       #notifyForm .nav-instagram {
         display: block !important;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
       .logo-centered {
         opacity: 0 !important;
@@ -797,13 +782,13 @@
       }
       #form-container {
         position: static;
-        margin: 12px auto;
-        padding-bottom: 12px;
+        margin: 0 auto;
+        padding-bottom: 8px;
       }
       .signup-lead {
         font-size: 0.9em;
-        margin-top: 4px;
-        margin-bottom: 4px;
+        margin-top: 2px;
+        margin-bottom: 2px;
       }
       
       /* Adjust form position when virtual keyboard is likely open */
@@ -844,16 +829,16 @@
         height: 30px;
       }
       body {
-        padding-top: 12px;
+        padding-top: 8px;
       }
       .content-wrapper {
         position: relative !important;
         top: unset !important;
         left: unset !important;
         transform: unset !important;
-        margin-top: 1vh !important;
-        margin-bottom: 1vh !important;
-        padding: 16px;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 8px;
       }
       .silhouette-container {
         width: 92vw;
@@ -883,13 +868,13 @@
         margin: 0 auto;
       }
       footer {
-      padding: 16px 0 12px 0;
+      padding: 8px 0 4px 0;
       font-size: 0.7rem;
-      min-height: 140px;
+      min-height: 100px;
     }
     #privacyNote {
       font-size: 0.65rem;
-      margin-top: 2px;
+      margin-top: 0;
     }
     }
 
@@ -914,16 +899,37 @@
 
 
     /* Wave Text Container Styles */
+    .shoe-container {
+      width: 92vw;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 0;
+    }
+
+    @media (min-width: 601px) {
+      .shoe-container {
+        gap: 40px;
+        padding-bottom: 40px;
+      }
+    }
+
+    .shoe-image-container {
+      width: 100%;
+      height: clamp(120px, 20vw, 220px);
+      position: relative;
+    }
+
     .wave-text-container {
       position: relative;
       width: 100%;
       height: 64px;
-      margin: clamp(15px, 3vw, 25px) 0 0 0;
-      outline: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      transform: scale(clamp(0.8, 1vw, 1));
     }
 
     .wave-text-svg {
@@ -949,6 +955,7 @@
     @media (max-width: 600px) {
       .wave-text-container {
         height: 44px;
+        transform: scale(0.8);
       }
       .wave-text-svg {
         height: 44px;
@@ -989,9 +996,10 @@
   <div style="height:0.5vh;"></div>
   <div class="content-wrapper">
     <div class="shoe-container">
-      <img class="wave-shoe-img" src="wave-shoe.svg" alt="Wave Shoe" />
-    </div>
-    <div class="wave-text-container" tabindex="0" aria-label="WAVE reveal">
+      <div class="shoe-image-container">
+        <img class="wave-shoe-img" src="wave-shoe.svg" alt="Wave Shoe" />
+      </div>
+      <div class="wave-text-container" aria-label="WAVE reveal">
       <!-- Default text -->
       <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
         <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
@@ -1025,6 +1033,7 @@
         <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;" stroke="currentColor" stroke-width="0">WAVE</text>
       </svg>
     </div>
+    </div>
   </div>
   
   <footer id="footer" aria-label="Site copyright">
@@ -1046,7 +1055,7 @@
         </div>
       </div>
     </form>    <div class="signup-lead" style="margin-top:16px;max-width:320px;margin-left:auto;margin-right:auto;">
-      Be the first to know when we launch!<br>We respect your privacy. No spam, ever.
+      Be the first to know when we launch!<br><a href="privacy.html" style="color:#b71111;text-decoration:underline;">We respect your privacy.</a> No spam, ever.
     </div>
     <div id="copyright"></div>
   </footer>
@@ -1124,5 +1133,116 @@
   </script>
 
   <!-- Dynamic effects are now handled by modules -->
+
+  <!-- COOKIE CONSENT BANNER -->
+  <style>
+    #cookieConsent {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      border-top: 1px solid #ccc;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-family: sans-serif;
+      animation: slideUp 0.4s ease forwards;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #cookieConsent {
+        background: #151515;
+        border-top: 1px solid #404040;
+        box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+      }
+      #cookieConsent p {
+        color: #f0f0f0 !important;
+      }
+      #cookieConsent #declineCookies {
+        background: #404040 !important;
+        color: #ffffff !important;
+      }
+      #cookieConsent #declineCookies:hover {
+        background: #505050 !important;
+      }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    #cookieConsent.show {
+      display: flex;
+    }
+  </style>
+
+  <div id="cookieConsent">
+    <p style="max-width:500px;font-size:14px;color:#333;margin-bottom:12px;">
+      We use cookies to improve your experience, analyze traffic, and show relevant content. 
+      See our <a href="privacy.html" style="color:#b71111;text-decoration:underline;">Privacy Policy</a>.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button id="acceptCookies" style="background:#b71111;color:#fff;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:14px;">Accept</button>
+      <button id="declineCookies" style="background:#e1e1e1;color:#333;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:14px;">Decline</button>
+    </div>
+  </div>
+
+  <!-- COOKIE + GA LOGIC -->
+  <script>
+    const cookieConsent = document.getElementById('cookieConsent');
+
+    if (!localStorage.getItem('ga_consent')) {
+      cookieConsent.classList.add('show');
+    }
+
+    document.getElementById('acceptCookies').onclick = () => {
+      localStorage.setItem('ga_consent', 'accepted');
+      cookieConsent.remove();
+      loadGA();
+    };
+
+    document.getElementById('declineCookies').onclick = () => {
+      localStorage.setItem('ga_consent', 'declined');
+      cookieConsent.remove();
+    };
+
+    if (localStorage.getItem('ga_consent') === 'accepted') loadGA();
+
+    function loadGA() {
+      const gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-389249CNNF';
+      document.head.appendChild(gaScript);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = gtag;
+
+      gtag('js', new Date());
+      gtag('config', 'G-389249CNNF', {
+        'custom_map': {
+          'dimension1': 'device_type',
+          'dimension2': 'user_language',
+          'dimension3': 'visitor_type',
+          'dimension4': 'traffic_source'
+        }
+      });
+
+      gtag('event', 'page_view', {
+        'device_type': /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        'user_language': navigator.language || navigator.userLanguage,
+        'visitor_type': localStorage.getItem('returning_visitor') ? 'returning' : 'new',
+        'traffic_source': document.referrer || 'direct'
+      });
+
+      localStorage.setItem('returning_visitor', 'true');
+    }
+  </script>
 </body>
 </html>
