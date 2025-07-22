@@ -953,8 +953,20 @@
 
 
   </style>
-  <!-- Import Cabin Condensed font -->
-  <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
+  <!-- Preload and Import Cabin Condensed font -->
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
+  <!-- Fallback font loading -->
+  <style>
+    @font-face {
+      font-family: 'Cabin Condensed';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: local('Cabin Condensed Regular'), local('CabinCondensed-Regular'),
+           url(https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwqZ-LYxnV18A.woff2) format('woff2');
+    }
+  </style>
 </head>
 <body>
   <div class="logo-container">
@@ -978,7 +990,7 @@
     <div class="wave-text-container" tabindex="0" aria-label="WAVE reveal">
       <!-- Default text -->
       <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
-        <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" font-family="'Cabin Condensed', Arial, sans-serif">COMING SOON</text>
+        <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
       </svg>
       <!-- WAVE liquid effect text -->
       <svg class="wave-text-svg wave-effect" viewBox="0 0 220 38">
@@ -1005,8 +1017,8 @@
             </path>
           </pattern>
         </defs>
-        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" font-family="'Cabin Condensed', Arial, sans-serif">WAVE</text>
-        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" font-family="'Cabin Condensed', Arial, sans-serif" stroke="currentColor" stroke-width="0">WAVE</text>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">WAVE</text>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;" stroke="currentColor" stroke-width="0">WAVE</text>
       </svg>
     </div>
   </div>
