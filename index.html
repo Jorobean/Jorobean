@@ -84,7 +84,6 @@
     :root {
       --bg-color: #e1e1e1;
       --text-color: #0b0b0b;
-      --noise-opacity: 0.08;
       --form-bg: #e1e1e1;
       --input-bg: #ffffff;
       --input-border: #ccc;
@@ -101,7 +100,6 @@
       :root {
         --bg-color: #0a0a0a;
         --text-color: #ffffff;
-        --noise-opacity: 0.12;
         --form-bg: #151515;
         --input-bg: #2d2d2d;
         --input-border: #404040;
@@ -128,7 +126,9 @@
       max-width: 100%;
       overflow-x: hidden;
     }
+
     
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -140,7 +140,7 @@
       text-align: center;
       position: relative;
       overflow-x: hidden;
-      min-height: 100dvh;
+      min-height: 100vh;
       padding-top: 80px; /* add padding so content doesn't hide under logo */
     }
 
@@ -321,7 +321,7 @@
     }
 
     .content-wrapper {
-      flex: 1 1 auto;
+      flex: 1 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -337,13 +337,19 @@
 
     .shoe-container {
       width: min(80vw, 600px);
-      height: clamp(200px, 35vw, 400px);
+      height: clamp(180px, 32vw, 400px);
       margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: visible;
+    }
+    
+    @media (max-width: 600px) {
+      .shoe-container {
+        height: clamp(140px, 28vw, 300px);
+      }
     }
 
     .wave-shoe-img {
@@ -786,13 +792,13 @@
       }
       #form-container {
         position: static;
-        margin: 20px auto;
-        padding-bottom: 20px;
+        margin: 12px auto;
+        padding-bottom: 12px;
       }
       .signup-lead {
-        font-size: 0.93em;
-        margin-top: 6px;
-        margin-bottom: 6px;
+        font-size: 0.9em;
+        margin-top: 4px;
+        margin-bottom: 4px;
       }
       
       /* Adjust form position when virtual keyboard is likely open */
@@ -833,19 +839,20 @@
         height: 30px;
       }
       body {
-        padding-top: 18px;
+        padding-top: 12px;
       }
       .content-wrapper {
         position: relative !important;
         top: unset !important;
         left: unset !important;
         transform: unset !important;
-        margin-top: 2vh !important;
-        margin-bottom: 2vh !important;
+        margin-top: 1vh !important;
+        margin-bottom: 1vh !important;
+        padding: 16px;
       }
       .silhouette-container {
         width: 92vw;
-        height: clamp(140px, 22vw, 260px);
+        height: clamp(120px, 20vw, 220px);
         margin: 0 auto;
       }
       .silhouette-img,
@@ -871,13 +878,14 @@
         margin: 0 auto;
       }
       footer {
-        padding: 24px 0 16px 0;
-        font-size: 0.7rem;
-      }
-      #privacyNote {
-        font-size: 0.65rem;
-        margin-top: 3px;
-      }
+      padding: 16px 0 12px 0;
+      font-size: 0.7rem;
+      min-height: 140px;
+    }
+    #privacyNote {
+      font-size: 0.65rem;
+      margin-top: 2px;
+    }
     }
 
     /* Instagram styling */
@@ -911,6 +919,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 10;
     }
 
     .wave-text-svg {
@@ -924,13 +933,21 @@
       height: 64px;
       user-select: none;
       pointer-events: none;
+    }
+
+    .wave-text-svg.coming-soon {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .wave-text-svg.wave-effect {
       opacity: 0;
+      z-index: 2;
       transition: opacity 0.8s ease;
     }
 
-    .wave-text-svg.active {
+    .wave-text-svg.wave-effect.active {
       opacity: 1;
-      z-index: 2;
     }
 
     @media (max-width: 600px) {
@@ -946,20 +963,8 @@
   </style>
   <!-- Import Cabin Condensed font -->
   <link href="https://fonts.googleapis.com/css?family=Cabin+Condensed" rel="stylesheet">
-<style>
-  body.scrolled .logo-centered {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  body.scrolled .logo-corner {
-    opacity: 1;
-    visibility: visible;
-  }
-</style>
 </head>
 <body>
-  <div class="noise-overlay"></div>
   <div class="logo-container">
     <a href="#" class="logo logo-centered">
       <img src="logo.svg" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
