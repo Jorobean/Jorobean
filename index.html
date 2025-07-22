@@ -731,7 +731,7 @@
       position: static !important;
       margin: 0 auto 18px auto !important;
       z-index: 1;
-      display: block;
+      display: none;
     }
 
     body.scrolled .instagram-footer {
@@ -1026,9 +1026,6 @@
   <footer id="footer" aria-label="Site copyright">
 
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
-      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram" style="margin-bottom: 8px;">
-        <img src="instagram-icon.svg" alt="Instagram" />
-      </a>
       <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>
       <div class="form-expanded-content">
         <input type="text" id="name" name="name" placeholder="Name" required>
