@@ -6,9 +6,9 @@ export function initTiltEffect() {
   
   // Spring configuration
   const spring = {
-    stiffness: 80,   // Reduced for gentler movement
-    damping: 25,     // Increased for less bounce
-    mass: 1.5        // Increased for more stability
+    stiffness: 40,   // Further reduced for extremely gentle movement
+    damping: 35,     // Increased damping for even less bounce
+    mass: 2.5        // Increased mass for even more stability
   };
   
   // Current rotation values
@@ -35,10 +35,10 @@ export function initTiltEffect() {
     const px = (x / rect.width) * 2 - 1;
     const py = (y / rect.height) * 2 - 1;
     
-    const maxDeg = 6; // Reduced for subtler effect
+    const maxDeg = 1.5; // Reduced even further for extremely subtle effect
     targetRotateX = -py * maxDeg;
     targetRotateY = px * maxDeg;
-    targetScale = 1.01; // More subtle scale effect on hover
+    targetScale = 1.002; // Minimal scale effect on hover
   }
 
   // Persistent velocity objects
@@ -122,10 +122,10 @@ export function initTiltEffect() {
     const px = (x / rect.width) * 2 - 1;
     const py = (y / rect.height) * 2 - 1;
     
-    const maxDeg = 4; // Even more reduced for touch devices
+    const maxDeg = 2; // Even more reduced for touch devices
     targetRotateX = -py * maxDeg;
     targetRotateY = px * maxDeg;
-    targetScale = 1.005; // Very subtle scale for touch
+    targetScale = 1.002; // Extremely subtle scale for touch
     
     if (!isTilting) {
       isTilting = true;
@@ -176,7 +176,7 @@ export function initTiltEffect() {
     form.addEventListener('mousemove', handleMouseMove);
     form.addEventListener('mouseleave', resetTilt);
     form.addEventListener('mouseenter', () => {
-      targetScale = 1.02;
+      targetScale = 1.005;
       if (!rafId) {
         rafId = requestAnimationFrame(animate);
       }

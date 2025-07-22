@@ -779,6 +779,10 @@
     }
 
     @media (max-width: 600px) {
+      #notifyForm .nav-instagram {
+        display: block !important;
+        margin-bottom: 16px;
+      }
       .logo-centered {
         opacity: 0 !important;
         visibility: hidden !important;
@@ -891,6 +895,9 @@
 
     /* Instagram styling */
     @media (max-width: 600px) {
+      .nav-group .nav-instagram {
+        display: none !important;
+      }
       .nav-instagram {
         width: 44px;
         height: 44px;
@@ -899,9 +906,6 @@
       .nav-instagram img {
         width: 32px;
         height: 32px;
-      }
-      .nav-group .nav-instagram {
-        display: none !important;
       }
       .instagram-footer {
         display: none !important;
@@ -1026,6 +1030,9 @@
   <footer id="footer" aria-label="Site copyright">
 
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
+      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram" style="display: none;">
+        <img src="instagram-icon.svg" alt="Instagram" />
+      </a>
       <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>
       <div class="form-expanded-content">
         <input type="text" id="name" name="name" placeholder="Name" required>
