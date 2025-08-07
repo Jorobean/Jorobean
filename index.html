@@ -73,6 +73,7 @@
       --box-shadow-color: rgba(0, 0, 0, 0.1);
       --form-shadow-color: rgba(0, 0, 0, 0.2);
       --signup-lead-color: #222;
+      --shoe-shadow-color: rgba(0, 0, 0, 0.25);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -90,6 +91,7 @@
         --box-shadow-color: rgba(0, 0, 0, 0.3);
         --form-shadow-color: rgba(0, 0, 0, 0.4);
         --signup-lead-color: #f0f0f0;
+        --shoe-shadow-color: rgba(255, 255, 255, 0.15);
       }
 
       .nav-instagram img,
@@ -137,7 +139,6 @@
       height: auto;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
       pointer-events: all;
     }
 
@@ -148,6 +149,7 @@
       transform: translateX(-50%);
       opacity: 1;
       visibility: visible;
+      transition: opacity 0.2s ease-out, visibility 0s;
     }
 
     .logo-corner {
@@ -156,7 +158,7 @@
       top: 16px;
       opacity: 0;
       visibility: hidden;
-      animation: instant-fade-in 0.1s ease forwards;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
     }
 
     .nav-group {
@@ -240,11 +242,13 @@
     body.scrolled .logo-centered {
       opacity: 0;
       visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
     }
 
     body.scrolled .logo-corner {
       opacity: 1;
       visibility: visible;
+      transition: opacity 0.2s ease-out 0.2s, visibility 0s 0.2s;
     }
 
     .nav-group {
@@ -346,13 +350,15 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%) scale(1.4);
+      transform: translate(-50%, -50%) scale(0.95);
       width: 100%;
       height: auto;
       max-height: 100%;
+      max-width: 600px;
       object-fit: contain;
       opacity: 1;
       padding: 0;
+      filter: drop-shadow(0 20px 20px var(--shoe-shadow-color));
       animation: instant-fade-in 0.1s ease forwards;
     }
 
@@ -891,22 +897,18 @@
     }
 
     /* Instagram styling */
-    @media (max-width: 600px) {
-      .nav-group .nav-instagram {
-        display: none !important;
-      }
-      .nav-instagram {
-        width: 32px;
-        height: 32px;
-        margin-bottom: 16px;
-      }
-      .nav-instagram img {
-        width: 24px;
-        height: 24px;
-      }
-      .instagram-footer {
-        display: none !important;
-      }
+    .nav-instagram {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 16px;
+      display: block !important;
+    }
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+    .instagram-footer {
+      display: none !important;
     }
 
 
@@ -929,9 +931,11 @@
     }
 
     .shoe-image-container {
-      width: 100%;
+      width: 80%;
+      max-width: 800px;
       height: clamp(120px, 20vw, 220px);
       position: relative;
+      margin: 0 auto;
     }
 
     .wave-text-container {
@@ -956,7 +960,7 @@
       user-select: none;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.4s ease;
     }
 
     .wave-text-svg.active {
@@ -1002,16 +1006,13 @@
       <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
         <div class="nav-group">
-      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram">
-        <img src="instagram-icon.svg" alt="Instagram" />
-      </a>
     </div>
   </div>
   <div style="height:0.5vh;"></div>
   <div class="content-wrapper">
     <div class="shoe-container">
       <div class="shoe-image-container">
-        <img class="wave-shoe-img" src="wave-shoe.png" alt="Wave Shoe" loading="eager" fetchpriority="high" decoding="sync" />
+        <img class="wave-shoe-img" src="trail.png" alt="Trail Shoe" loading="eager" fetchpriority="high" decoding="sync" />
       </div>
       <div class="wave-text-container" aria-label="WAVE reveal">
       <!-- Default text -->
@@ -1022,8 +1023,8 @@
       <svg class="wave-text-svg wave-effect" viewBox="0 0 220 38">
         <defs>
           <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0463d3"/>
-            <stop offset="100%" stop-color="#7cb9ff"/>
+            <stop offset="0%" stop-color="#b09475"/>
+            <stop offset="100%" stop-color="#cdb69d"/>
           </linearGradient>
           <pattern id="wave" x="0" y="-2" width="220" height="38" patternUnits="userSpaceOnUse">
             <path id="wavePath" d="M-110 18 Q-95 10 -80 18 T-50 18 T-20 18 T10 18 T40 18 T70 18 T100 18 T130 18 T160 18 T190 18 T220 18 V38 H-110z" fill="url(#gradient)">
@@ -1043,8 +1044,8 @@
             </path>
           </pattern>
         </defs>
-        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">WAVE</text>
-        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;" stroke="currentColor" stroke-width="0">WAVE</text>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">TRAIL</text>
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="url(#wave)" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;" stroke="currentColor" stroke-width="0">TRAIL</text>
       </svg>
     </div>
     </div>
@@ -1053,7 +1054,7 @@
   <footer id="footer" aria-label="Site copyright">
 
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:0 auto;">
-      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram" style="display: none;">
+      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram">
         <img src="instagram-icon.svg" alt="Instagram" />
       </a>
       <button type="button" id="starterInput" class="stay-updated-btn" onclick="this.closest('form').classList.add('expanded'); setTimeout(() => document.getElementById('name').focus(), 100);">Stay Updated</button>

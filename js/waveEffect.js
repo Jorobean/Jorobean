@@ -10,17 +10,21 @@ export function initWaveEffect() {
 
   function updateWaveText() {
     if (isWaveShown) {
+      // First hide the current text
       comingSoonSVG.style.opacity = 0;
-      // Add delay before showing the wave text
+      // Wait for fade out to complete before showing new text
       setTimeout(() => {
         waveSVG.style.opacity = 1;
-      }, 800);
+        comingSoonSVG.style.opacity = 0;
+      }, 400);
     } else {
+      // First hide the current text
       waveSVG.style.opacity = 0;
-      // Add delay before showing the coming soon text
+      // Wait for fade out to complete before showing new text
       setTimeout(() => {
         comingSoonSVG.style.opacity = 1;
-      }, 800);
+        waveSVG.style.opacity = 0;
+      }, 400);
     }
   }
 
