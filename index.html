@@ -321,8 +321,8 @@
 
     @media (min-width: 601px) {
       .content-wrapper {
-        padding: 32px 32px 0 32px;
-        margin-bottom: -80px;
+        padding: 16px 16px 0 16px;
+        margin-bottom: -40px;
       }
     }
 
@@ -336,13 +336,15 @@
       justify-content: center;
       position: relative;
       overflow: visible;
-      gap: 60px;
+      gap: 80px;
       margin-bottom: 20px;
     }
     
     @media (max-width: 600px) {
       .shoe-container {
         height: clamp(280px, 50vw, 500px);
+        gap: 100px;
+        margin-bottom: 40px;
       }
     }
 
@@ -868,7 +870,7 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
-        transform: translate(-50%, -50%) scale(1.25);
+        transform: translate(-50%, -50%) scale(1);
       }
       h1 {
         font-size: clamp(1.1rem, 2.5vw, 1.5rem);
@@ -919,14 +921,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
       padding-bottom: 0;
     }
 
     @media (min-width: 601px) {
       .shoe-container {
-        gap: 40px;
-        padding-bottom: 40px;
+        gap: 16px;
+        padding-bottom: 16px;
       }
     }
 
@@ -936,6 +938,36 @@
       height: clamp(120px, 20vw, 220px);
       position: relative;
       margin: 0 auto;
+    }
+
+    .color-picker {
+      position: relative;
+      display: flex;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 16px;
+      background: var(--form-bg);
+      box-shadow: 0 2px 10px var(--box-shadow-color);
+      margin: 20px auto 0;
+    }
+
+    .color-option {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-color);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+
+    .color-option.active {
+      border-color: var(--text-color);
+      transform: scale(1.1);
     }
 
     .wave-text-container {
@@ -972,9 +1004,17 @@
       .wave-text-container {
         height: 44px;
         transform: scale(0.8);
+        margin-top: 10px;
       }
       .wave-text-svg {
         height: 44px;
+      }
+      .shoe-image-container {
+        width: 90%;
+        height: clamp(160px, 30vw, 260px);
+      }
+      .color-picker {
+        margin-top: 5px;
       }
     }
 
@@ -1015,6 +1055,21 @@
         <img class="wave-shoe-img" src="trail.png" alt="Trail Shoe" loading="eager" fetchpriority="high" decoding="sync" />
       </div>
       <div class="wave-text-container" aria-label="WAVE reveal">
+      <!-- Default text -->
+      <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
+        <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
+      </svg>
+      <!-- WAVE liquid effect text -->
+      <svg class="wave-text-svg wave-effect" viewBox="0 0 220 38">
+        <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">TRAIL</text>
+      </svg>
+      </div>
+      <div class="color-picker">
+        <button class="color-option" data-color="#b09980" data-image="trail.png" style="background-color: #b09980"></button>
+        <button class="color-option" data-color="#323232" data-image="trail-black.png" style="background-color: #323232"></button>
+        <button class="color-option" data-color="#2f76ca" data-image="trail-blue.png" style="background-color: #2f76ca"></button>
+        <button class="color-option" data-color="#b71111" data-image="trail-red.png" style="background-color: #b71111"></button>
+      </div>
       <!-- Default text -->
       <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
         <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
@@ -1077,6 +1132,29 @@
   <!-- Only one Instagram icon above for better mobile layout -->
   <script type="module" src="js/main.js"></script>
   <script>
+    // Color picker functionality
+    const colorOptions = document.querySelectorAll('.color-option');
+    const shoeImage = document.querySelector('.wave-shoe-img');
+    
+    colorOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        // Remove active class from all options
+        colorOptions.forEach(opt => opt.classList.remove('active'));
+        // Add active class to clicked option
+        this.classList.add('active');
+        // Update image source
+        shoeImage.src = this.dataset.image;
+        // Track color selection
+        trackEvent('color_selected', {
+          'event_category': 'engagement',
+          'event_label': this.dataset.color
+        });
+      });
+    });
+    
+    // Set initial active state
+    colorOptions[0].classList.add('active');
+
     document.getElementById("copyright").textContent =
       `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
 
