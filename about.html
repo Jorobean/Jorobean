@@ -42,6 +42,32 @@
   </script>
 
   <style>
+    :root {
+      --bg-color: #e1e1e1;
+      --text-color: #0b0b0b;
+      --noise-opacity: 0.08;
+      --footer-text: #555;
+      --footer-link: #b71111;
+      --logo-filter: none;
+      --instagram-filter: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ffffff;
+        --noise-opacity: 0.12;
+        --footer-text: #bbb;
+        --footer-link: #d32f2f;
+        --logo-filter: invert(1);
+        --instagram-filter: brightness(0) invert(1);
+      }
+
+      .logo-centered img {
+        content: url('jorobean_logoalt.png');
+      }
+    }
+
     @keyframes noise {
       0%, 100% { background-position: 0 0; }
       10% { background-position: -5% -10%; }
@@ -64,7 +90,7 @@
       width: 100vw;
       height: 100vh;
       background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArvhWHAAAACHRSTlMoADBAYICg8BzPx/QAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAWSURBVDjLY2AYBaNgFIyCUTAKRgEZAAAJIAABGZqyqAAAAABJRU5ErkJggg==");
-      opacity: 0.08;
+      opacity: var(--noise-opacity);
       pointer-events: none;
       z-index: 1;
       animation: noise .2s infinite;
@@ -74,14 +100,15 @@
       margin: 0;
       padding: 120px 20px 60px;
       font-family: Arial, sans-serif;
-      background-color: #e1e1e1;
-      color: #0b0b0b;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       text-align: center;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .logo-container {
@@ -164,12 +191,13 @@
     }
 
     footer {
-      margin-top: 10px; /* Reduced from auto to 10px */
-      padding: 10px 0 0 0; /* Less padding above, none below */
+      margin-top: 10px;
+      padding: 10px 0 0 0;
       font-size: 0.8rem;
-      color: #555;
+      color: var(--footer-text);
       width: 100%;
       text-align: center;
+      transition: color 0.3s ease;
     }
 
     .instagram {
@@ -177,12 +205,13 @@
       justify-content: center;
       align-items: center;
       margin-bottom: 0;
-      padding-top: 32px; /* Added padding above the Instagram logo */
+      padding-top: 32px;
     }
 
     .instagram img {
       width: 32px;
       transition: transform 0.3s ease;
+      filter: var(--instagram-filter);
     }
 
     .instagram:hover img {
