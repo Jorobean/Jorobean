@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <!-- Apple mobile web app configuration -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -850,7 +850,7 @@
         height: 30px;
       }
       body {
-        padding-top: 100px;
+        padding-top: 8px;
       }
       .content-wrapper {
         position: relative !important;
@@ -1019,45 +1019,6 @@
       }
     }
 
-    /* Product Info Sections */
-    .product-info-sections {
-      max-width: 1200px;
-      margin: 60px auto;
-      padding: 0 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 60px;
-    }
-
-    .info-section {
-      text-align: left;
-      max-width: 800px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .info-section h2 {
-      font-size: clamp(1.2rem, 2vw, 1.5rem);
-      margin-bottom: 1rem;
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      color: var(--text-color);
-    }
-
-    .info-section p {
-      font-size: clamp(1rem, 1.2vw, 1.1rem);
-      line-height: 1.6;
-      color: var(--text-color);
-      opacity: 0.9;
-    }
-
-    @media (max-width: 600px) {
-      .product-info-sections {
-        margin: 40px auto;
-        padding: 0 24px;
-        gap: 40px;
-      }
-    }
 
   </style>
   <!-- Preload critical assets -->
@@ -1104,11 +1065,11 @@
         <text text-anchor="middle" x="110" y="32" font-size="34" letter-spacing="14" fill="currentColor" fill-opacity="1" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">TRAIL</text>
       </svg>
       </div>
-      <div class="color-picker" role="group" aria-label="Color options">
-        <button class="color-option" data-color="#b09980" data-image="trail.png" style="background-color: #b09980" aria-label="Oak White"></button>
-        <button class="color-option" data-color="#323232" data-image="trail-black.png" style="background-color: #323232" aria-label="Dark Ridge Black"></button>
-        <button class="color-option" data-color="#2f76ca" data-image="trail-blue.png" style="background-color: #2f76ca" aria-label="Alpine Blue"></button>
-        <button class="color-option" data-color="#b71111" data-image="trail-red.png" style="background-color: #b71111" aria-label="Jorobean Red"></button>
+      <div class="color-picker">
+        <button class="color-option" data-color="#b09980" data-image="trail.png" style="background-color: #b09980"></button>
+        <button class="color-option" data-color="#323232" data-image="trail-black.png" style="background-color: #323232"></button>
+        <button class="color-option" data-color="#2f76ca" data-image="trail-blue.png" style="background-color: #2f76ca"></button>
+        <button class="color-option" data-color="#b71111" data-image="trail-red.png" style="background-color: #b71111"></button>
       </div>
       <!-- Default text -->
       <svg class="wave-text-svg coming-soon" viewBox="0 0 300 28">
@@ -1145,23 +1106,6 @@
     </div>
     </div>
   </div>
-
-  <div class="product-info-sections">
-    <section class="info-section">
-      <h2>PRODUCTION</h2>
-      <p>Printed to order, millions of precise lines form a shoe built for the winding paths of the great outdoors. It’s engineered for trails, by riversides, and across wild parklands. Explore the natural world with Trail. Wear The Love.</p>
-    </section>
-
-    <section class="info-section">
-      <h2>MATERIAL</h2>
-      <p>Printed with ZellerFOAM from a single recyclable TPU thread, Trail offers cloud-soft cushioning for all-day comfort. Soft where you need it and durable where it counts, it’s perfect for walks through the forest or treks through Earth’s most beautiful places.</p>
-    </section>
-
-    <section class="info-section">
-      <h2>SIZE</h2>
-      <p>Zellerfeld’s 3D printing technology ensures every Trail is custom-fitted to the unique shape of your feet. With a fit that’s made for you, you’ll stay grounded and ready to wander, whether you’re crossing meadows, riverbanks, or the Blue Planet itself.</p>
-    </section>
-  </div>
   
   <footer id="footer" aria-label="Site copyright">
 
@@ -1182,7 +1126,7 @@
         </div>
       </div>
     </form>    <div class="signup-lead" style="margin-top:16px;max-width:320px;margin-left:auto;margin-right:auto;">
-      Be the first to know when we launch!<br><a href="privacy.html" style="color:#b71111;text-decoration:underline;">We respect your privacy.</a> No spam, ever.
+      Be the first to know when we launch!<br><a href="/privacy" style="color:#b71111;text-decoration:underline;">We respect your privacy.</a> No spam, ever.
     </div>
     <div id="copyright"></div>
   </footer>
@@ -1335,7 +1279,7 @@
   <div id="cookieConsent">
     <p style="max-width:500px;font-size:14px;color:#333;margin-bottom:12px;">
       We use cookies to improve your experience, analyze traffic, and show relevant content. 
-      See our <a href="privacy.html" style="color:#b71111;text-decoration:underline;">Privacy Policy</a>.
+      See our <a href="/privacy" style="color:#b71111;text-decoration:underline;">Privacy Policy</a>.
     </p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
       <button id="acceptCookies" style="background:#b71111;color:#fff;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:14px;">Accept</button>
