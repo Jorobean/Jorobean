@@ -1,0 +1,80 @@
+.promo-details-section {
+  background: var(--form-bg);
+  color: var(--text-color);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px 0 var(--form-shadow-color);
+  max-width: min(820px, 94vw);
+  margin: 0 auto 32px auto;
+  padding: clamp(36px, 6vw, 56px) clamp(24px, 5vw, 48px);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-family: inherit;
+}
+
+.promo-title {
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  letter-spacing: 0.05em;
+  color: var(--text-color);
+  margin-bottom: clamp(24px, 4vw, 32px);
+  font-weight: 700;
+}
+
+.promo-description {
+  font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+  line-height: 1.5;
+  margin-bottom: clamp(24px, 4vw, 32px);
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spots-counter {
+  font-size: clamp(1.3rem, 2vw, 1.5rem);
+  font-weight: 500;
+  margin: clamp(24px, 4vw, 32px) auto;
+  color: var(--text-color);
+}
+
+.spots-counter-number {
+  font-weight: 800;
+}
+
+.promo-legal-text {
+  font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+  color: var(--privacy-text);
+  margin-top: clamp(16px, 3vw, 24px);
+  opacity: 0.85;
+  line-height: 1.5;
+  max-width: clamp(280px, 80%, 600px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 600px) {
+  .promo-details-section {
+    max-width: 96vw;
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  
+  .promo-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .promo-description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  .spots-counter {
+    font-size: 1.15rem;
+    margin: 16px auto;
+  }
+  
+  .promo-legal-text {
+    font-size: 0.75rem;
+    margin-top: 12px;
+  }
+}
