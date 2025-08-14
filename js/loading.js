@@ -10,7 +10,19 @@ class LoadingManager {
     show() {
         this.loadingCount++;
         if (this.loadingCount > 0) {
+            document.documentElement.classList.add('loading');
+            document.body.classList.add('loading');
             this.loadingContainer.classList.add('active');
+            // Add backdrop if it doesn't exist
+            let backdrop = document.querySelector('.loading-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'loading-backdrop';
+                document.body.appendChild(backdrop);
+            }
+            // Force a reflow before adding active class
+            backdrop.offsetHeight;
+            backdrop.classList.add('active');
         }
     }
 
@@ -18,7 +30,39 @@ class LoadingManager {
         this.loadingCount--;
         if (this.loadingCount <= 0) {
             this.loadingCount = 0;
+            
+            // Store current scroll position and form
+            const scrollPosition = window.scrollY;
+            const form = document.getElementById('notifyForm');
+            const formRect = form ? form.getBoundingClientRect() : null;
+            
+            // Remove loading states
+            document.documentElement.classList.remove('loading');
+            document.body.classList.remove('loading');
             this.loadingContainer.classList.remove('active');
+            
+            // Handle backdrop
+            const backdrop = document.querySelector('.loading-backdrop');
+            if (backdrop) {
+                backdrop.classList.remove('active');
+                // Remove backdrop after transition
+                setTimeout(() => {
+                    if (backdrop.parentNode) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                }, 200);
+            }
+            
+            // Restore scroll position and ensure form is visible
+            setTimeout(() => {
+                if (form && formRect) {
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: 'instant'
+                    });
+                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 0);
         }
     }
 

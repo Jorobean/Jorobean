@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"/>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <!-- Apple mobile web app configuration -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-touch-fullscreen" content="yes">
   <meta name="theme-color" content="#e1e1e1" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
   <meta name="apple-mobile-web-app-title" content="Jorobean">
@@ -260,22 +261,7 @@
       width: 100%;
     }
     
-    .instagram-input-wrapper::before {
-      content: '@';
-      position: absolute;
-      left: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-color);
-      opacity: 0;
-      z-index: 1;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .instagram-input-wrapper:focus-within::before {
-      opacity: 0.7;
-    }
+    /* Removed @ symbol pseudo-element */
 
     .instagram-note {
       font-size: 0.8rem;
@@ -1529,7 +1515,7 @@
     <div id="form-container">
       <div id="form-placeholder"></div>
     </div>
-    <p class="promo-legal-text">Be the first to hear about our launch and updates. We respect your privacy. No spam, ever. Contest open to individuals 18 or older. No purchase necessary. Void where prohibited. Begins August 10, 2025. First drawing occurs when 50 sign-ups are reached, second drawing at 1,000 sign-ups. Two winners will be randomly selected. Following @jorobean on Instagram doubles your entries. Odds depend on number of entries. See Official Rules.</p>
+    <p class="promo-legal-text">Be the first to hear about our launch and updates. We respect your privacy. No spam, ever. Contest open to individuals 18 or older. No purchase necessary. Void where prohibited. Begins August 15, 2025. First drawing occurs when 50 sign-ups are reached, second drawing at 1,000 sign-ups. Two winners will be randomly selected. Following @jorobean on Instagram doubles your entries. Odds depend on number of entries. See Official Rules.</p>
   </section>
 
   <footer id="footer" aria-label="Site copyright">

@@ -36,8 +36,8 @@ export function initFormHandler() {
         </div>
         <div class="instagram-input-group">
           <div class="instagram-input-wrapper">
-            <label for="instagram" class="visually-hidden">Instagram Handle</label>
-            <input type="text" id="instagram" name="instagram" placeholder="username" aria-required="false" style="padding: 12px 24px; font-size: 1rem; border: 1px solid var(--input-border); border-radius: 9999px; width: 280px; max-width: 240px; margin: 0 auto; box-shadow: 0 4px 10px var(--box-shadow-color); text-align: left; background-color: var(--input-bg); color: var(--text-color);">
+            <label for="instagram" class="visually-hidden">Instagram Username</label>
+            <input type="text" id="instagram" name="instagram" placeholder="Username (without @)" pattern="^[a-zA-Z0-9._]{1,30}$" aria-required="false" style="padding: 12px 24px; font-size: 1rem; border: 1px solid var(--input-border); border-radius: 9999px; width: 280px; max-width: 240px; margin: 0 auto; box-shadow: 0 4px 10px var(--box-shadow-color); text-align: left; background-color: var(--input-bg); color: var(--text-color);">
           </div>
           <p class="instagram-note" style="margin-top: 8px;">Follow <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: none;">@Jorobean</a> to double your chances!</p>
         </div>
@@ -60,7 +60,7 @@ export function initFormHandler() {
   const button = document.getElementById("submitBtn");
   const btnText = button.querySelector(".btn-text");
   const spinner = document.getElementById("spinner");
-  const closeBtn = document.getElementById("closeBtn"); // Add reference to close button
+  const closeBtn = document.getElementById("closeBtn");
 
   // Handle all "Enter Contest" buttons
   const enterContestButtons = document.querySelectorAll('.stay-updated-btn');
@@ -112,7 +112,6 @@ export function initFormHandler() {
     clearTimeout(typingInterval);
     form.classList.add("expanded");
     starterInput.value = "";
-    // Ensure reliable focus by using a small delay
     setTimeout(() => {
       nameInput.focus();
       nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -169,12 +168,10 @@ export function initFormHandler() {
       spinner.style.display = "none";
       restoreAfterClose();
     });
-  } else {
-    console.warn('Close button not found in the DOM. Make sure you have an element with id="closeBtn"');
   }
 
-  // Instagram handle validation
-  async function validateInstagramHandle(handle) {
+  // Instagram handle basic validation
+  function validateInstagramHandle(handle) {
     // Remove @ if user included it
     handle = handle.replace('@', '');
     
@@ -186,38 +183,8 @@ export function initFormHandler() {
         error: "Instagram handle can only contain letters, numbers, periods, and underscores" 
       };
     }
-
-    try {
-      // Check if handle has been used before
-      const checkDuplicate = await fetch('https://script.google.com/macros/s/AKfycbzqIkE-C45jtw6B-E549upyZkW0aRie2n1xOV50fMM9e7xk4q4v2omf-Qupyt4xoWFQ/exec?check_instagram=' + handle);
-      const result = await checkDuplicate.json();
-      
-      if (result.isDuplicate) {
-        return { 
-          isValid: false, 
-          error: "This Instagram handle has already been used for an entry" 
-        };
-      }
-
-      // Basic existence check (this is a simplified version)
-      const response = await fetch('https://www.instagram.com/' + handle + '/');
-      if (response.status === 404) {
-        return { 
-          isValid: false, 
-          error: "This Instagram handle doesn't seem to exist" 
-        };
-      }
-
-      return { isValid: true };
-    } catch (error) {
-      console.error('Error validating Instagram handle:', error);
-      return { 
-        isValid: true  // Allow it to pass if our validation service fails
-      };
-    }
-  }
-
-  // Form submission
+    return { isValid: true };
+  }  // Form submission
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -239,99 +206,81 @@ export function initFormHandler() {
     btnText.style.display = "none";
     spinner.style.display = "inline-block";
     button.disabled = true;
+    if (window.showLoading) window.showLoading();
 
-    const formData = new FormData();
-    formData.append("name", nameInput.value.trim());
-    formData.append("email", emailInput.value.trim());
-    
-    // Add Instagram handle if provided
+    // Prepare data for both services
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
     const instagramInput = document.getElementById("instagram");
-    let entries = 1;
-    
-    if (instagramInput && instagramInput.value.trim()) {
-      const instagramHandle = instagramInput.value.trim().replace('@', '');
-      formData.append("instagram", instagramHandle);
-      
-      try {
-        // Verify Instagram follow status
-        const verifyResponse = await fetch('https://api.jorobean.com/verify-instagram-follow', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            instagram_handle: instagramHandle
-          })
-        });
-        
-        const verifyResult = await verifyResponse.json();
-        
-        if (verifyResult.isFollowing) {
-          entries = 2;
-        }
-      } catch (error) {
-        console.error('Error verifying Instagram follow:', error);
-        // Still store the handle but don't grant extra entry if verification fails
-      }
-    }
-    
-    formData.append("entries", entries.toString());
+    const instagramHandle = instagramInput && instagramInput.value.trim() ? 
+      instagramInput.value.trim().replace('@', '') : '';
 
     try {
-      // Send to Formspree
+      // Send to Formspree first
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      if (instagramHandle) {
+        formData.append("instagram", instagramHandle);
+      }
+      formData.append("entries", "1");
+
       const formspreeRes = await fetch("https://formspree.io/f/meoabwgg", {
         method: "POST",
         headers: { Accept: "application/json" },
         body: formData
       });
 
-      // Send to Google Sheets
-      const sheetsRes = await fetch('https://script.google.com/macros/s/AKfycbzqIkE-C45jtw6B-E549upyZkW0aRie2n1xOV50fMM9e7xk4q4v2omf-Qupyt4xoWFQ/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          instagram: formData.get('instagram') || '',
-          entries: formData.get('entries') || '1',
-          timestamp: new Date().toISOString()
-        })
+      if (!formspreeRes.ok) {
+        throw new Error('Formspree submission failed');
+      }
+
+      // Send to Google Sheets - Updated URL
+      const sheetsUrl = 'https://script.google.com/macros/s/AKfycbyEe9D5JvLZUV4ZGLCt71Bvt0Kgsluen94iKNoc8nO1q1MY1kDDdLJm1pktPHhTqBUK/exec';
+      const now = new Date();
+      const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+      
+      const sheetsParams = new URLSearchParams({
+        name: name,
+        email: email,
+        instagram: instagramHandle,
+        timestamp: formattedDate
       });
 
-      if (!formspreeRes.ok) throw new Error("Submit failed");
+      const sheetsResponse = await fetch(`${sheetsUrl}?${sheetsParams.toString()}`, {
+        method: 'GET'
+      });
 
+      const sheetsResult = await sheetsResponse.json();
+      
+      if (sheetsResult.status !== 'success') {
+        console.error('Google Sheets error:', sheetsResult.message);
+        // Continue anyway since Formspree worked
+      }
+
+      // Show success message
       spinner.style.display = "none";
       btnText.textContent = "Submit";
       btnText.style.display = "inline-block";
+      if (window.hideLoading) window.hideLoading();
 
-      // Show custom thank you message based on entry count
-      const entries = formData.get('entries');
       const thankYouMessage = 
         '<div style="text-align: center; padding: 20px;">' +
         '<h3 style="color: #b71111; margin-bottom: 16px;">Thank you for signing up!</h3>' +
-        '<p>You have ' + entries + ' ' + (entries === "1" ? 'entry' : 'entries') + ' in the drawing.</p>' +
-        (entries === "1" ? '<p>Follow us on <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111;">Instagram</a> to double your chances!</p>' : '') +
+        '<p>You have 1 entry in the drawing.</p>' +
+        '<p>Follow us on <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111;">@jorobean</a> on Instagram to double your chances!</p>' +
         '</div>';
       form.innerHTML = thankYouMessage;
       
+      // Reset after delay
       setTimeout(() => {
         form.reset();
         form.classList.remove("expanded");
-        const contentWrapper = document.querySelector('.content-wrapper');
-        if (contentWrapper) {
-          contentWrapper.style.display = '';
-        }
-        if (window.scrollY <= 25) {
-          document.body.classList.remove('scrolled');
-        }
-      }, 5000);
+        restoreAfterClose();
+      }, 10000);
 
       starterInput.value = "Thank You";
       starterInput.disabled = true;
-      starterInput.style.display = "block";
 
       setTimeout(() => {
         location.reload();
@@ -342,8 +291,9 @@ export function initFormHandler() {
       btnText.style.display = "inline-block";
       btnText.textContent = "Submit";
       button.disabled = false;
-      alert("Something went wrong. Try again later.");
-      console.error(err);
+      if (window.hideLoading) window.hideLoading();
+      alert("Unable to submit form. Please try again.");
+      console.error('Form submission error:', err);
     }
   });
 }
