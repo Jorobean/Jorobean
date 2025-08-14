@@ -236,7 +236,7 @@ export function initFormHandler() {
       }
 
       // Send to Google Sheets - Updated URL
-      const sheetsUrl = 'https://script.google.com/macros/s/AKfycbyEe9D5JvLZUV4ZGLCt71Bvt0Kgsluen94iKNoc8nO1q1MY1kDDdLJm1pktPHhTqBUK/exec';
+      const sheetsUrl = 'https://script.google.com/macros/s/AKfycbzlCUZKRlBshwW3PByoh0TVPErbyDL6I1kbSNuggmvLp03emrL__GsRN52RxHXqqDX9/exec';
       const now = new Date();
       const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
       
