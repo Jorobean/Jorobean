@@ -53,15 +53,12 @@ class LoadingManager {
                 }, 200);
             }
             
-            // Restore scroll position and ensure form is visible
+            // Only restore the previous scroll position
             setTimeout(() => {
-                if (form && formRect) {
-                    window.scrollTo({
-                        top: scrollPosition,
-                        behavior: 'instant'
-                    });
-                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'instant'
+                });
             }, 0);
         }
     }
