@@ -2,11 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!-- Apple mobile web app configuration -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#e1e1e1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-title" content="Jorobean">
   <title>About | Jorobean</title>
+
+  <!-- Cookie Consent + Analytics loaded after consent -->
+  <!-- Favicons - Safari optimized order -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="mask-icon" href="/favicon.svg" color="#b71111">
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/site.webmanifest">
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: dark)">
+
+  <link rel="canonical" href="https://jorobean.com/about">
   <meta name="robots" content="index, follow" />
   <meta name="description" content="Learn more about Jorobean — a 3D-printed footwear brand built on love and individuality.">
-  <link rel="canonical" href="https://jorobean.com/about" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="About | Jorobean">
@@ -40,6 +62,24 @@
     ]
   }
   </script>
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="jorobean_logo.png" as="image" type="image/png">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <!-- Fallback font loading -->
+  <style>
+    @font-face {
+      font-family: 'Cabin Condensed';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: local('Cabin Condensed Regular'), local('CabinCondensed-Regular'),
+           url(https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwqZ-LYxnV18A.woff2) format('woff2');
+    }
+  </style>
 
   <style>
     :root {
@@ -126,7 +166,6 @@
       height: auto;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
       pointer-events: all;
     }
 
@@ -137,6 +176,7 @@
       transform: translateX(-50%);
       opacity: 1;
       visibility: visible;
+      transition: opacity 0.2s ease-out, visibility 0s;
     }
 
     .logo-corner {
@@ -145,6 +185,7 @@
       top: 16px;
       opacity: 0;
       visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
     }
 
     body.scrolled .logo-centered {
@@ -158,18 +199,20 @@
     }
 
     @media (max-width: 600px) {
-      .logo-centered {
-        opacity: 0 !important;
-        visibility: hidden !important;
+      .logo-container {
+        padding: 8px;
       }
-      .logo-corner {
-        opacity: 1 !important;
-        visibility: visible !important;
+      .logo-centered {
+        max-width: 420px;
       }
       .logo-corner {
         width: 70px;
         left: 8px;
         top: 8px;
+        z-index: 2000;
+      }
+      body {
+        padding-top: 130px;
       }
     }
 
@@ -190,33 +233,7 @@
       cursor: pointer;
     }
 
-    footer {
-      margin-top: 10px;
-      padding: 10px 0 0 0;
-      font-size: 0.8rem;
-      color: var(--footer-text);
-      width: 100%;
-      text-align: center;
-      transition: color 0.3s ease;
-    }
-
-    .instagram {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 0;
-      padding-top: 32px;
-    }
-
-    .instagram img {
-      width: 32px;
-      transition: transform 0.3s ease;
-      filter: var(--instagram-filter);
-    }
-
-    .instagram:hover img {
-      transform: scale(1.1);
-    }
+    /* Footer styles moved to footer.css */
 
     @keyframes fadeIn {
       to { opacity: 1; }
@@ -224,17 +241,28 @@
   </style>
 </head>
 <body>
-  <div class="noise-overlay"></div>
-  <div class="logo-container">
-    <a href="/" class="logo logo-centered">
-      <img src="logo.svg" alt="Jorobean Logo" style="width: 100%; height: auto;" />
-    </a>
-    <a href="/" class="logo logo-corner">
-      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
-    </a>
+  <!-- Loading Overlay -->
+  <div class="loading-container" role="progressbar" aria-label="Loading page content">
+    <div class="loading-icon">
+      <img src="LOVE2.svg" alt="Loading indicator - Love symbol" class="loading-img active" />
+      <img src="logo2.svg" alt="Loading indicator - Jorobean logo" class="loading-img" />
+      <div class="loading-circle" aria-hidden="true"></div>
+    </div>
   </div>
 
-  <a href="https://www.linkedin.com/in/kerry-l" target="_blank" rel="noopener">
+  <div class="noise-overlay"></div>
+  <div class="logo-container" role="banner">
+    <a href="/" class="logo logo-centered" aria-label="Jorobean Home">
+      <img src="jorobean_logo.png" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
+    </a>
+    <a href="/" class="logo logo-corner" aria-label="Return to Jorobean Home">
+      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+    </a>
+    <nav class="nav-group" role="navigation" aria-label="Main navigation">
+    </nav>
+  </div>
+
+  <a href="https://www.linkedin.com/in/kerry-l" target="_blank" rel="noopener" style="display: block; margin-top: 50px;">
     <img src="kerry.jpg" alt="Kerry L." title="Kerry L., Founder of Jorobean" class="founder-img" />
   </a>
 
@@ -246,16 +274,27 @@
 
   <p><em>Wear the Love.</em></p>
 
-  <a class="instagram" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Jorobean Instagram">
-    <img src="instagram-icon.svg" alt="Instagram Icon" style="width:32px; margin-bottom:8px;" />
-  </a>
+  <footer class="site-footer">
+    <div class="copyright">© 2025 Jorobean — All rights reserved.</div>
+    <nav class="footer-nav">
+      <a href="privacy.html">PRIVACY POLICY</a>
+      <span class="footer-separator"> | </span>
+      <a href="contest.html">CONTEST</a>
+      <span class="footer-separator"> | </span>
+      <a href="about.html">ABOUT</a>
+    </nav>
+    <a class="instagram" href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" aria-label="Follow Jorobean on Instagram">
+      <img src="instagram-icon.svg" alt="Instagram Icon" />
+    </a>
+  </footer>
 
-  <footer>© <span id="year"></span> Jorobean — All rights reserved.</footer>
-
+  <!-- Essential Scripts -->
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
   <script src="js/noiseEffect.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script src="js/loading.js"></script>
   <script type="module">
     window.addEventListener('DOMContentLoaded', () => {
       import('./js/logoScroll.js').then(module => {

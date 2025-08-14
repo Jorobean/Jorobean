@@ -224,13 +224,9 @@ body.scrolled .logo-corner {
 
 /* Form styles */
 #form-container {
-  margin-top: 0;
-  margin-bottom: 24px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 60px;
-  width: 100vw;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -488,13 +484,13 @@ footer {
 
 @media (max-width: 600px) {
   form.expanded {
-    transform-origin: 12% 10%;
+    transform-origin: center center;
   }
   
   #form-container {
-    position: static;
-    margin: 20px auto;
-    padding-bottom: 20px;
+    max-width: 92vw;
+    margin: 16px auto;
+    padding-bottom: 16px;
   }
   
   .signup-lead {

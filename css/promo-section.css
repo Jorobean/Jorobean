@@ -3,13 +3,16 @@
   color: var(--text-color);
   border-radius: 20px;
   box-shadow: 0 4px 20px 0 var(--form-shadow-color);
-  max-width: min(820px, 94vw);
+  width: min(820px, 94vw);
   margin: 0 auto 32px auto;
-  padding: clamp(36px, 6vw, 56px) clamp(24px, 5vw, 48px);
+  padding: clamp(32px, 5vw, 48px) clamp(20px, 4vw, 40px);
   text-align: center;
   position: relative;
   z-index: 1;
   font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .promo-title {
@@ -18,26 +21,48 @@
   color: var(--text-color);
   margin-bottom: clamp(24px, 4vw, 32px);
   font-weight: 700;
+  width: 100%;
 }
 
 .promo-description {
   font-size: clamp(1.1rem, 1.8vw, 1.3rem);
   line-height: 1.5;
   margin-bottom: clamp(24px, 4vw, 32px);
+  width: 100%;
   max-width: 85%;
   margin-left: auto;
   margin-right: auto;
 }
 
-.spots-counter {
-  font-size: clamp(1.3rem, 2vw, 1.5rem);
-  font-weight: 500;
-  margin: clamp(24px, 4vw, 32px) auto;
-  color: var(--text-color);
+#form-container {
+  width: 100%;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
 }
 
-.spots-counter-number {
-  font-weight: 800;
+#form-placeholder {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.stay-updated-btn {
+  width: 280px;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  z-index: 2;
 }
 
 .promo-legal-text {
@@ -53,28 +78,40 @@
 
 @media (max-width: 600px) {
   .promo-details-section {
-    max-width: 96vw;
-    padding: 24px 20px;
+    width: 92vw;
+    padding: 24px 16px;
     border-radius: 16px;
   }
   
   .promo-title {
     font-size: 1.2rem;
     margin-bottom: 20px;
+    text-align: center;
   }
   
   .promo-description {
     font-size: 1rem;
     margin-bottom: 20px;
+    max-width: 100%;
+    text-align: center;
   }
   
-  .spots-counter {
-    font-size: 1.15rem;
-    margin: 16px auto;
+  #form-container {
+    max-width: 92vw;
+    margin: 24px auto 20px;
+  }
+
+  form {
+    max-width: 280px;
+  }
+
+  .stay-updated-btn {
+    max-width: 240px;
   }
   
   .promo-legal-text {
     font-size: 0.75rem;
     margin-top: 12px;
+    text-align: center;
   }
 }

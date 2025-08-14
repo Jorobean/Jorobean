@@ -10,20 +10,16 @@ export function initWaveEffect() {
 
   function updateWaveText() {
     if (isWaveShown) {
-      // First hide the current text
-      comingSoonSVG.style.opacity = 0;
-      // Wait for fade out to complete before showing new text
+      // Switch to wave effect
+      comingSoonSVG.classList.remove('active');
       setTimeout(() => {
-        waveSVG.style.opacity = 1;
-        comingSoonSVG.style.opacity = 0;
+        waveSVG.classList.add('active');
       }, 400);
     } else {
-      // First hide the current text
-      waveSVG.style.opacity = 0;
-      // Wait for fade out to complete before showing new text
+      // Switch to coming soon
+      waveSVG.classList.remove('active');
       setTimeout(() => {
-        comingSoonSVG.style.opacity = 1;
-        waveSVG.style.opacity = 0;
+        comingSoonSVG.classList.add('active');
       }, 400);
     }
   }
@@ -37,6 +33,7 @@ export function initWaveEffect() {
   // Start the automatic switching
   setInterval(switchText, SWITCH_INTERVAL);
 
-  // Initial state
+  // Initial state - start with Coming Soon
+  isWaveShown = false;
   updateWaveText();
 }

@@ -10,7 +10,6 @@
   <meta name="robots" content="index, follow" />
   <meta name="description" content="Privacy Policy for Jorobean - Learn how we protect your data and respect your privacy.">
   <link rel="canonical" href="https://jorobean.com/privacy" />
-  <link rel="stylesheet" href="css/header.css" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Privacy Policy | Jorobean">
@@ -19,12 +18,12 @@
   <meta property="og:type" content="website">
 
   <!-- Favicons -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
-  <style>
+  <link rel="stylesheet" href="css/footer.css">  <style>
     :root {
       --bg-color: #e1e1e1;
       --text-color: #0b0b0b;
@@ -47,6 +46,100 @@
       padding: 0;
     }
 
+    .logo-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px;
+      pointer-events: none;
+    }
+
+    .logo {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: all;
+    }
+
+    .logo-centered {
+      max-width: 420px;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out, visibility 0s;
+    }
+
+    .logo-corner {
+      width: 70px;
+      left: 8px;
+      top: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+      pointer-events: all;
+    }
+
+    body.scrolled .logo-centered {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+
+    body.scrolled .logo-corner {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out 0.2s, visibility 0s 0.2s;
+    }
+
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .logo-centered img {
+        content: url('jorobean_logoalt.png');
+      }
+    }
+
+    @media (max-width: 600px) {
+      .logo-container {
+        padding: 8px;
+      }
+      .logo-centered {
+        max-width: 420px;
+      }
+      .logo-corner {
+        width: 70px;
+        left: 8px;
+        top: 8px;
+        z-index: 2000;
+      }
+      .nav-group {
+        top: 12px;
+        right: 12px;
+        gap: 12px;
+      }
+    }
+
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
@@ -55,6 +148,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      padding-top: 160px;
     }
 
     h1 {
@@ -123,14 +217,7 @@
       gap: 0.5rem;
     }
 
-    footer {
-      margin-top: 4rem;
-      padding: 2rem 0;
-      text-align: center;
-      color: var(--footer-text);
-      font-size: 0.8rem;
-      border-top: 1px solid var(--section-border);
-    }
+    /* Footer styles moved to footer.css */
 
     .back-to-home {
       display: inline-block;
@@ -152,6 +239,7 @@
     @media (max-width: 600px) {
       body {
         padding: 16px;
+        padding-top: 150px;
       }
 
       h1 {
@@ -165,13 +253,18 @@
   </style>
 </head>
 <body>
-  <header class="header">
-    <a href="/">
-      <img src="logo2.svg" alt="Jorobean Logo" class="logo">
+  <div class="logo-container">
+    <a href="/" class="logo logo-centered">
+      <img src="jorobean_logo.png" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
     </a>
-  </header>
-  <main style="margin-top: 100px;">
-
+    <a href="/" class="logo logo-corner">
+      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+    </a>
+    <div class="nav-group">
+      <!-- Add nav links or icons here if needed -->
+    </div>
+  </div>
+  <main>
     <h1>Privacy Policy</h1>
     
     <div class="date-info">
@@ -294,14 +387,29 @@
     <a href="/" class="back-to-home">Back to Home</a>
   </main>
 
-  <footer>
+  <footer id="footer" aria-label="Site copyright">
     <div id="copyright">© 2025 Jorobean — All rights reserved.</div>
+    <nav class="footer-nav">
+      <a href="privacy.html">PRIVACY POLICY</a>
+      <span class="footer-separator"> | </span>
+      <a href="contest.html">CONTEST</a>
+      <span class="footer-separator"> | </span>
+      <a href="about.html">ABOUT</a>
+    </nav>
   </footer>
 
   <script>
     document.getElementById("copyright").textContent = 
       `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
+
+    // Logo scroll behavior
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 25) {
+        document.body.classList.add('scrolled');
+      } else {
+        document.body.classList.remove('scrolled');
+      }
+    });
   </script>
-  <script src="js/header.js"></script>
 </body>
 </html>

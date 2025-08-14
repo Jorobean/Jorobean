@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#e1e1e1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-title" content="Jorobean">
+  <title>Contest — Official Rules | Jorobean</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="mask-icon" href="/favicon.svg" color="#b71111">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://jorobean.com/contest">
+  <meta name="robots" content="noindex, follow">
+  <meta name="description" content="Official rules for the Jorobean Trail shoe sweepstakes contest.">
+  <link rel="preload" href="wave-shoe.png" as="image" type="image/png">
+  <link rel="preload" href="jorobean_logo.png" as="image" type="image/png">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --text-color: #0b0b0b;
+      --form-bg: #f8f8f8;
+      --panel-bg: #f8f8f8;
+      --footer-text: #555;
+      --privacy-text: #666;
+      --form-shadow-color: rgba(0, 0, 0, 0.08);
+      --panel-shadow-color: rgba(0, 0, 0, 0.06);
+      --input-bg: #ffffff;
+      --input-border: #e0e0e0;
+      --separator-color: #f0f0f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ffffff;
+        --form-bg: #151515;
+        --panel-bg: #151515;
+        --footer-text: #bbb;
+        --privacy-text: #999;
+        --form-shadow-color: rgba(0, 0, 0, 0.4);
+        --panel-shadow-color: rgba(0, 0, 0, 0.3);
+        --input-bg: #2a2a2a;
+        --input-border: #404040;
+        --separator-color: #222;
+      }
+      .nav-instagram img,
+      .instagram-footer img {
+        filter: brightness(0) invert(1);
+      }
+      .logo-centered .logo-img {
+        content: url('jorobean_logoalt.png');
+      }
+      .trail-logo {
+        content: url('image 7.svg');
+      }
+    }
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: 100px;
+    }
+    body.scrolled .logo-centered {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+    body.scrolled .logo-corner {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out 0.2s, visibility 0s 0.2s;
+    }
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+    .logo-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px;
+      pointer-events: none;
+    }
+    .logo {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: all;
+    }
+    .logo-centered {
+      max-width: 420px;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out, visibility 0s;
+    }
+    .logo-corner {
+      width: 70px;
+      left: 8px;
+      top: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+      pointer-events: all;
+    }
+    .nav-group > a {
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 2001;
+    }
+    .contest-content {
+      width: 100%;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+      font-family: inherit;
+    }
+    .contest-title {
+      text-align: center;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: bold;
+      margin: 32px 0 24px 0;
+      letter-spacing: 0.08em;
+      color: var(--text-color);
+      text-transform: uppercase;
+    }
+    .contest-rules {
+      font-size: clamp(0.95rem, 2.5vw, 1rem);
+      color: var(--text-color);
+      opacity: 0.95;
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+    .contest-rules ol {
+      padding-left: clamp(1em, 4vw, 1.2em);
+      margin: 0;
+    }
+    .contest-rules li {
+      margin-bottom: 1.2em;
+      padding-left: 0.5em;
+    }
+    .contest-rules ul {
+      padding-left: clamp(1em, 3vw, 1.2em);
+      margin: 0.8em 0;
+    }
+    .contest-rules ul li {
+      margin-bottom: 0.6em;
+    }
+    
+    @media (max-width: 480px) {
+      .contest-title {
+        margin: 24px 0 20px 0;
+      }
+      .contest-rules {
+        line-height: 1.5;
+      }
+      .contest-rules li {
+        margin-bottom: 1em;
+      }
+      .contest-rules ul {
+        margin: 0.6em 0;
+      }
+      .contest-rules ul li {
+        margin-bottom: 0.5em;
+      }
+    }
+    .pulse-love {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      margin: 40px auto 24px auto;
+      display: block;
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.07); }
+    }
+    @media (max-width: 600px) {
+      .logo-container {
+        padding: 8px;
+      }
+      .logo-centered {
+        max-width: 420px;
+      }
+      .logo-corner {
+        width: 70px;
+        left: 8px;
+        top: 8px;
+        z-index: 2000;
+      }
+      .nav-group {
+        top: 12px;
+        right: 12px;
+        gap: 12px;
+      }
+      .nav-button {
+        display: none;
+      }
+      body {
+        padding-top: 120px;
+      }
+      .contest-content {
+        max-width: 96vw;
+        padding: 20px 8px 0 8px;
+        border-radius: 16px;
+      }
+      .contest-title {
+        font-size: 1.2rem;
+      }
+      .contest-rules {
+        font-size: 0.95rem;
+      }
+      .pulse-love {
+        margin: 24px auto 16px auto;
+      }
+    }
+    /* Footer styles moved to footer.css */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    #copyright {
+      margin-top: 12px;
+    }
+    /* --- Begin: Form Styles from index.html --- */
+    .signup-lead {
+      font-size: 1em;
+      color: var(--signup-lead-color, #222);
+      margin-bottom: 18px;
+      margin-top: 0;
+      transform-origin: center center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    input {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: 1px solid var(--input-border, #ccc);
+      border-radius: 9999px;
+      width: 280px;
+      max-width: 240px;
+      margin: 0 auto;
+      box-shadow: 0 4px 10px var(--box-shadow-color, rgba(0,0,0,0.1));
+      text-align: left;
+      transition: all 0.3s ease;
+      background-color: var(--input-bg, #fff);
+      color: var(--text-color);
+    }
+
+    input::placeholder {
+      color: var(--text-color);
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    input:focus::placeholder {
+      opacity: 0;
+    }
+
+    #instagram {
+      background-color: var(--input-bg, #fff) !important;
+    }
+    @media (max-width: 600px) {
+      input {
+        width: 280px;
+        max-width: 240px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+      }
+    }
+    #name,
+    #email {
+      display: none;
+      opacity: 0;
+    }
+    .stay-updated-btn {
+      background: linear-gradient(120deg, #b71111 40%, #d32f2f 50%, #b71111 60%);
+      background-size: 200% 100%;
+      animation: shine-reverse 10s cubic-bezier(.4,0,.2,1) infinite;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 9999px;
+      font-size: 1rem;
+      width: 260px;
+      max-width: 90vw;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+    .stay-updated-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+    .stay-updated-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .form-expanded-content {
+      display: none;
+      width: 100%;
+    }
+    form.expanded .form-expanded-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    form.expanded .stay-updated-btn {
+      display: none;
+    }
+    form.expanded #name,
+    form.expanded #email {
+      display: block;
+      opacity: 1;
+    }
+    .button-group {
+      display: none;
+      width: 100%;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    form.expanded .button-group {
+      display: flex;
+      justify-content: center;
+    }
+    form.expanded .button-group #submitBtn {
+      margin: 0 auto;
+    }
+    button {
+      background: #b71111;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    .cancel-btn {
+      background: var(--cancel-btn-bg, #666);
+      color: white;
+    }
+    .cancel-btn:hover {
+      background: var(--cancel-btn-hover, #777);
+    }
+    #submitBtn {
+      background: #b71111;
+    }
+    #submitBtn:hover {
+      background: #d32f2f;
+    }
+    .spinner {
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes shine-reverse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    @media (max-width: 600px) {
+      .stay-updated-btn {
+        font-size: 0.95rem;
+        padding: 10px 18px;
+        width: 100%;
+        max-width: 100%;
+        min-width: auto;
+      }
+      form.expanded {
+        padding: 20px 0 24px 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: auto;
+        margin: 0 auto;
+      }
+      .form-expanded-content {
+        padding: 0 8px;
+      }
+      .button-group {
+        padding: 0 8px;
+      }
+      button {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+        max-width: 100px;
+      }
+    }
+    @media (max-width: 400px) {
+      form.expanded {
+        padding: 16px 0 20px 0;
+      }
+      .form-expanded-content {
+        padding: 0 4px;
+      }
+      .button-group {
+        padding: 0 4px;
+      }
+      button {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        max-width: 90px;
+      }
+    }
+    /* --- End: Form Styles from index.html --- */
+    /* Panel Styling */
+    /* Rules Panel Styling */
+    .rules-panel-wrapper {
+      background: var(--panel-bg);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px 0 var(--panel-shadow-color);
+      padding: 0 28px 32px 28px;
+      margin: 0 auto;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }    .form-panel-wrapper {
+      background: var(--form-bg);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px var(--form-shadow-color);
+      padding: clamp(16px, 4vw, 24px) 0;
+      margin: 0 auto;
+      width: min(94%, 380px);
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .rules-panel-wrapper .form-panel-wrapper {
+      margin-top: -24px;
+      margin-bottom: 24px;
+      transform: translateY(-16px);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .rules-panel-wrapper {
+        width: min(90%, 600px);
+        padding: 0 clamp(12px, 4vw, 24px) 28px;
+      }
+      
+      .form-panel-wrapper {
+        width: 92%;
+        padding: clamp(14px, 3vw, 20px) 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rules-panel-wrapper {
+        width: min(92%, 600px);
+        padding: 0 16px 24px;
+        border-radius: 20px;
+      }
+
+      .form-panel-wrapper {
+        width: 94%;
+        padding: 16px 0;
+        border-radius: 16px;
+      }
+
+      .rules-panel-wrapper .form-panel-wrapper {
+        margin-top: -16px;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rules-panel-wrapper {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="logo-container" role="banner">
+    <a href="/" class="logo logo-centered" aria-label="Jorobean Home">
+      <img src="jorobean_logo.png" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
+    </a>
+    <a href="/" class="logo logo-corner" aria-label="Return to Jorobean Home">
+      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+    </a>
+    <nav class="nav-group" role="navigation" aria-label="Main navigation">
+    </nav>
+  </div>
+  <div style="height: 100px;"></div>
+  <!-- Main Content Panel -->
+  <div class="rules-panel-wrapper">
+    <!-- Stay Updated Form -->
+    <div class="form-panel-wrapper">
+      <img src="LOVE3.svg" alt="Love" class="pulse-love" style="margin-bottom: 8px; margin-top: 0;" />
+      <form id="notifyForm" class="expanded" novalidate aria-labelledby="formTitle">
+        <h2 id="formTitle" class="visually-hidden">Newsletter Signup</h2>
+      <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" class="nav-instagram" aria-label="Follow us on Instagram">
+        <img src="instagram-icon.svg" alt="" aria-hidden="true" />
+      </a>
+      <!-- Stay Updated button hidden since form is always open -->
+      <button type="button" id="starterInput" class="stay-updated-btn" style="display:none;" aria-expanded="true">Stay Updated</button>
+      <div class="form-expanded-content" role="region" aria-labelledby="formTitle">
+        <div class="input-group">
+          <label for="name" class="visually-hidden">Name</label>
+          <input type="text" id="name" name="name" placeholder="Name" required aria-required="true">
+        </div>
+        <div class="input-group">
+          <label for="email" class="visually-hidden">Email</label>
+          <input type="email" id="email" name="email" placeholder="Email" required aria-required="true">
+        </div>
+        <div class="input-group" style="display: flex; flex-direction: column; align-items: center;">
+          <label for="instagram" class="visually-hidden">Instagram Handle (Optional)</label>
+          <input type="text" id="instagram" name="instagram" pattern="^[a-zA-Z0-9._]{1,30}$" placeholder="username" style="width: 280px; max-width: 240px;">
+          <p class="instagram-note" style="text-align: center; width: 100%; margin: 12px 0 12px 0;">Follow <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: none;">@jorobean</a> for double entries!</p>
+        </div>
+        <button type="submit" id="submitBtn" style="margin: 0 auto; max-width: none; width: 120px;">
+          <span class="btn-text">Submit</span>
+          <span id="spinner" class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- Contest Content -->
+  <main class="contest-content" aria-label="Official Rules">
+    <h1 class="contest-title">Official Rules</h1>
+    <div class="contest-rules">
+        <ol>
+        <li><strong>Prizes:</strong>
+          <ul>
+            <li>First 50 subscribers receive a $5 discount on their first pair of Trail shoes.</li>
+            <li>First Drawing: One winner selected from the first 50 subscribers will receive one free pair of Trail shoes (Approximate Retail Value: $150).</li>
+            <li>Second Drawing: One winner selected from the first 1,000 subscribers will receive one free pair of Trail shoes (Approximate Retail Value: $150).</li>
+          </ul>
+          Prizes are non-transferable and no substitution will be made except at Sponsor's sole discretion.
+        </li>
+        <li><strong>Sponsor:</strong> The sweepstakes is sponsored by Jorobean.</li>
+        <li><strong>Eligibility:</strong> Open to individuals who are 18 years or older at the time of entry. Void where prohibited by law.</li>
+        <li><strong>How to Enter:</strong> 
+          <ul>
+            <li>Primary Entry: Sign up via the signup form above during the Promotion Period. No purchase necessary to enter or win.</li>
+            <li>Bonus Entry: Follow <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111;">@jorobean</a> on Instagram to receive a second entry in the drawings. Your Instagram handle must be verifiable.</li>
+            <li>Maximum of two entries per person (one for signup, one for Instagram follow).</li>
+          </ul>
+        </li>
+        <li><strong>Promotion Period:</strong> Begins on Sunday, August 10, 2025. First drawing occurs when 50 sign-ups are reached. Second drawing occurs when 1,000 sign-ups are reached.</li>
+        <li><strong>Winner Selection and Notification:</strong> Winners will be selected at random from all eligible entries at each milestone (50 and 1,000 subscribers). Subscribers who follow @jorobean on Instagram receive a second entry in the random selection. Winners will be notified via the email address provided during entry within 5 days of each drawing. If a winner does not respond within 7 days, an alternate winner will be selected.</li>
+        <li><strong>Odds:</strong> Base odds of winning depend on the number of eligible entries received for each drawing (up to 1 in 50 for first drawing, up to 1 in 1,000 for second drawing). Following @jorobean on Instagram doubles your chances by providing a second entry.</li>
+        <li><strong>General Conditions:</strong> Sponsor reserves the right to cancel, suspend, and/or modify the sweepstakes if any fraud, technical failures, or other factor beyond Sponsor's reasonable control impairs the integrity or proper functioning of the sweepstakes.</li>
+        <li><strong>Release:</strong> By entering, participants agree to release and hold harmless Sponsor and its affiliates from any liability arising from participation or receipt/use of any prize.</li>
+        <li><strong>Privacy:</strong> Information collected from entrants is subject to Sponsor's privacy policy at <a href="https://www.jorobean.com/privacy" target="_blank" rel="noopener" style="color: #b71111;">https://www.jorobean.com/privacy</a>.</li>
+        <li><strong>Governing Law:</strong> Sweepstakes will be governed by the laws of the State of New York, without regard to conflict of law principles.</li>
+      </ol>
+    </div>
+  </main>
+  </div>
+  <!-- Footer -->
+  <footer id="footer" aria-label="Site copyright">
+    <div id="copyright">© 2025 Jorobean — All rights reserved.</div>
+    <nav class="footer-nav">
+      <a href="privacy.html">PRIVACY POLICY</a>
+      <span class="footer-separator"> | </span>
+      <a href="contest.html">CONTEST</a>
+      <span class="footer-separator"> | </span>
+      <a href="about.html">ABOUT</a>
+    </nav>
+  </footer>
+  <script>
+    // Header scroll behavior
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 25) {
+        document.body.classList.add('scrolled');
+      } else {
+        document.body.classList.remove('scrolled');
+      }
+    });
+    
+    document.getElementById("copyright").textContent =
+      `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
+  </script>
+  <script type="module" src="js/formHandler.js"></script>
+  <script type="module" src="js/tiltEffect.js"></script>
+</body>
+</html> 

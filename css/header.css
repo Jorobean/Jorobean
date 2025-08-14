@@ -1,54 +1,92 @@
-.header {
+/* Header and Logo Transitions */
+.logo-container {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
   z-index: 1000;
-  padding: 20px;
-  background: transparent;
+  padding: 10px;
+  pointer-events: none;
   transition: transform 0.3s ease;
 }
 
-.header.nav-up {
+body.header-hidden .logo-container {
   transform: translateY(-100%);
 }
 
-.header .logo {
-  width: 100px;
+.logo {
+  position: absolute;
   height: auto;
-  margin: 0;
-  transition: transform 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: all;
+  transition: opacity 0.2s ease-out, visibility 0.2s;
 }
 
-.header .logo:hover {
-  transform: scale(1.02);
+.logo-centered {
+  max-width: 520px;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  visibility: visible;
 }
 
-.header .nav-group .nav-instagram {
-  width: 44px !important;
-  height: 44px !important;
+.logo-corner {
+  width: 100px;
+  left: 16px;
+  top: 16px;
+  opacity: 0;
+  visibility: hidden;
 }
 
-.header .nav-group .nav-instagram img {
-  width: 34px !important;
-  height: 34px !important;
+body.scrolled .logo-centered {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.scrolled .logo-corner {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-group {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0.3s;
+  z-index: 2000;
+  pointer-events: all;
+}
+
+body.scrolled .nav-group {
+  opacity: 1;
+  visibility: visible;
 }
 
 @media (max-width: 600px) {
-  .header {
-    padding: 15px;
+  .logo-container {
+    padding: 8px;
   }
   
-  .header .logo {
-    width: 90px;
+  .logo-centered {
+    max-width: 420px;
   }
   
-  .nav-instagram {
-    width: 32px !important;
-    height: 32px !important;
+  .logo-corner {
+    width: 70px;
+    left: 8px;
+    top: 8px;
   }
   
-  .nav-instagram img {
-    width: 24px !important;
-    height: 24px !important;
+  .nav-group {
+    top: 12px;
+    right: 12px;
+    gap: 12px;
   }
 }

@@ -1,0 +1,13 @@
+#form-placeholder {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+#notifyForm {
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto 0;
+}
