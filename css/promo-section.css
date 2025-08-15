@@ -57,6 +57,22 @@ form {
   z-index: 2;
 }
 
+.instagram-note {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+.instagram-input-group {
+  margin-bottom: 16px;
+}
+
 .stay-updated-btn {
   width: 280px;
   margin: 0 auto;
@@ -113,5 +129,19 @@ form {
     font-size: 0.75rem;
     margin-top: 12px;
     text-align: center;
+  }
+
+  .instagram-note {
+    font-size: 0.8rem;
+    margin: 6px 0;
+  }
+
+  .input-group,
+  .instagram-input-group {
+    margin-bottom: 10px;
+  }
+
+  .form-expanded-content {
+    padding: 0 12px;
   }
 }

@@ -1,4 +1,27 @@
 /* Loading Overlay */
+
+/* Loading backdrop to hide everything */
+.loading-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-color);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.2s ease-out;
+}
+
+.loading-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Main loading container */
 .loading-container {
   position: fixed;
   top: 0;
@@ -7,17 +30,28 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  height: 100dvh;
   background-color: var(--bg-color);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 10000;
   margin: 0;
-  padding: 0;
   overflow: hidden;
-  -webkit-overflow-scrolling: touch; /* For iOS */
-  touch-action: none; /* Prevent scrolling on touch devices */
+  -webkit-overflow-scrolling: touch;
+  touch-action: none;
+  transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+html.loading,
+body.loading {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .loading-container.active {

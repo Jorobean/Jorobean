@@ -104,11 +104,11 @@
       }
 
       .logo-centered .logo-img {
-        content: url('jorobean_logoalt.png');
+        content: url('jorobean_logoalt.webp');
       }
 
       img.trail-logo {
-        content: url('image 7.svg');
+        content: url('image 7.webp');
       }
       .wave-text-svg {
         opacity: 0;
@@ -396,27 +396,30 @@
     .wave-shoe-img {
       position: absolute;
       left: 50%;
-      top: 60%;
+      top: 50%;
       transform: translate(-50%, -50%) translateZ(0);
       width: auto;
-      height: 85%;
-      max-width: 580px;
+      height: 65%;
+      max-width: 65%;
       object-fit: contain;
       opacity: 1;
       padding: 0;
       animation: instant-fade-in 0.1s ease forwards;
       z-index: 1;
-      transition: transform 0.3s ease-out;
+      transition: all 0.3s ease-out;
+      filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.12));
     }
 
-    .shoe-image-container:hover .wave-shoe-img {
-      transform: translate(-50%, -50%) translateZ(30px);
+    @media (prefers-color-scheme: dark) {
+      .wave-shoe-img {
+        filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.2));
+      }
     }
 
     @media (max-width: 600px) {
       .shoe-image-container .wave-shoe-img {
         max-width: none !important;
-        height: 40% !important;
+        height: 60% !important;
         width: auto !important;
         transform: translate(-50%, -50%) !important;
       }
@@ -1014,15 +1017,16 @@
 
     .shoe-image-container {
       width: 100%;
-      max-width: 900px;
-      height: clamp(340px, 85vw, 500px);
+      max-width: 800px;
+      height: 800px;
       position: relative;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      padding: 20px;
+      overflow: visible;
+      padding: 60px;
+      transition: all 0.3s ease-out;
     }
     
     .shoe-image-container {
@@ -1031,38 +1035,31 @@
     }
 
     .shoe-image-container {
-      --background-blur: 0px;
-      --background-transform: translateZ(0);
+      position: relative;
     }
-    
-      .shoe-image-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url('Trail-Background.svg');
-        background-size: 180% 100%;
-        background-position: center center;
-        background-repeat: no-repeat;
-        z-index: -1;
-        transform: var(--background-transform);
-        transform-style: preserve-3d;
-        transition: all 0.3s ease-out;
-        filter: blur(var(--background-blur));
-        box-shadow: none;
-      }
 
       @media (max-width: 600px) {
-        .shoe-image-container::before {
-          background-size: 300% 100%;
+        .shoe-image-container {
+          height: 500px;
+          padding: 40px 20px;
         }
-      }    .shoe-image-container:hover::before {
-      transform: translateZ(-60px);
-    }
-
-    .color-picker {
+        
+        .shoe-image-container::before {
+          width: 90%;
+          height: 60%;
+          padding-bottom: 0;
+          background-size: contain;
+          background-position: center center;
+          background-repeat: no-repeat;
+          opacity: 0.4;
+        }
+        
+        .wave-shoe-img {
+          height: 45%;
+          max-width: 45%;
+          transform: translate(-50%, -50%);
+        }
+      }    .color-picker {
       position: relative;
       display: flex;
       gap: 8px;
@@ -1394,7 +1391,7 @@
 
   
   <!-- Preload critical assets -->
-  <link rel="preload" href="jorobean_logo.png" as="image" type="image/png">
+  <link rel="preload" href="jorobean_logo.webp" as="image" type="image/webp">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
   <link rel="stylesheet" href="css/loading.css">
@@ -1416,17 +1413,17 @@
   <!-- Loading Overlay -->
   <div class="loading-container" role="progressbar" aria-label="Loading page content">
     <div class="loading-icon">
-      <img src="LOVE2.svg" alt="Loading indicator - Love symbol" class="loading-img active" />
-      <img src="logo2.svg" alt="Loading indicator - Jorobean logo" class="loading-img" />
+      <img src="LOVE2.webp" alt="Loading indicator - Love symbol" class="loading-img active" />
+      <img src="logo2.webp" alt="Loading indicator - Jorobean logo" class="loading-img" />
       <div class="loading-circle" aria-hidden="true"></div>
     </div>
   </div>
   <div class="logo-container" role="banner">
     <a href="/" class="logo logo-centered" aria-label="Jorobean Home">
-      <img src="jorobean_logo.png" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
+      <img src="jorobean_logo.webp" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
     </a>
     <a href="/" class="logo logo-corner" aria-label="Return to Jorobean Home">
-      <img src="logo2.svg" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+      <img src="logo2.webp" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
     <nav class="nav-group" role="navigation" aria-label="Main navigation">
     </nav>
@@ -1435,7 +1432,7 @@
   <div class="content-wrapper">
     <div class="shoe-container">
       <div class="shoe-image-container">
-        <img class="wave-shoe-img" src="trail.png" alt="Trail Shoe" loading="eager" fetchpriority="high" decoding="sync" />
+        <img class="wave-shoe-img" src="trail.webp" alt="Trail Shoe" loading="eager" fetchpriority="high" decoding="sync" />
       </div>
       <div class="wave-text-container" aria-label="Logo reveal">
         <!-- Default text -->
@@ -1443,14 +1440,14 @@
           <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
         </svg>
         <!-- Trail Logo -->
-        <img src="image 7alt.svg" alt="Trail Logo" class="wave-text-svg wave-effect trail-logo" style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
+        <img src="image 7alt.webp" alt="Trail Logo" class="wave-text-svg wave-effect trail-logo" style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
       </div>
       <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
-        <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.png" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
-        <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.png" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
-        <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.png" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
-        <button class="color-option" data-color="#ff5400" data-name="Sunset Orange" data-image="trail-orange.png" style="background-color: #ff5400" aria-label="Sunset Orange color option" role="radio" aria-checked="false"></button>
-        <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.png" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.webp" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
+        <button class="color-option" data-color="#ff5400" data-name="Sunset Orange" data-image="trail-orange.webp" style="background-color: #ff5400" aria-label="Sunset Orange color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.webp" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
       </div>
 
       <!-- Set initial active state for Oak White -->
@@ -1475,7 +1472,7 @@
       </section>
 
       <div class="first-image">
-        <img src="image 6.svg" alt="Custom Fit Illustration" class="info-image">
+        <img src="image 6.webp" alt="Custom Fit Illustration" class="info-image">
       </div>
 
       <section class="info-section section-materials">
@@ -1494,7 +1491,7 @@
       </section>
 
       <div class="second-image">
-        <img src="image 8.svg" alt="Design Illustration" class="info-image">
+        <img src="image 8.webp" alt="Design Illustration" class="info-image">
       </div>
     </div>
   </div>
@@ -1505,7 +1502,7 @@
   </div>
   <!-- Promo Details Section -->
   <section class="promo-details-section" aria-label="Promotion Details">
-    <img src="LOVE4.svg" alt="Love" style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
+    <img src="LOVE4.webp" alt="Love" style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
     <h2 class="promo-title">SPECIAL LAUNCH OFFER</h2>
     <p class="promo-description">The first 50 people to sign up will receive $5 off their first pair of Trail. Two lucky subscribers will win a free pair: one randomly selected from the first 50 signups, and another from the first 1,000 subscribers. Double your chances of winning by following <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: underline;">@jorobean</a> on Instagram!</p>
     
