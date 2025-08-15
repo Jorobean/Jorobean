@@ -1016,17 +1016,19 @@
     }
 
     .shoe-image-container {
-      width: 100%;
-      max-width: 800px;
+      width: 100vw;
+      max-width: none;
       height: 800px;
       position: relative;
-      margin: 0 auto;
+      margin: 0 -32px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: visible;
-      padding: 60px;
+      padding: 0;
       transition: all 0.3s ease-out;
+      background: url('mount.png') center bottom no-repeat;
+      background-size: cover;
     }
     
     .shoe-image-container {
