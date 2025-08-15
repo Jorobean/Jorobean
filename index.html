@@ -891,7 +891,6 @@
         margin-bottom: 2px;
       }
       
-      /* Adjust form position when virtual keyboard is likely open */
       @media (max-height: 500px) {
         body {
           padding-top: 10px;
@@ -899,10 +898,8 @@
         #form-container {
           margin: 10px auto;
         }
-        .content-wrapper {
-          display: none;
-        }
       }
+
       .logo-container {
         padding: 8px;
       }
@@ -1054,6 +1051,7 @@
         transform-style: preserve-3d;
         transition: all 0.3s ease-out;
         filter: blur(var(--background-blur));
+        box-shadow: none;
       }
 
       @media (max-width: 600px) {
@@ -1338,9 +1336,9 @@
       right: 20px;
       background: #b71111;
       color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(183, 17, 17, 0.3);
@@ -1372,8 +1370,8 @@
       .floating-promo-button {
         bottom: 16px;
         right: 16px;
-        padding: 8px 16px;
-        font-size: 0.85rem;
+        padding: 10px 20px;
+        font-size: 0.95rem;
       }
       body {
         padding-top: 120px;
@@ -1396,7 +1394,6 @@
 
   
   <!-- Preload critical assets -->
-  <link rel="preload" href="wave-shoe.png" as="image" type="image/png">
   <link rel="preload" href="jorobean_logo.png" as="image" type="image/png">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
@@ -1510,7 +1507,7 @@
   <section class="promo-details-section" aria-label="Promotion Details">
     <img src="LOVE4.svg" alt="Love" style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
     <h2 class="promo-title">SPECIAL LAUNCH OFFER</h2>
-    <p class="promo-description">The first 50 people to sign up will receive $5 off their first pair of Trail. Two lucky subscribers will win a free pair: one randomly selected from the first 50 signups, and another from the first 1,000 subscribers. Double your chances of winning by following <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: none;">@jorobean</a> on Instagram!</p>
+    <p class="promo-description">The first 50 people to sign up will receive $5 off their first pair of Trail. Two lucky subscribers will win a free pair: one randomly selected from the first 50 signups, and another from the first 1,000 subscribers. Double your chances of winning by following <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: underline;">@jorobean</a> on Instagram!</p>
     
     <div id="form-container">
       <div id="form-placeholder"></div>
@@ -1521,11 +1518,11 @@
   <footer id="footer" aria-label="Site copyright">
     <div id="copyright">© 2025 Jorobean — All rights reserved.</div>
     <nav class="footer-nav">
-      <a href="privacy.html">PRIVACY POLICY</a>
+      <a href="https://www.jorobean.com/privacy">PRIVACY POLICY</a>
       <span class="footer-separator"> | </span>
-      <a href="contest.html">CONTEST</a>
+      <a href="https://www.jorobean.com/contest">CONTEST</a>
       <span class="footer-separator"> | </span>
-      <a href="about.html">ABOUT</a>
+      <a href="https://www.jorobean.com/about">ABOUT</a>
     </nav>
   </footer>
   <!-- Only one Instagram icon above for better mobile layout -->
@@ -1599,18 +1596,6 @@
     });
 
     function restoreAfterClose() {
-      const contentWrapper = document.querySelector('.content-wrapper');
-      if (contentWrapper) {
-        if (contentWrapper.style.display === 'none') {
-          contentWrapper.style.opacity = 0;
-          contentWrapper.style.display = '';
-          setTimeout(() => {
-            contentWrapper.style.opacity = 1;
-          }, 10);
-        } else {
-          contentWrapper.style.opacity = 1;
-        }
-      }
       // Switch back to centered logo only if we're at the top of the page
       if (window.scrollY <= 25) {
         document.body.classList.remove('scrolled');
@@ -1654,16 +1639,27 @@
       function toggleText() {
         if (isWaveShown) {
           waveEffect.classList.remove('active');
-          setTimeout(() => comingSoonSVG.classList.add('active'), 400);
+          // Wait for the fade out to complete before showing coming soon
+          setTimeout(() => {
+            comingSoonSVG.classList.add('active');
+            isWaveShown = false;
+          }, 400);
         } else {
           comingSoonSVG.classList.remove('active');
-          setTimeout(() => waveEffect.classList.add('active'), 400);
+          // Wait for the fade out to complete before showing wave effect
+          setTimeout(() => {
+            waveEffect.classList.add('active');
+            isWaveShown = true;
+          }, 400);
         }
-        isWaveShown = !isWaveShown;
       }
       
       // Start the interval
       setInterval(toggleText, SWITCH_INTERVAL);
+
+      // Set initial state
+      comingSoonSVG.classList.add('active');
+      waveEffect.classList.remove('active');
     });
   </script>
   
