@@ -78,22 +78,24 @@ class LoadingManager {
     }
 
     setupEventListeners() {
-        // Force scroll to top immediately when page starts loading
+        // Handle page refresh and initial load
+        if (performance.navigation.type === 1 || document.readyState === 'loading') {
+            // Ensure we start at the top on page refresh or initial load
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
-            window.scrollTo(0, 0);
             this.show();
-            // Force hide loading after 5 seconds maximum
+            
+            // Force hide loading after 3 seconds maximum
             setTimeout(() => {
                 this.hide();
-                window.scrollTo(0, 0);
-            }, 5000);
-        }, { capture: true }); // Use capture to ensure this runs first
+            }, 3000);
+        }, { capture: true });
 
         // Handle page load completion
         window.addEventListener('load', () => {
             this.hide();
-            // Force scroll to top after everything is loaded
-            window.scrollTo(0, 0);
         });
         
         // Handle image loading
@@ -103,15 +105,8 @@ class LoadingManager {
                 return new Promise(resolve => img.addEventListener('load', resolve));
             })).then(() => {
                 this.hide();
-                window.scrollTo(0, 0);
             });
         });
-
-        // Show loading when navigating away
-        window.addEventListener('beforeunload', () => {
-            this.show();
-        });
-    }
 
     setupAjaxInterceptor() {
         // Intercept fetch requests

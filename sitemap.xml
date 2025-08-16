@@ -56,6 +56,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jorobean.com/terms.html</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jorobean.com/404.html</loc>
     <lastmod>2025-08-15</lastmod>
     <changefreq>yearly</changefreq>

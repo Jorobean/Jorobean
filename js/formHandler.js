@@ -39,7 +39,8 @@ export function initFormHandler() {
             <label for="instagram" class="visually-hidden">Instagram Username</label>
             <input type="text" id="instagram" name="instagram" placeholder="Username (without @)" pattern="^[a-zA-Z0-9._]{1,30}$" aria-required="false" style="padding: 12px 24px; font-size: 1rem; border: 1px solid var(--input-border); border-radius: 9999px; width: 280px; max-width: 240px; margin: 0 auto; box-shadow: 0 4px 10px var(--box-shadow-color); text-align: left; background-color: var(--input-bg); color: var(--text-color);">
           </div>
-          <p class="instagram-note" style="margin-top: 8px;">Follow <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: none;">@Jorobean</a> to double your chances!</p>
+                      <p class="instagram-note">Follow <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: underline;">@jorobean</a> to double your chances!</p>
+      </div>
         </div>
         <div class="button-group">
           <button type="button" id="closeBtn" class="cancel-btn">Cancel</button>
@@ -114,16 +115,11 @@ export function initFormHandler() {
     starterInput.value = "";
     setTimeout(() => {
       nameInput.focus();
-      nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Calculate vertical scroll position that shows both form and shoe
+      const formRect = form.getBoundingClientRect();
+      const scrollY = window.scrollY + formRect.top - (window.innerHeight / 2) + (formRect.height / 2);
+      window.scrollTo({ top: scrollY, behavior: 'smooth' });
     }, 300);
-    const contentWrapper = document.querySelector('.content-wrapper');
-    if (contentWrapper) {
-      if (window.innerHeight < 500 || window.innerWidth > 600) {
-        contentWrapper.style.display = 'none';
-      } else {
-        contentWrapper.style.opacity = '0.3';
-      }
-    }
     document.body.classList.add('scrolled');
   }
 
@@ -132,18 +128,6 @@ export function initFormHandler() {
 
   // Close form function
   function restoreAfterClose() {
-    const contentWrapper = document.querySelector('.content-wrapper');
-    if (contentWrapper) {
-      if (contentWrapper.style.display === 'none') {
-        contentWrapper.style.opacity = 0;
-        contentWrapper.style.display = '';
-        setTimeout(() => {
-          contentWrapper.style.opacity = 1;
-        }, 10);
-      } else {
-        contentWrapper.style.opacity = 1;
-      }
-    }
     starterInput.value = '';
     starterInput.disabled = false;
     starterInput.style.display = '';

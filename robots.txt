@@ -1,5 +1,5 @@
 # Jorobean | Wear The Love - Premium 3D Printed Footwear
-# Updated: 2025-08-15
+# Updated: 2025-08-16
 # Contact: support@jorobean.com
 
 User-agent: *
@@ -8,6 +8,7 @@ Allow: /about.html
 Allow: /404.html
 Allow: /contest.html
 Allow: /privacy.html
+Allow: /terms.html
 Allow: /index.html
 Allow: /css/
 Allow: /js/
