@@ -58,8 +58,8 @@ class LoadingManager {
             
             // Handle scroll position
             setTimeout(() => {
-                if (this.isPageRefresh || document.readyState !== 'complete') {
-                    // On page refresh/load, always go to top
+                if (this.isPageRefresh) {
+                    // Only scroll to top on actual page refresh
                     window.scrollTo({ top: 0, behavior: 'instant' });
                     // Add an extra scroll to top after a brief delay to handle mobile browsers
                     setTimeout(() => {
