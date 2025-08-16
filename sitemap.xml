@@ -8,13 +8,33 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://jorobean.com/trail.webp</image:loc>
-      <image:title>Jorobean Trail Hiking Shoe</image:title>
-      <image:caption>3D printed hiking shoe with advanced cushioning technology</image:caption>
+      <image:title>Jorobean Trail - Oak White</image:title>
+      <image:caption>Premium 3D printed Trail shoe with advanced ZellerFOAM TPU technology</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://jorobean.com/trail-black.webp</image:loc>
+      <image:title>Jorobean Trail - Dark Ridge Black</image:title>
+      <image:caption>Custom-fitted 3D printed Trail shoe in Dark Ridge Black</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://jorobean.com/trail-blue.webp</image:loc>
+      <image:title>Jorobean Trail - Alpine Blue</image:title>
+      <image:caption>Sustainable 3D printed Trail shoe in Alpine Blue</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://jorobean.com/trail-orange.webp</image:loc>
+      <image:title>Jorobean Trail - Sunset Orange</image:title>
+      <image:caption>Performance 3D printed Trail shoe in Sunset Orange</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://jorobean.com/trail-red.webp</image:loc>
+      <image:title>Jorobean Trail - Jorobean Red</image:title>
+      <image:caption>Signature 3D printed Trail shoe in Jorobean Red</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://jorobean.com/jorobean_logo.webp</image:loc>
-      <image:title>Jorobean Brand Logo</image:title>
-      <image:caption>Official Jorobean company logo</image:caption>
+      <image:title>Jorobean | Wear The Love</image:title>
+      <image:caption>Official Jorobean brand logo - Premium 3D printed footwear</image:caption>
     </image:image>
   </url>
   <url>

@@ -1,5 +1,6 @@
-# Jorobean Website Robots.txt
+# Jorobean | Wear The Love - Premium 3D Printed Footwear
 # Updated: 2025-08-15
+# Contact: support@jorobean.com
 
 User-agent: *
 Allow: /
@@ -13,9 +14,17 @@ Allow: /js/
 Allow: /*.webp$
 Allow: /*.png$
 Allow: /*.ico$
+Allow: /*.svg$
+
+# Prevent crawling of non-public content
 Disallow: /site.webmanifest
 Disallow: /hide old images/
-Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term
+Disallow: /*?*query=
+Disallow: /*?*utm_
+Disallow: /*?*fbclid=
+
+# Clean URL Parameters
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&fbclid
 
 # Rate limiting
 Crawl-delay: 5
