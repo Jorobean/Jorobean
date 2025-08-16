@@ -1,3 +1,6 @@
+# Jorobean Website Robots.txt
+# Updated: 2025-08-15
+
 User-agent: *
 Allow: /
 Allow: /about.html
@@ -7,10 +10,24 @@ Allow: /privacy.html
 Allow: /index.html
 Allow: /css/
 Allow: /js/
+Allow: /*.webp$
+Allow: /*.png$
+Allow: /*.ico$
 Disallow: /site.webmanifest
+Disallow: /hide old images/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term
 
-# Crawl-delay directive (in seconds)
-Crawl-delay: 10
+# Rate limiting
+Crawl-delay: 5
 
-# Sitemap
+# Search engine specific directives
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
+Allow: /*.webp$
+Allow: /*.png$
+Allow: /*.ico$
+
+# Sitemap declaration
 Sitemap: https://jorobean.com/sitemap.xml

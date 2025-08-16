@@ -374,7 +374,7 @@
     .shoe-container {
       width: min(98vw, 1200px);
       height: clamp(400px, 45vw, 600px);
-      margin: 0;
+      margin: 40px 0 0 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -999,13 +999,14 @@
 
     /* Wave Text Container Styles */
     .shoe-container {
-      width: 92vw;
-      margin: 0 auto;
+      width: 100vw;
+      margin: 0 -32px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 12px;
       padding-bottom: 0;
+      position: relative;
     }
 
     @media (min-width: 601px) {
@@ -1016,11 +1017,10 @@
     }
 
     .shoe-image-container {
-      width: 100vw;
-      max-width: none;
-      height: 800px;
+      width: 100%;
+      height: 500px;
       position: relative;
-      margin: 0 -32px;
+      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1041,25 +1041,28 @@
     }
 
       @media (max-width: 600px) {
-        .shoe-image-container {
-          height: 500px;
-          padding: 40px 20px;
+        .content-wrapper {
+          padding: 0;
         }
         
-        .shoe-image-container::before {
-          width: 90%;
-          height: 60%;
-          padding-bottom: 0;
-          background-size: contain;
-          background-position: center center;
-          background-repeat: no-repeat;
-          opacity: 0.4;
+        .shoe-container {
+          width: 100vw;
+          margin: 0;
+        }
+
+        .shoe-image-container {
+          width: 100%;
+          height: 500px;
+          padding: 0;
+          margin: 0;
+          background-position: center bottom;
         }
         
         .wave-shoe-img {
           height: 45%;
           max-width: 45%;
           transform: translate(-50%, -50%);
+          z-index: 2;
         }
       }    .color-picker {
       position: relative;
@@ -1422,10 +1425,19 @@
   </div>
   <div class="logo-container" role="banner">
     <a href="/" class="logo logo-centered" aria-label="Jorobean Home">
-      <img src="jorobean_logo.webp" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
+      <img src="jorobean_logo.webp" 
+           alt="Jorobean - Official brand logo" 
+           width="520" height="120"
+           style="width: 100%; height: auto;" 
+           class="logo-img"
+           fetchpriority="high" />
     </a>
     <a href="/" class="logo logo-corner" aria-label="Return to Jorobean Home">
-      <img src="logo2.webp" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
+      <img src="logo2.webp" 
+           alt="Jorobean compact logo" 
+           width="100" height="100"
+           style="width: 100%; height: auto;"
+           loading="eager" />
     </a>
     <nav class="nav-group" role="navigation" aria-label="Main navigation">
     </nav>
@@ -1434,7 +1446,14 @@
   <div class="content-wrapper">
     <div class="shoe-container">
       <div class="shoe-image-container">
-        <img class="wave-shoe-img" src="trail.webp" alt="Trail Shoe" loading="eager" fetchpriority="high" decoding="sync" />
+        <img class="wave-shoe-img" src="trail.webp" 
+         alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
+         width="600" height="400"
+         loading="eager" 
+         fetchpriority="high" 
+         decoding="sync"
+         srcset="trail.webp 600w, trail.webp 1200w"
+         sizes="(max-width: 600px) 90vw, 600px" />
       </div>
       <div class="wave-text-container" aria-label="Logo reveal">
         <!-- Default text -->
@@ -1442,7 +1461,12 @@
           <text text-anchor="middle" x="150" y="22" font-size="24" letter-spacing="5" fill="currentColor" style="font-family: 'Cabin Condensed', Arial, sans-serif; -webkit-font-smoothing: antialiased;">COMING SOON</text>
         </svg>
         <!-- Trail Logo -->
-        <img src="image 7alt.webp" alt="Trail Logo" class="wave-text-svg wave-effect trail-logo" style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
+        <img src="image 7alt.webp" 
+             alt="Jorobean Trail - Premium shoe" 
+             width="240" height="64"
+             class="wave-text-svg wave-effect trail-logo" 
+             loading="eager"
+             style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
       </div>
       <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
         <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
@@ -1474,7 +1498,13 @@
       </section>
 
       <div class="first-image">
-        <img src="image 6.webp" alt="Custom Fit Illustration" class="info-image">
+        <img src="image 6.webp" 
+             alt="Illustration showing Jorobean Trail's custom fit technology with 3D scanning" 
+             class="info-image"
+             width="280" height="280"
+             loading="lazy"
+             srcset="image 6.webp 280w, image 6.webp 560w"
+             sizes="(max-width: 600px) 280px, 260px">
       </div>
 
       <section class="info-section section-materials">
@@ -1493,7 +1523,13 @@
       </section>
 
       <div class="second-image">
-        <img src="image 8.webp" alt="Design Illustration" class="info-image">
+        <img src="image 8.webp" 
+             alt="Detailed illustration of Jorobean Trail's advanced 3D printed design" 
+             class="info-image"
+             width="280" height="280"
+             loading="lazy"
+             srcset="image 8.webp 280w, image 8.webp 560w"
+             sizes="(max-width: 600px) 280px, 260px">
       </div>
     </div>
   </div>
@@ -1504,7 +1540,11 @@
   </div>
   <!-- Promo Details Section -->
   <section class="promo-details-section" aria-label="Promotion Details">
-    <img src="LOVE4.webp" alt="Love" style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
+    <img src="LOVE4.webp" 
+         alt="Jorobean contest text representing our brand values and community" 
+         width="450" height="450"
+         loading="lazy"
+         style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
     <h2 class="promo-title">SPECIAL LAUNCH OFFER</h2>
     <p class="promo-description">The first 50 people to sign up will receive $5 off their first pair of Trail. Two lucky subscribers will win a free pair: one randomly selected from the first 50 signups, and another from the first 1,000 subscribers. Double your chances of winning by following <a href="https://instagram.com/jorobean" target="_blank" rel="noopener noreferrer" style="color: #b71111; text-decoration: underline;">@jorobean</a> on Instagram!</p>
     
