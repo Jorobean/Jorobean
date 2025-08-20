@@ -197,7 +197,7 @@ body.scrolled .logo-corner {
 .wave-shoe-img {
   z-index: 1;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(40px);
 }
 
 /* Wave text container */
