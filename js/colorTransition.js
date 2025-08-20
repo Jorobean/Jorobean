@@ -2,8 +2,8 @@
 let isAutoTransitioning = true;
 const transitionInterval = 4500; // Change color every 3 seconds
 
-// Define the color sequence (0: Black, 1: Blue, 2: Oak, 3: Orange, 4: Red)
-const colorSequence = [0, 1, 2, 3, 4];
+// Define the color sequence (0: Black, 1: Blue, 2: Oak, 3: Red)
+const colorSequence = [0, 1, 2, 3];
 let currentIndex = 0;
 
 function autoTransitionColors() {
