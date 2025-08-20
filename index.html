@@ -453,7 +453,8 @@
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
       pointer-events: none;
-      will-change: transform;
+      will-change: transform, opacity;
+      transform-origin: center center;
     }
 
     @media (min-width: 601px) {
@@ -1928,70 +1929,10 @@
   </footer>
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
+  <script src="js/colorTransition.js"></script>
   <script>
-    // Color picker functionality
+    // Color picker initialization
     const colorOptions = document.querySelectorAll('.color-option');
-    const shoeImage = document.querySelector('.wave-shoe-img');
-    
-    // Create tooltip element
-    const tooltip = document.createElement('div');
-    tooltip.style.cssText = `
-      position: absolute;
-      background: var(--text-color);
-      color: var(--bg-color);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 1000;
-    `;
-    document.body.appendChild(tooltip);
-
-    let tooltipTimeout;
-
-    colorOptions.forEach(option => {
-      option.addEventListener('click', function() {
-        // Remove active class from all options
-        colorOptions.forEach(opt => {
-          opt.classList.remove('active');
-          opt.setAttribute('aria-checked', 'false');
-        });
-        // Add active class to clicked option
-        this.classList.add('active');
-        this.setAttribute('aria-checked', 'true');
-        
-        // Update image with all attributes
-        const newImage = this.dataset.image;
-        shoeImage.src = newImage;
-        shoeImage.srcset = `${newImage} 600w, ${newImage} 1200w`;
-        shoeImage.alt = `Jorobean Trail hiking shoe in ${this.dataset.name} featuring 3D printed design`;
-        
-        // Show tooltip
-        const rect = this.getBoundingClientRect();
-        tooltip.textContent = this.dataset.name;
-        tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
-        tooltip.style.top = rect.bottom + 10 + 'px';
-        tooltip.style.opacity = '1';
-        
-        // Clear any existing timeout
-        if (tooltipTimeout) clearTimeout(tooltipTimeout);
-        
-        // Hide tooltip after 1.5 seconds
-        tooltipTimeout = setTimeout(() => {
-          tooltip.style.opacity = '0';
-        }, 1500);
-        
-        // Track color selection
-        trackEvent('color_selected', {
-          'event_category': 'engagement',
-          'event_label': this.dataset.color,
-          'color_name': this.dataset.name
-        });
-      });
-    });
     
     document.getElementById("copyright").textContent =
       `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
