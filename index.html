@@ -457,7 +457,7 @@
       transform-origin: center center;
     }
 
-    @media (min-width: 601px) {
+    @media (min-width: 601px) and (hover: hover) {
       .shoe-container:hover .wave-shoe-img {
         transform: translate3d(-50%, -50%, 120px);
         filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.4));
@@ -1105,14 +1105,14 @@
       border-radius: 30px;
     }
 
-    .shoe-container:hover .shoe-image-container {
-      transform: translateZ(-90px);
-      box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
+    @media (min-width: 601px) and (hover: hover) {
+      .shoe-container:hover .shoe-image-container {
+        transform: translateZ(-90px);
+        box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
                   inset 0 -8px 20px rgba(0, 0, 0, 0.2),
                   0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+      }
 
-    @media (hover: hover) {
       .shoe-container:hover .wave-shoe-img {
         transform: translate3d(-50%, -50%, 40px);
         filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
