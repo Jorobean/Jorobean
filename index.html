@@ -1091,10 +1091,48 @@
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    .shoe-image-container .mountain-bg {
+      border-radius: 30px;
+    }
+
+    .shoe-container:hover .shoe-image-container {
+      transform: translateZ(-30px);
+      box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
+                  inset 0 -8px 20px rgba(0, 0, 0, 0.2),
+                  0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .shoe-container:hover .wave-shoe-img {
+      transform: translate3d(-50%, -50%, 40px);
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
+    }
+
+    .shoe-container:hover .mountain-bg {
+      transform: scale(0.99);
+      filter: brightness(0.5);
+    }
+
     .shoe-container {
       cursor: pointer;
       perspective: 2000px;
       transform-style: preserve-3d;
+    }
+
+    .shoe-container.hover-effect .shoe-image-container {
+      transform: translateZ(-100px);
+      box-shadow: inset 0 12px 30px rgba(0, 0, 0, 0.3),
+                  inset 0 -12px 30px rgba(0, 0, 0, 0.3),
+                  0 2px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .shoe-container.hover-effect .wave-shoe-img {
+      transform: translate3d(-50%, -50%, 40px);
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
+    }
+
+    .shoe-container.hover-effect .mountain-bg {
+      transform: scale(0.99);
+      filter: brightness(0.9);
     }
     
     @media (max-width: 600px) {
@@ -1123,13 +1161,13 @@
 
     .shoe-image-container .mountain-bg {
       position: absolute;
-      top: -30%;
-      left: -10%;
-      width: 120%;
-      height: 140%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      object-position: center bottom;
-      transform: scale(1.1);
+      object-position: center center;
+      transform: scale(1);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 0;
       -webkit-transform: scale(1.1) translateZ(0);
@@ -1742,7 +1780,7 @@
           preload="auto"
           width="1200" height="800"
           id="mountainVideo">
-          <source src="mount.mov" type="video/mp4">
+          <source src="mount.webm" type="video/webm">
         </video>
         <img class="wave-shoe-img" src="trail.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
@@ -1867,6 +1905,26 @@
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
   <script>
+    // Periodic hover effect
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.querySelector('.shoe-container');
+      
+      if (container) {
+        // Function to trigger the hover effect
+        function triggerHoverEffect() {
+          container.classList.add('hover-effect');
+
+          // Remove the effect after 500 milliseconds
+          setTimeout(() => {
+            container.classList.remove('hover-effect');
+          }, 500);
+        }
+
+        // Trigger the effect every 6.5 seconds
+        setInterval(triggerHoverEffect, 6670);
+      }
+    });
+
     // Color picker functionality
     const colorOptions = document.querySelectorAll('.color-option');
     const shoeImage = document.querySelector('.wave-shoe-img');
