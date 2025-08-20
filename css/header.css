@@ -1,13 +1,15 @@
 /* Header and Logo Transitions */
 .logo-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: env(safe-area-inset-top);
+  left: env(safe-area-inset-left);
+  right: env(safe-area-inset-right);
+  width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
   z-index: 1000;
   padding: 10px;
   pointer-events: none;
   transition: transform 0.3s ease;
+  box-sizing: border-box;
 }
 
 body.header-hidden .logo-container {
@@ -71,7 +73,7 @@ body.scrolled .nav-group {
 
 @media (max-width: 600px) {
   .logo-container {
-    padding: 8px;
+    padding: max(env(safe-area-inset-top), 8px) max(env(safe-area-inset-right), 8px) 8px max(env(safe-area-inset-left), 8px);
   }
   
   .logo-centered {
@@ -80,13 +82,13 @@ body.scrolled .nav-group {
   
   .logo-corner {
     width: 70px;
-    left: 8px;
-    top: 8px;
+    left: max(env(safe-area-inset-left), 8px);
+    top: max(env(safe-area-inset-top), 8px);
   }
   
   .nav-group {
-    top: 12px;
-    right: 12px;
+    top: max(env(safe-area-inset-top), 12px);
+    right: max(env(safe-area-inset-right), 12px);
     gap: 12px;
   }
 }

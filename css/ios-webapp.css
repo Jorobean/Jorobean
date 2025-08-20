@@ -1,0 +1,31 @@
+/* Specific styles for iOS web app mode */
+@supports (-webkit-touch-callout: none) {
+  /* iOS only */
+  @media (display-mode: standalone), (display-mode: fullscreen) {
+    body {
+      /* Add padding for status bar in standalone mode */
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .logo-container {
+      /* Position logo below status bar */
+      top: env(safe-area-inset-top);
+      padding-top: 10px;
+    }
+
+    .content-wrapper {
+      /* Ensure content starts below status bar */
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .shoe-container {
+      /* Adjust container for status bar */
+      padding-top: env(safe-area-inset-top);
+    }
+
+    /* Handle bottom safe area for home indicator */
+    footer {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}
