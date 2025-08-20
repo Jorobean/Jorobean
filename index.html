@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <!-- Apple mobile web app configuration -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1338,26 +1338,57 @@
       transform: scale(1.1);
     }
 
-    .color-option:hover::after {
-      content: attr(data-name);
-      position: absolute;
-      top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--text-color);
-      color: var(--bg-color);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      animation: fadeIn 0.2s ease forwards;
-      z-index: 1000;
+    /* Tooltip for desktop hover */
+    @media (hover: hover) {
+      .color-option:hover::after {
+        content: attr(data-name);
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-color);
+        color: var(--bg-color);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        animation: fadeIn 0.2s ease forwards;
+        z-index: 1000;
+      }
+    }
+
+    /* Tooltip for mobile - shown briefly on tap */
+    @media (hover: none) {
+      .color-option:active::after {
+        content: attr(data-name);
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-color);
+        color: var(--bg-color);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        animation: fadeInOut 1.5s ease forwards;
+        z-index: 1000;
+      }
     }
 
     @keyframes fadeIn {
       to { opacity: 1; }
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .wave-text-container {
@@ -1900,6 +1931,25 @@
     const colorOptions = document.querySelectorAll('.color-option');
     const shoeImage = document.querySelector('.wave-shoe-img');
     
+    // Create tooltip element
+    const tooltip = document.createElement('div');
+    tooltip.style.cssText = `
+      position: absolute;
+      background: var(--text-color);
+      color: var(--bg-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 1000;
+    `;
+    document.body.appendChild(tooltip);
+
+    let tooltipTimeout;
+
     colorOptions.forEach(option => {
       option.addEventListener('click', function() {
         // Remove active class from all options
@@ -1916,6 +1966,21 @@
         shoeImage.src = newImage;
         shoeImage.srcset = `${newImage} 600w, ${newImage} 1200w`;
         shoeImage.alt = `Jorobean Trail hiking shoe in ${this.dataset.name} featuring 3D printed design`;
+        
+        // Show tooltip
+        const rect = this.getBoundingClientRect();
+        tooltip.textContent = this.dataset.name;
+        tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+        tooltip.style.top = rect.bottom + 10 + 'px';
+        tooltip.style.opacity = '1';
+        
+        // Clear any existing timeout
+        if (tooltipTimeout) clearTimeout(tooltipTimeout);
+        
+        // Hide tooltip after 1.5 seconds
+        tooltipTimeout = setTimeout(() => {
+          tooltip.style.opacity = '0';
+        }, 1500);
         
         // Track color selection
         trackEvent('color_selected', {
