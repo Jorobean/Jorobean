@@ -463,6 +463,11 @@
         filter: brightness(0.7);
       }
     }
+    
+    /* Make video darker by default */
+    .mountain-bg {
+      filter: brightness(0.4);
+    }
 
     @media (prefers-color-scheme: dark) {
       .wave-shoe-img {
@@ -1096,7 +1101,7 @@
     }
 
     .shoe-container:hover .shoe-image-container {
-      transform: translateZ(-30px);
+      transform: translateZ(-90px);
       box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
                   inset 0 -8px 20px rgba(0, 0, 0, 0.2),
                   0 2px 10px rgba(0, 0, 0, 0.1);
@@ -1116,23 +1121,6 @@
       cursor: pointer;
       perspective: 2000px;
       transform-style: preserve-3d;
-    }
-
-    .shoe-container.hover-effect .shoe-image-container {
-      transform: translateZ(-100px);
-      box-shadow: inset 0 12px 30px rgba(0, 0, 0, 0.3),
-                  inset 0 -12px 30px rgba(0, 0, 0, 0.3),
-                  0 2px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    .shoe-container.hover-effect .wave-shoe-img {
-      transform: translate3d(-50%, -50%, 40px);
-      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
-    }
-
-    .shoe-container.hover-effect .mountain-bg {
-      transform: scale(0.99);
-      filter: brightness(0.9);
     }
     
     @media (max-width: 600px) {
@@ -1157,6 +1145,7 @@
       backface-visibility: hidden;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
+      filter: brightness(0.2);
     }
 
     .shoe-image-container .mountain-bg {
@@ -1176,6 +1165,7 @@
       backface-visibility: hidden;
       -webkit-perspective: 1000;
       perspective: 1000;
+      filter: brightness(0.8);
     }
 
     @media (min-width: 601px) {
@@ -1905,26 +1895,6 @@
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
   <script>
-    // Periodic hover effect
-    document.addEventListener('DOMContentLoaded', function() {
-      const container = document.querySelector('.shoe-container');
-      
-      if (container) {
-        // Function to trigger the hover effect
-        function triggerHoverEffect() {
-          container.classList.add('hover-effect');
-
-          // Remove the effect after 500 milliseconds
-          setTimeout(() => {
-            container.classList.remove('hover-effect');
-          }, 500);
-        }
-
-        // Trigger the effect every 6.5 seconds
-        setInterval(triggerHoverEffect, 6670);
-      }
-    });
-
     // Color picker functionality
     const colorOptions = document.querySelectorAll('.color-option');
     const shoeImage = document.querySelector('.wave-shoe-img');
