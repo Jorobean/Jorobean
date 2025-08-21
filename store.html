@@ -79,70 +79,7 @@
     </div>
   </main>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const productsContainer = document.getElementById('products-container');
-      
-      try {
-        const response = await fetch('/.netlify/functions/printful/products');
-        const products = await response.json();
-        
-        if (products.error) {
-          throw new Error(products.error);
-        }
-
-        const productsHTML = products.map(product => {
-          // Use a default image if thumbnail is null
-          const imageUrl = product.thumbnail_url || 'https://via.placeholder.com/400x500?text=Coming+Soon';
-          const productClasses = product.thumbnail_url ? 'product-card' : 'product-card coming-soon';
-          
-          return `
-            <div class="${productClasses}" data-product-id="${product.id}">
-              <div class="product-image-container">
-                <img src="${imageUrl}" 
-                     alt="${product.name}" 
-                     class="product-image"
-                     loading="lazy">
-                ${!product.thumbnail_url ? '<div class="coming-soon-badge">Coming Soon</div>' : ''}
-              </div>
-              <div class="product-info">
-                <h2 class="product-title">${product.name}</h2>
-                <p class="product-variants">${product.variants} styles available</p>
-                ${product.thumbnail_url ? 
-                  `<button class="view-variants-btn" onclick="showVariants(${product.id})">
-                     View Styles
-                   </button>` :
-                  `<button class="notify-btn" onclick="notifyMe(${product.id})">
-                     Notify When Available
-                   </button>`
-                }
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        productsContainer.innerHTML = productsHTML || '<div class="no-products">No products available at the moment</div>';
-      } catch (error) {
-        console.error('Error loading products:', error);
-        productsContainer.innerHTML = `
-          <div class="error-message">
-            <p>Sorry, we couldn't load the products at this time.</p>
-            <p>Please try again later.</p>
-          </div>
-        `;
-      }
-    });
-
-    function showVariants(productId) {
-      // We'll implement this function when we add the variants modal
-      alert('Product variants coming soon!');
-    }
-
-    function notifyMe(productId) {
-      // We'll implement this function for the notification feature
-      alert('Notification feature coming soon!');
-    }
-  </script>
+  <!-- Store functionality is now in store.js -->
 
   <footer id="footer" aria-label="Site copyright">
     <div id="copyright">© 2025 Jorobean — All rights reserved.</div>
