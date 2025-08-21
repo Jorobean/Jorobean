@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: joro-app
-    env: node
-    buildCommand: npm install
-    startCommand: node api/server.js
-    envVars:
-      - key: PRINTFUL_API_KEY
-        sync: false
