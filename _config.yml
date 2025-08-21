@@ -1,1 +1,36 @@
+title: Jorobean
+description: Designer footwear and accessories
+url: "https://jorobean.com"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
 permalink: pretty
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - netlify.toml
+  - netlify/functions
+  - README.md
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Collections (if needed)
+collections:
+  products:
+    output: true
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

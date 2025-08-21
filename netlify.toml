@@ -1,6 +1,11 @@
 [build]
+  command = "jekyll build"
   functions = "netlify/functions"
-  publish = "."
+  publish = "_site"
+
+[build.environment]
+  JEKYLL_ENV = "production"
+  RUBY_VERSION = "3.2.2"
 
 [functions]
   node_bundler = "esbuild"
