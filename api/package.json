@@ -1,0 +1,9 @@
+{
+  "name": "jorobean-store-api",
+  "version": "1.0.0",
+  "description": "Backend API for Jorobean Store",
+  "dependencies": {
+    "node-fetch": "^3.3.0"
+  },
+  "type": "module"
+}
