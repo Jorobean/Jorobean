@@ -1,7 +1,7 @@
 // Configuration
 const config = {
-    // Replace with your backend API endpoint that will handle Printful API calls
-    apiEndpoint: 'https://your-backend-api.com/api/printful',
+    // Netlify Function endpoints
+    apiEndpoint: '/api/printful',
     // Categories mapping for Printful products
     categories: {
         footwear: ['SHOES'],
