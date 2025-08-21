@@ -375,10 +375,18 @@ function addToCart(product) {
 }
 
 function updateCartCount() {
+    const cartButton = document.querySelector('.cart-button');
     const cartCount = document.querySelector('.cart-count');
     const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
     cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+    
+    // Add or remove has-items class based on cart state
+    if (totalItems > 0) {
+        cartButton.classList.add('has-items');
+    } else {
+        cartButton.classList.remove('has-items');
+    }
 }
 
 function updateCartSidebar() {
