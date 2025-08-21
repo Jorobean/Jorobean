@@ -27,6 +27,7 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/store.css">
+  <script src="js/header.js" defer></script>
   <script src="js/scrollBehavior.js" defer></script>
   <script src="js/store.js" defer></script>
 </head>
@@ -41,15 +42,29 @@
     <div class="nav-group">
       <button id="cart-button" class="cart-button" aria-label="Shopping Cart">
         <span class="cart-count">0</span>
-        🛒
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+          <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 3c0 .5.4 1 1 1h1l3.6 7.6-1.4 2.5c-.8 1.4.1 3.1 1.7 3.1h12c.5 0 1-.4 1-1s-.4-1-1-1H7l1.1-2h7.4c.7 0 1.4-.4 1.7-1l3.6-6.5c.2-.4-.1-1-.5-1H5.2L4.5 3.5c-.2-.4-.7-.7-1.2-.7H2c-.6.2-1 .6-1 1.2zm16 15c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
       </button>
     </div>
   </div>
 
   <main>
-    <div class="store-header">
-      <h1>Store</h1>
-      <p class="store-description">Exclusive collection of designer apparel</p>
+    <div class="store-controls">
+      <div class="controls-wrapper">
+        <div class="store-categories">
+          <button class="category-btn active" data-category="all">All Products</button>
+          <button class="category-btn" data-category="hats">Hats</button>
+        </div>
+        <div class="store-sort">
+          <select id="sort-select" aria-label="Sort products">
+            <option value="featured">Featured</option>
+            <option value="price-low-high">Price: Low to High</option>
+            <option value="price-high-low">Price: High to Low</option>
+            <option value="name-a-z">Name: A to Z</option>
+          </select>
+        </div>
+      </div>
     </div>
     
     <div class="store-content">

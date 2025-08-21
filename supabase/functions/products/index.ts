@@ -16,28 +16,44 @@ serve(async (req) => {
   }
 
   try {
-    const printfulApiKey = Deno.env.get('PRINTFUL_API_KEY')
-    if (!printfulApiKey) {
+    // Get the Printful API token from environment variables
+    const printfulApiToken = Deno.env.get('PRINTFUL_API_KEY')
+    if (!printfulApiToken) {
       throw new Error('PRINTFUL_API_KEY is not set')
     }
 
-    console.log('Using Printful API token:', printfulApiKey.substring(0, 5) + '...')
+    console.log('Using Printful API token:', printfulApiToken.substring(0, 5) + '...')
     
-    const response = await fetch(`${PRINTFUL_API_URL}/store/products`, {
+    // First get all products
+    const productsResponse = await fetch(`${PRINTFUL_API_URL}/store/products`, {
       headers: {
-        'Authorization': `Bearer ${printfulApiKey}`,
+        'Authorization': `Bearer ${printfulApiToken}`,
         'Content-Type': 'application/json'
       }
     })
 
-    const responseData = await response.json()
+    const productsData = await productsResponse.json()
     
-    if (!response.ok) {
-      console.error('Printful API error details:', responseData)
-      throw new Error(`Printful API error: ${response.statusText}. Details: ${JSON.stringify(responseData)}`)
+    if (!productsResponse.ok) {
+      console.error('Printful API error details:', productsData)
+      throw new Error(`Printful API error: ${productsResponse.statusText}. Details: ${JSON.stringify(productsData)}`)
     }
 
-    const data = responseData
+    // Then get detailed information for each product including variants and retail prices
+    const productsWithDetails = await Promise.all(
+      productsData.result.map(async (product) => {
+        const detailResponse = await fetch(`${PRINTFUL_API_URL}/store/products/${product.id}`, {
+          headers: {
+            'Authorization': `Bearer ${printfulApiToken}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        const detailData = await detailResponse.json()
+        return detailData.result
+      })
+    )
+
+    const data = { result: productsWithDetails }
     
     return new Response(
       JSON.stringify(data.result),
