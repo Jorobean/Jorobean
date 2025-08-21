@@ -1,3 +1,7 @@
+// API Configuration
+const SUPABASE_URL = 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I';
+
 // Store state
 let state = {
     products: [],
@@ -19,7 +23,11 @@ async function initStore() {
         `;
 
         // Fetch products from Supabase Edge Function
-        const response = await fetch('https://[YOUR-PROJECT-REF].supabase.co/functions/v1/products');
+        const response = await fetch(`${SUPABASE_URL}/products`, {
+            headers: {
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
         const data = await response.json();
         
         if (data.error) {
@@ -95,7 +103,11 @@ async function showProductDetails(productId) {
         modalDialog.showModal();
 
         // Fetch detailed product info including variants
-        const response = await fetch(`https://[YOUR-PROJECT-REF].supabase.co/functions/v1/products/${productId}`);
+        const response = await fetch(`${SUPABASE_URL}/products/${productId}`, {
+            headers: {
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
         const data = await response.json();
         
         if (data.error) {
@@ -240,6 +252,13 @@ function updateCartSidebar() {
 
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     cartTotal.textContent = `$${total.toFixed(2)}`;
+
+    // Add checkout button if there are items in cart
+    const checkoutBtn = document.createElement('button');
+    checkoutBtn.className = 'checkout-btn';
+    checkoutBtn.textContent = 'Proceed to Checkout';
+    checkoutBtn.onclick = showCheckoutForm;
+    cartItems.appendChild(checkoutBtn);
 }
 
 function updateQuantity(itemId, newQuantity) {
@@ -270,6 +289,92 @@ document.getElementById('cart-overlay').addEventListener('click', () => {
     document.getElementById('cart-sidebar').classList.remove('open');
     document.getElementById('cart-overlay').style.display = 'none';
 });
+
+// Checkout functionality
+async function showCheckoutForm() {
+    const modalDialog = document.createElement('dialog');
+    modalDialog.className = 'checkout-dialog';
+    modalDialog.innerHTML = `
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2>Checkout</h2>
+                <button class="close-button" onclick="this.closest('dialog').close()">×</button>
+            </div>
+            <div class="dialog-body">
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address1">Address</label>
+                        <input type="text" id="address1" name="address1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip">ZIP Code</label>
+                        <input type="text" id="zip" name="zip" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Place Order</button>
+                </form>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modalDialog);
+    modalDialog.showModal();
+
+    // Handle form submission
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const orderData = {
+            recipient: {
+                name: formData.get('name'),
+                address1: formData.get('address1'),
+                city: formData.get('city'),
+                state_code: formData.get('state'),
+                country_code: 'US',
+                zip: formData.get('zip')
+            },
+            items: state.cart.map(item => ({
+                sync_variant_id: item.id,
+                quantity: item.quantity
+            }))
+        };
+
+        try {
+            const response = await fetch(`${SUPABASE_URL}/order`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Order placed successfully!');
+                state.cart = []; // Clear cart
+                updateCartCount();
+                updateCartSidebar();
+                modalDialog.close();
+            } else {
+                throw new Error(data.error || 'Failed to place order');
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+}
 
 // Initialize the store
 document.addEventListener('DOMContentLoaded', initStore);
