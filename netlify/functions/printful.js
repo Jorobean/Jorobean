@@ -1,8 +1,45 @@
 // Netlify Function to handle Printful API requests
 // Environment variable required: PRINTFUL_API_KEY
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+import fetch from 'node-fetch';
+
+// Printful API configuration
 const PRINTFUL_API_BASE = 'https://api.printful.com';
+
+// Helper function to make authenticated requests to Printful
+async function printfulRequest(endpoint, options = {}) {
+  const apiKey = process.env.PRINTFUL_API_KEY;
+  if (!apiKey) {
+    throw new Error('Printful API key not configured');
+  }
+
+  const url = `${PRINTFUL_API_BASE}${endpoint}`;
+  const headers = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+
+  console.log(`Making request to: ${url}`);
+  
+  const response = await fetch(url, {
+    ...options,
+    headers
+  });
+
+  const responseText = await response.text();
+  
+  try {
+    const data = JSON.parse(responseText);
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Printful API request failed');
+    }
+    return data;
+  } catch (error) {
+    console.error('Failed to parse Printful response:', responseText);
+    throw new Error('Invalid response from Printful API');
+  }
+}
 
 exports.handler = async (event, context) => {
   // CORS headers for development and production
@@ -39,10 +76,28 @@ exports.handler = async (event, context) => {
       console.log('Fetching products from Printful API');
       console.log('API Key present:', !!apiKey);
       console.log('Making request to Printful API');
-      const response = await fetch(`${PRINTFUL_API_BASE}/store/products`, {
+      // First, get the store ID
+      const storeResponse = await fetch(`${PRINTFUL_API_BASE}/stores`, {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
+        }
+      });
+      
+      const storeData = await storeResponse.json();
+      if (!storeResponse.ok || !storeData.result || !storeData.result[0]) {
+        throw new Error('Failed to get store information');
+      }
+      
+      const storeId = storeData.result[0].id;
+      console.log('Found store ID:', storeId);
+
+      // Now fetch products with store ID
+      const response = await fetch(`${PRINTFUL_API_BASE}/sync/products`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'X-PF-Store-Id': storeId.toString()
         }
       });
 
@@ -140,12 +195,18 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('Printful API Error:', error);
+    // Add detailed error information
+    const errorResponse = {
+      error: error.message || 'Internal server error',
+      details: error.response ? await error.response.text() : null,
+      path: event.path,
+      method: event.httpMethod
+    };
+    
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({
-        error: error.message || 'Internal server error'
-      })
+      body: JSON.stringify(errorResponse)
     };
   }
 };

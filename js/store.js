@@ -166,14 +166,18 @@ function renderProducts() {
             return `
                 <div class="product-card" data-product-id="${product.id}">
                     <img 
-                        src="${product.sync_product.thumbnail_url || '/placeholder-image.png'}" 
-                        alt="${product.sync_product.name}"
+                        src="${(product.sync_product && product.sync_product.thumbnail_url) || 
+                             (product.thumbnail_url) || '/placeholder-image.png'}" 
+                        alt="${(product.sync_product && product.sync_product.name) || 
+                             product.name || 'Product'}"
                         class="product-image"
                         onerror="this.src='/placeholder-image.png'"
                     >
                     <div class="product-info">
-                        <h3 class="product-title">${product.sync_product.name}</h3>
-                        <div class="product-price">$${product.sync_product.retail_price}</div>
+                        <h3 class="product-title">${(product.sync_product && product.sync_product.name) || 
+                                                   product.name || 'Unnamed Product'}</h3>
+                        <div class="product-price">$${(product.sync_product && product.sync_product.retail_price) || 
+                                                    product.retail_price || '0.00'}</div>
                         <button class="add-to-cart" data-product-id="${product.id}">
                             Add to Cart
                         </button>
