@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: joro-app
+    env: static
+    buildCommand: npm install
+    staticPublishPath: .
+    envVars:
+      - key: PRINTFUL_API_KEY
+        sync: false
