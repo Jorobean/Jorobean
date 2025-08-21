@@ -1,7 +1,7 @@
 // Configuration
 const config = {
-    // Netlify Function endpoints
-    apiEndpoint: '/api/printful',
+    // Netlify Function endpoints - use absolute URL in production
+    apiEndpoint: 'https://bean9.netlify.app/.netlify/functions/printful',
     // Categories mapping for Printful products
     categories: {
         footwear: ['SHOES'],
@@ -44,12 +44,28 @@ async function initStore() {
 // Fetch products from backend API
 async function fetchProducts() {
     try {
+        console.log('Fetching products from:', config.apiEndpoint + '/products');
         const response = await fetch(config.apiEndpoint + '/products');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Products data:', data);
+        
         state.products = data;
         renderProducts();
     } catch (error) {
-        throw new Error('Failed to fetch products');
+        console.error('Error fetching products:', error);
+        elements.productsContainer.innerHTML = `
+            <div class="error-message">
+                Failed to load products. Please try again later.<br>
+                Error: ${error.message}
+            </div>
+        `;
+        throw error;
     }
 }
 

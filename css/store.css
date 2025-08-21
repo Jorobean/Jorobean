@@ -302,6 +302,17 @@ body {
   color: var(--text-color);
 }
 
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  grid-column: 1 / -1;
+  color: var(--primary-color);
+  background: rgba(183, 17, 17, 0.1);
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
 @media (max-width: 600px) {
   .cart-sidebar {
     width: 100%;

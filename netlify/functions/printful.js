@@ -1,12 +1,13 @@
 // Netlify Function to handle Printful API requests
 // Environment variable required: PRINTFUL_API_KEY
 
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const PRINTFUL_API_BASE = 'https://api.printful.com';
 
 exports.handler = async (event, context) => {
   // CORS headers for development and production
   const headers = {
-    'Access-Control-Allow-Origin': 'https://jorobean.com', // Update this to your domain
+    'Access-Control-Allow-Origin': 'https://bean9.netlify.app',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
   };
@@ -35,6 +36,8 @@ exports.handler = async (event, context) => {
   try {
     // GET /products endpoint
     if (event.httpMethod === 'GET' && event.path.endsWith('/products')) {
+      console.log('Fetching products from Printful API');
+      console.log('API Key present:', !!apiKey);
       const response = await fetch(`${PRINTFUL_API_BASE}/store/products`, {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
