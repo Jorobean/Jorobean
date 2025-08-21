@@ -2,6 +2,7 @@
 const config = {
     // Netlify Function endpoints - use absolute URL in production
     apiEndpoint: 'https://bean9.netlify.app/.netlify/functions/printful',
+    debug: true, // Enable debug logging
     // Categories mapping for Printful products
     categories: {
         footwear: ['SHOES'],
@@ -44,58 +45,153 @@ async function initStore() {
 // Fetch products from backend API
 async function fetchProducts() {
     try {
-        console.log('Fetching products from:', config.apiEndpoint + '/products');
-        const response = await fetch(config.apiEndpoint + '/products');
-        console.log('Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (config.debug) {
+            console.log('Starting product fetch...');
+            console.log('API Endpoint:', config.apiEndpoint + '/products');
         }
-        
-        const data = await response.json();
-        console.log('Products data:', data);
-        
+
+        const response = await fetch(config.apiEndpoint + '/products', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (config.debug) {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', [...response.headers.entries()]);
+        }
+
+        // Try to get the response text first
+        const responseText = await response.text();
+
+        if (config.debug) {
+            console.log('Raw response:', responseText);
+        }
+
+        // Parse the text as JSON if possible
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            console.error('Failed to parse JSON:', e);
+            throw new Error('Invalid JSON response from server');
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || `HTTP error! status: ${response.status}`);
+        }
+
+        if (config.debug) {
+            console.log('Parsed data:', data);
+        }
+
+        // Check if data is in the expected format
+        if (!Array.isArray(data)) {
+            console.warn('Data is not an array:', data);
+            // If data is wrapped in a result property, extract it
+            if (data.result && Array.isArray(data.result)) {
+                data = data.result;
+            } else {
+                throw new Error('Invalid data format received from server');
+            }
+        }
+
         state.products = data;
+        
+        if (config.debug) {
+            console.log('Products loaded:', state.products.length);
+        }
+
         renderProducts();
     } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Detailed error:', {
+            message: error.message,
+            stack: error.stack,
+            type: error.constructor.name
+        });
+
         elements.productsContainer.innerHTML = `
             <div class="error-message">
-                Failed to load products. Please try again later.<br>
-                Error: ${error.message}
+                <h3>Failed to load products</h3>
+                <p>Error: ${error.message}</p>
+                <p>Please try refreshing the page. If the problem persists, contact support.</p>
+                <pre style="text-align: left; margin-top: 1rem; font-size: 0.8em;">${error.stack}</pre>
             </div>
         `;
-        throw error;
     }
 }
 
 // Render products in the grid
 function renderProducts() {
+    if (config.debug) {
+        console.log('Rendering products. Current state:', {
+            productsCount: state.products.length,
+            activeCategory: state.activeCategory
+        });
+    }
+
+    if (!state.products || state.products.length === 0) {
+        elements.productsContainer.innerHTML = `
+            <div class="no-products">
+                <h3>No Products Available</h3>
+                <p>Either the store is empty or there was an error loading products.</p>
+            </div>`;
+        return;
+    }
+
     const filteredProducts = state.activeCategory === 'all'
         ? state.products
         : state.products.filter(product => {
+            if (!product.sync_product) {
+                console.warn('Product missing sync_product:', product);
+                return false;
+            }
             const category = product.sync_product.type || '';
             return config.categories[state.activeCategory].includes(category.toUpperCase());
         });
 
-    const productsHTML = filteredProducts.map(product => `
-        <div class="product-card" data-product-id="${product.id}">
-            <img 
-                src="${product.sync_product.thumbnail_url}" 
-                alt="${product.sync_product.name}"
-                class="product-image"
-            >
-            <div class="product-info">
-                <h3 class="product-title">${product.sync_product.name}</h3>
-                <div class="product-price">$${product.sync_product.retail_price}</div>
-                <button class="add-to-cart" data-product-id="${product.id}">
-                    Add to Cart
-                </button>
-            </div>
-        </div>
-    `).join('');
+    if (config.debug) {
+        console.log('Filtered products:', filteredProducts.length);
+    }
 
-    elements.productsContainer.innerHTML = productsHTML || '<div class="no-products">No products found in this category</div>';
+    const productsHTML = filteredProducts.map(product => {
+        try {
+            if (!product.sync_product) {
+                console.warn('Invalid product data:', product);
+                return '';
+            }
+
+            return `
+                <div class="product-card" data-product-id="${product.id}">
+                    <img 
+                        src="${product.sync_product.thumbnail_url || '/placeholder-image.png'}" 
+                        alt="${product.sync_product.name}"
+                        class="product-image"
+                        onerror="this.src='/placeholder-image.png'"
+                    >
+                    <div class="product-info">
+                        <h3 class="product-title">${product.sync_product.name}</h3>
+                        <div class="product-price">$${product.sync_product.retail_price}</div>
+                        <button class="add-to-cart" data-product-id="${product.id}">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error rendering product:', error, product);
+            return '';
+        }
+    }).join('');
+
+    elements.productsContainer.innerHTML = productsHTML || `
+        <div class="no-products">
+            <h3>No Products Found</h3>
+            <p>No products found in the ${state.activeCategory} category.</p>
+        </div>`;
+}
 }
 
 // Setup event listeners

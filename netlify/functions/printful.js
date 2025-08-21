@@ -38,6 +38,7 @@ exports.handler = async (event, context) => {
     if (event.httpMethod === 'GET' && event.path.endsWith('/products')) {
       console.log('Fetching products from Printful API');
       console.log('API Key present:', !!apiKey);
+      console.log('Making request to Printful API');
       const response = await fetch(`${PRINTFUL_API_BASE}/store/products`, {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -45,16 +46,28 @@ exports.handler = async (event, context) => {
         }
       });
 
-      const data = await response.json();
+      console.log('Printful API response status:', response.status);
+      const responseText = await response.text();
+      console.log('Printful API raw response:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse Printful response:', e);
+        throw new Error('Invalid JSON from Printful API');
+      }
+
+      console.log('Parsed Printful response:', data);
 
       if (!response.ok) {
-        throw new Error(data.result || 'Failed to fetch products');
+        throw new Error(data.result || data.error || 'Failed to fetch products');
       }
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(data.result)
+        body: JSON.stringify(data.result || data)
       };
     }
 
