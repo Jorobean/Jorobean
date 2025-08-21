@@ -18,8 +18,8 @@ async function initStore() {
             </div>
         `;
 
-        // Fetch products from Vercel API
-        const response = await fetch('/api/products');
+        // Fetch products from Fly.io backend
+        const response = await fetch('https://jorobean.fly.dev/products');
         const data = await response.json();
         
         if (data.error) {
@@ -95,7 +95,7 @@ async function showProductDetails(productId) {
         modalDialog.showModal();
 
         // Fetch detailed product info including variants
-        const response = await fetch(`/api/variants?id=${productId}`);
+        const response = await fetch(`https://jorobean.fly.dev/products/${productId}`);
         const data = await response.json();
         
         if (data.error) {
