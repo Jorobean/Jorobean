@@ -24,35 +24,32 @@ async function initStore() {
 
         console.log('Fetching from:', `${SUPABASE_URL}/products`);
         console.log('With auth:', SUPABASE_ANON_KEY);
-
+        
         // Fetch products from Supabase Edge Function
         const response = await fetch(`${SUPABASE_URL}/products`, {
             headers: {
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             }
         });
-
-        console.log('Response status:', response.status);
-        const responseText = await response.text();
-        console.log('Raw response:', responseText);
-
-        const data = JSON.parse(responseText);
-        console.log('Parsed data:', data);
-
+        
+        console.log('Response:', response);
+        const data = await response.json();
+        console.log('Data:', data);
+        const data = await response.json();
+        
         if (data.error) {
             throw new Error(data.error);
         }
-
-        state.products = data;
+        
+        state.products = data.result;
         renderProducts();
 
     } catch (error) {
-        console.error('Detailed error:', error);
+        console.error('Error loading products:', error);
         productsContainer.innerHTML = `
             <div class="error-message">
                 <h3>Failed to load products</h3>
-                <p>${error.message}</p>
-                <button onclick="initStore()">Try Again</button>
+                <p>Please try refreshing the page</p>
             </div>
         `;
     }
@@ -84,6 +81,7 @@ function renderProducts() {
             </div>
             <div class="product-info">
                 <h3 class="product-title">${product.name}</h3>
+                <p class="product-price">$${product.price}</p>
                 <button 
                     class="view-variants-btn" 
                     onclick="showProductDetails('${product.id}')"
@@ -112,31 +110,28 @@ async function showProductDetails(productId) {
         modalDialog.showModal();
 
         // Fetch detailed product info including variants
-        console.log('Fetching product details:', `${SUPABASE_URL}/products/${productId}`);
         const response = await fetch(`${SUPABASE_URL}/products/${productId}`, {
             headers: {
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             }
         });
-
-        console.log('Product details response:', response);
         const data = await response.json();
-        console.log('Product details data:', data);
         
         if (data.error) {
             throw new Error(data.error);
         }
-
-        if (!data.sync_variants || !data.sync_variants.length) {
-            throw new Error('No variants available for this product');
+        
+        const product = data.result;
+        if (!product) {
+            throw new Error('Product not found');
         }
 
-        const variantsHtml = data.sync_variants
+        const variantsHtml = product.variants
             .map(v => `
                 <button 
                     class="size-button" 
                     data-variant-id="${v.id}"
-                    ${v.availability_status !== 'active' ? 'disabled' : ''}
+                    ${v.status !== 'in_stock' ? 'disabled' : ''}
                 >
                     ${v.size}
                 </button>
@@ -146,13 +141,14 @@ async function showProductDetails(productId) {
         modalDialog.innerHTML = `
             <div class="dialog-content">
                 <div class="dialog-header">
-                    <h2>${data.sync_product.name}</h2>
+                    <h2>${product.name}</h2>
                     <button class="close-button" onclick="this.closest('dialog').close()">×</button>
                 </div>
                 <div class="dialog-body">
-                    <img src="${data.sync_product.thumbnail_url}" alt="${data.sync_product.name}" class="dialog-image">
+                    <img src="${product.thumbnail_url}" alt="${product.name}" class="dialog-image">
                     <div class="product-details">
-                        <p class="price">$${data.sync_variants[0].retail_price}</p>
+                        <p class="price">$${product.price}</p>
+                        <p class="description">${product.description}</p>
                         <div class="size-selector">
                             <h3>Select Size:</h3>
                             <div class="size-grid">
@@ -171,8 +167,7 @@ async function showProductDetails(productId) {
                 modalDialog.querySelectorAll('.size-button').forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
                 modalDialog.querySelector('.add-to-cart-btn').disabled = false;
-                const variantId = button.dataset.variantId;
-                state.selectedVariant = data.sync_variants.find(v => v.id === parseInt(variantId));
+                state.selectedVariant = product.variants.find(v => v.id === button.dataset.variantId);
             });
         });
 
@@ -180,7 +175,7 @@ async function showProductDetails(productId) {
         modalDialog.querySelector('.add-to-cart-btn').addEventListener('click', () => {
             if (state.selectedVariant) {
                 addToCart({
-                    ...data.sync_product,
+                    ...product,
                     selectedVariant: state.selectedVariant
                 });
                 modalDialog.close();
@@ -208,7 +203,7 @@ function addToCart(product) {
         id: product.selectedVariant.id,
         productId: product.id,
         name: product.name,
-        price: parseFloat(product.selectedVariant.retail_price),
+        price: product.price,
         size: product.selectedVariant.size,
         color: product.selectedVariant.color,
         thumbnail: product.thumbnail_url,
@@ -275,9 +270,9 @@ function updateCartSidebar() {
 
 function updateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) {
-        state.cart = state.cart.filter(item => item.id !== parseInt(itemId));
+        state.cart = state.cart.filter(item => item.id !== itemId);
     } else {
-        const item = state.cart.find(item => item.id === parseInt(itemId));
+        const item = state.cart.find(item => item.id === itemId);
         if (item) {
             item.quantity = newQuantity;
         }
@@ -285,6 +280,22 @@ function updateQuantity(itemId, newQuantity) {
     updateCartCount();
     updateCartSidebar();
 }
+
+// Cart sidebar toggle
+document.getElementById('cart-button').addEventListener('click', () => {
+    document.getElementById('cart-sidebar').classList.add('open');
+    document.getElementById('cart-overlay').style.display = 'block';
+});
+
+document.querySelector('.close-cart').addEventListener('click', () => {
+    document.getElementById('cart-sidebar').classList.remove('open');
+    document.getElementById('cart-overlay').style.display = 'none';
+});
+
+document.getElementById('cart-overlay').addEventListener('click', () => {
+    document.getElementById('cart-sidebar').classList.remove('open');
+    document.getElementById('cart-overlay').style.display = 'none';
+});
 
 // Checkout functionality
 async function showCheckoutForm() {
@@ -371,22 +382,6 @@ async function showCheckoutForm() {
         }
     });
 }
-
-// Cart sidebar toggle
-document.getElementById('cart-button')?.addEventListener('click', () => {
-    document.getElementById('cart-sidebar').classList.add('open');
-    document.getElementById('cart-overlay').style.display = 'block';
-});
-
-document.querySelector('.close-cart')?.addEventListener('click', () => {
-    document.getElementById('cart-sidebar').classList.remove('open');
-    document.getElementById('cart-overlay').style.display = 'none';
-});
-
-document.getElementById('cart-overlay')?.addEventListener('click', () => {
-    document.getElementById('cart-sidebar').classList.remove('open');
-    document.getElementById('cart-overlay').style.display = 'none';
-});
 
 // Initialize the store
 document.addEventListener('DOMContentLoaded', initStore);
