@@ -7,8 +7,8 @@ const PRINTFUL_API_BASE = 'https://api.printful.com';
 exports.handler = async (event, context) => {
   // CORS headers for development and production
   const headers = {
-    'Access-Control-Allow-Origin': 'https://bean9.netlify.app',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Origin': '*', // Allow all origins during development
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
   };
 
@@ -42,7 +42,7 @@ exports.handler = async (event, context) => {
       // First, get the store ID
       const storeResponse = await fetch(`${PRINTFUL_API_BASE}/stores`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Basic ${Buffer.from(apiKey + ':').toString('base64')}`,
           'Content-Type': 'application/json'
         }
       });
