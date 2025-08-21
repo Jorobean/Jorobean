@@ -1,5 +1,5 @@
 [build]
-  command = "jekyll build"
+  command = "bundle exec jekyll build"
   functions = "netlify/functions"
   publish = "_site"
 
