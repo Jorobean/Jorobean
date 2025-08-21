@@ -18,8 +18,8 @@ async function initStore() {
             </div>
         `;
 
-        // Fetch products from Fly.io backend
-        const response = await fetch('https://jorobean.fly.dev/products');
+        // Fetch products from Supabase Edge Function
+        const response = await fetch('https://[YOUR-PROJECT-REF].supabase.co/functions/v1/products');
         const data = await response.json();
         
         if (data.error) {
@@ -95,7 +95,7 @@ async function showProductDetails(productId) {
         modalDialog.showModal();
 
         // Fetch detailed product info including variants
-        const response = await fetch(`https://jorobean.fly.dev/products/${productId}`);
+        const response = await fetch(`https://[YOUR-PROJECT-REF].supabase.co/functions/v1/products/${productId}`);
         const data = await response.json();
         
         if (data.error) {

@@ -1,0 +1,8 @@
+{
+  "project_id": "your-project-id",
+  "functions": {
+    "serve": {
+      "port": 54321
+    }
+  }
+}
