@@ -1,45 +1,8 @@
 // Netlify Function to handle Printful API requests
 // Environment variable required: PRINTFUL_API_KEY
 
-import fetch from 'node-fetch';
-
-// Printful API configuration
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const PRINTFUL_API_BASE = 'https://api.printful.com';
-
-// Helper function to make authenticated requests to Printful
-async function printfulRequest(endpoint, options = {}) {
-  const apiKey = process.env.PRINTFUL_API_KEY;
-  if (!apiKey) {
-    throw new Error('Printful API key not configured');
-  }
-
-  const url = `${PRINTFUL_API_BASE}${endpoint}`;
-  const headers = {
-    'Authorization': `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-    ...options.headers
-  };
-
-  console.log(`Making request to: ${url}`);
-  
-  const response = await fetch(url, {
-    ...options,
-    headers
-  });
-
-  const responseText = await response.text();
-  
-  try {
-    const data = JSON.parse(responseText);
-    if (!response.ok) {
-      throw new Error(data.error || data.message || 'Printful API request failed');
-    }
-    return data;
-  } catch (error) {
-    console.error('Failed to parse Printful response:', responseText);
-    throw new Error('Invalid response from Printful API');
-  }
-}
 
 exports.handler = async (event, context) => {
   // CORS headers for development and production
@@ -123,6 +86,37 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         headers,
         body: JSON.stringify(data.result || data)
+      };
+    }
+
+    // GET /variants/:productId endpoint
+    if (event.httpMethod === 'GET' && event.path.includes('/variants/')) {
+      const productId = event.path.split('/variants/')[1];
+      if (!productId) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Product ID is required' })
+        };
+      }
+
+      const response = await fetch(`${PRINTFUL_API_BASE}/sync/products/${productId}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch product variants');
+      }
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(data.result)
       };
     }
 

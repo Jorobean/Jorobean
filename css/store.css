@@ -136,9 +136,9 @@ body {
   color: var(--text-color);
 }
 
-.product-price {
-  font-weight: bold;
-  color: var(--primary-color);
+.product-variants {
+  font-size: 0.9rem;
+  color: var(--footer-text);
   margin-bottom: 1rem;
 }
 

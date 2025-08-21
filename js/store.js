@@ -141,16 +141,8 @@ function renderProducts() {
         return;
     }
 
-    const filteredProducts = state.activeCategory === 'all'
-        ? state.products
-        : state.products.filter(product => {
-            if (!product.sync_product) {
-                console.warn('Product missing sync_product:', product);
-                return false;
-            }
-            const category = product.sync_product.type || '';
-            return config.categories[state.activeCategory].includes(category.toUpperCase());
-        });
+    // For now, show all products regardless of category since we don't have category info yet
+    const filteredProducts = state.products;
 
     if (config.debug) {
         console.log('Filtered products:', filteredProducts.length);
@@ -164,25 +156,22 @@ function renderProducts() {
             }
 
             return `
+                            return `
                 <div class="product-card" data-product-id="${product.id}">
                     <img 
-                        src="${(product.sync_product && product.sync_product.thumbnail_url) || 
-                             (product.thumbnail_url) || '/placeholder-image.png'}" 
-                        alt="${(product.sync_product && product.sync_product.name) || 
-                             product.name || 'Product'}"
+                        src="${product.thumbnail_url || '/placeholder-image.png'}" 
+                        alt="${product.name}"
                         class="product-image"
                         onerror="this.src='/placeholder-image.png'"
                     >
                     <div class="product-info">
-                        <h3 class="product-title">${(product.sync_product && product.sync_product.name) || 
-                                                   product.name || 'Unnamed Product'}</h3>
-                        <div class="product-price">$${(product.sync_product && product.sync_product.retail_price) || 
-                                                    product.retail_price || '0.00'}</div>
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-variants">${product.variants} variants available</p>
                         <button class="add-to-cart" data-product-id="${product.id}">
-                            Add to Cart
+                            View Options
                         </button>
                     </div>
-                </div>
+                </div>`;
             `;
         } catch (error) {
             console.error('Error rendering product:', error, product);
@@ -238,26 +227,24 @@ function toggleCart() {
         elements.cartOverlay.style.display === 'block' ? 'none' : 'block';
 }
 
-// Add product to cart
-function addToCart(productId) {
+// Handle product selection
+async function addToCart(productId) {
     const product = state.products.find(p => p.id === parseInt(productId));
     if (!product) return;
 
-    const cartItem = state.cart.find(item => item.id === parseInt(productId));
-    
-    if (cartItem) {
-        cartItem.quantity += 1;
-    } else {
-        state.cart.push({
-            id: product.id,
-            name: product.sync_product.name,
-            price: product.sync_product.retail_price,
-            image: product.sync_product.thumbnail_url,
-            quantity: 1
-        });
+    try {
+        // Fetch product variants
+        const response = await fetch(`${config.apiEndpoint}/variants/${productId}`);
+        const variants = await response.json();
+        
+        // TODO: Show variant selection modal
+        console.log('Product variants:', variants);
+        alert('Product variants will be available soon. Check back later!');
+        
+    } catch (error) {
+        console.error('Error fetching product variants:', error);
+        alert('Failed to load product options. Please try again later.');
     }
-
-    updateCart();
 }
 
 // Update cart display
