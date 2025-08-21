@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printful Store Test (Netlify)</title>
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        #status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { background: #ffe0e0; }
+        .success { background: #e0ffe0; }
+        .loading { background: #e0e0ff; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .product img { width: 100%; height: auto; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Printful Store Test (Using Netlify Function)</h1>
+    <div id="status" class="loading">Loading...</div>
+    <div id="products" class="products"></div>
+
+    <script>
+        const status = document.getElementById('status');
+        const productsDiv = document.getElementById('products');
+
+        async function fetchProducts() {
+            try {
+                status.textContent = 'Connecting to Printful via Netlify Function...';
+                status.className = 'loading';
+
+                // Using local Netlify Function endpoint
+                const response = await fetch('/.netlify/functions/printful/products');
+                const data = await response.json();
+                
+                console.log('Function Response:', data);
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Display products
+                productsDiv.innerHTML = data.map(product => `
+                    <div class="product">
+                        <img src="${product.thumbnail_url}" 
+                             alt="${product.name}"
+                             onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                        <h3>${product.name}</h3>
+                        <p>Variants: ${product.variants}</p>
+                        <button onclick="fetchVariants(${product.id})">View Details</button>
+                    </div>
+                `).join('');
+
+                status.textContent = `Loaded ${data.length} products successfully`;
+                status.className = 'success';
+
+            } catch (error) {
+                console.error('Error:', error);
+                status.innerHTML = `Error: ${error.message}<br>Check console for details`;
+                status.className = 'error';
+            }
+        }
+
+        async function fetchVariants(productId) {
+            try {
+                const response = await fetch(`/.netlify/functions/printful/variants/${productId}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                alert(JSON.stringify(data, null, 2));
+            } catch (error) {
+                console.error('Error fetching variants:', error);
+                alert(`Error loading product details: ${error.message}`);
+            }
+        }
+
+        // Start loading when page is ready
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+</body>
+</html>
