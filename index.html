@@ -457,13 +457,15 @@
       transform-origin: center center;
     }
 
-    @media (min-width: 601px) and (hover: hover) {
-      .shoe-container:hover .wave-shoe-img {
+    @media (min-width: 601px) {
+      .shoe-container:hover .wave-shoe-img,
+      .shoe-container.hover-triggered .wave-shoe-img {
         transform: translate3d(-50%, -50%, 120px);
         filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.4));
       }
 
-      .shoe-container:hover .mountain-bg {
+      .shoe-container:hover .mountain-bg,
+      .shoe-container.hover-triggered .mountain-bg {
         transform: translate3d(0, 0, -100px) scale(0.95);
         filter: brightness(0.7);
       }
@@ -471,12 +473,26 @@
     
     /* Make video darker by default */
     .mountain-bg {
-      filter: brightness(0.4);
+      filter: brightness(0.3);
+    }
+
+    /* Hide video controls and play button */
+    .mountain-bg::-webkit-media-controls-panel,
+    .mountain-bg::-webkit-media-controls-play-button,
+    .mountain-bg::-webkit-media-controls-start-playback-button,
+    .mountain-bg::-webkit-media-controls {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    
+    .mountain-bg {
+      pointer-events: none !important;
     }
 
     @media (prefers-color-scheme: dark) {
       .wave-shoe-img {
-        filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.299));
       }
     }
 
@@ -1754,6 +1770,31 @@
   <link rel="stylesheet" href="css/safe-area.css">
   <link rel="stylesheet" href="css/ios-webapp.css">
   <script src="js/scrollBehavior.js"></script>
+  
+  <!-- Video controls hiding -->
+  <style>
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-overlay-play-button,
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-timeline,
+    video::-webkit-media-controls-current-time-display,
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-mute-button,
+    video::-webkit-media-controls-toggle-closed-captions-button,
+    video::-webkit-media-controls-volume-slider,
+    video::-webkit-media-controls-panel,
+    video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    
+    video.mountain-bg {
+      pointer-events: none !important;
+    }
+  </style>
+
   <!-- Fallback font loading -->
   <style>
     @font-face {
@@ -1798,14 +1839,18 @@
     <div class="shoe-container">
       <div class="shoe-image-container">
         <video class="mountain-bg" 
-          playsinline 
-          autoplay 
-          muted 
-          loop 
+          playsinline
+          autoplay
+          muted
           preload="auto"
           width="1200" height="800"
-          id="mountainVideo">
+          id="mountainVideo"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          controlslist="nodownload nofullscreen noremoteplayback"
+          disablepictureinpicture>
           <source src="mount.webm" type="video/webm">
+          <source src="mount.mp4" type="video/mp4">
         </video>
         <img class="wave-shoe-img" src="trail.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 

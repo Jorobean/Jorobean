@@ -136,10 +136,142 @@ document.addEventListener('DOMContentLoaded', () => {
     style.textContent = `
         .wave-shoe-img {
             transition: opacity 0.7s ease-in-out,
-                        transform 2s cubic-bezier(0.2, 0, 0, 1) !important;
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .mountain-bg {
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        /* Hover effect styles for both desktop and mobile */
+        .shoe-container.hover-triggered .wave-shoe-img {
+            transform: translate3d(-50%, -50%, 60px) !important;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3)) !important;
+            transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1),
+                        filter 0.8s cubic-bezier(0.2, 0, 0.2, 1) !important;
+        }
+
+        .shoe-container.hover-triggered .mountain-bg {
+            transform: translate3d(0, 0, -50px) scale(0.98) !important;
+            filter: brightness(0.8) !important;
+            transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1),
+                        filter 0.8s cubic-bezier(0.2, 0, 0.2, 1) !important;
+        }
+        
+        /* Additional mobile adjustments */
+        @media (max-width: 600px) {
+            .shoe-container.hover-triggered .wave-shoe-img {
+                transform: translate3d(-50%, -50%, 30px) !important;
+            }
         }
     `;
     document.head.appendChild(style);
+    
+    // Set up video behavior
+    const mountainVideo = document.getElementById('mountainVideo');
+    let lastTriggered = 0;
+    let isUserHovering = false;
+    let restartTimeout;
+
+    // Configure video for mobile
+    mountainVideo.playsInline = true;
+    mountainVideo.setAttribute('playsinline', '');
+    mountainVideo.setAttribute('webkit-playsinline', '');
+    mountainVideo.setAttribute('x-webkit-airplay', 'allow');
+    mountainVideo.muted = true;
+    mountainVideo.setAttribute('muted', '');
+    mountainVideo.defaultMuted = true;
+    mountainVideo.loop = false;
+    mountainVideo.removeAttribute('loop');
+    
+    // Force autoplay
+    function forcePlay() {
+        const playPromise = mountainVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Video playback started');
+            }).catch(error => {
+                console.log('Video autoplay failed, trying again:', error);
+                // Try again after a short delay
+                setTimeout(forcePlay, 100);
+            });
+        }
+    }
+
+    // Initialize video on page visibility and focus
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            forcePlay();
+        }
+    });
+
+    window.addEventListener('focus', forcePlay);
+
+    // Track user hover state (desktop only)
+    const shoeContainer = document.querySelector('.shoe-container');
+    if (window.matchMedia('(min-width: 601px)').matches) {
+        shoeContainer.addEventListener('mouseenter', () => { isUserHovering = true; });
+        shoeContainer.addEventListener('mouseleave', () => { isUserHovering = false; });
+    }    function startVideoSequence() {
+        mountainVideo.currentTime = 0;
+        // Trigger hover effect when video restarts
+        shoeContainer.classList.add('hover-triggered');
+        setTimeout(() => {
+            shoeContainer.classList.remove('hover-triggered');
+        }, 2000); // Remove hover effect after 2 seconds
+        
+        forcePlay(); // Use our robust play function
+    }
+
+    function pauseAndWait() {
+        mountainVideo.pause();
+        // Clear any existing timeout
+        if (restartTimeout) {
+            clearTimeout(restartTimeout);
+        }
+        // Set new timeout for restart
+        restartTimeout = setTimeout(() => {
+            startVideoSequence();
+        }, 13000); // 13 seconds
+    }
+
+    // Wait for video to be loaded
+    mountainVideo.addEventListener('loadedmetadata', () => {
+        const videoDuration = mountainVideo.duration;
+        console.log('Video duration:', videoDuration);
+        
+        mountainVideo.addEventListener('timeupdate', () => {
+            const currentTime = mountainVideo.currentTime;
+            const timeLeft = videoDuration - currentTime;
+            const now = Date.now();
+            
+            // Check if we're near the end of the video
+            if (timeLeft < 0.1) {
+                pauseAndWait();
+            }
+        });
+
+        // Handle video ending
+        mountainVideo.addEventListener('ended', () => {
+            pauseAndWait();
+        });
+    });
+
+    // Start video on load with multiple triggers
+    mountainVideo.addEventListener('canplay', () => {
+        startVideoSequence();
+    });
+    
+    // Additional autoplay triggers
+    mountainVideo.addEventListener('loadedmetadata', forcePlay);
+    window.addEventListener('load', forcePlay);
+    
+    // Try to start immediately if video is already loaded
+    if (mountainVideo.readyState >= 2) {
+        forcePlay();
+    }
     
     // Start auto-transition after a delay
     setTimeout(autoTransitionColors, 1000);
