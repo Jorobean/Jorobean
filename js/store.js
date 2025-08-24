@@ -3,12 +3,10 @@ const SUPABASE_URL = 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I';
 
 // Store state
-let state = {
+const state = {
     products: [],
     cart: [],
-    selectedVariant: null,
-    currentCategory: 'all',
-    currentSort: 'featured' // Options: featured, price-low-high, price-high-low, name-a-z
+    selectedVariant: null
 };
 
 // Initialize store
@@ -24,9 +22,6 @@ async function initStore() {
             </div>
         `;
 
-        console.log('Fetching from:', `${SUPABASE_URL}/products`);
-        console.log('With auth:', SUPABASE_ANON_KEY);
-
         // Fetch products from Supabase Edge Function
         const response = await fetch(`${SUPABASE_URL}/products`, {
             headers: {
@@ -34,36 +29,23 @@ async function initStore() {
             }
         });
 
-        console.log('Response status:', response.status);
-        const responseText = await response.text();
-        console.log('Raw response:', responseText);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
+        const responseText = await response.text();
         const data = JSON.parse(responseText);
-        console.log('Raw API Response:', responseText);
-        console.log('Parsed data:', data);
 
         if (data.error) {
             throw new Error(data.error);
         }
 
-        // Log detailed structure of the first product
-        if (data.length > 0) {
-            const sampleProduct = data[0];
-            console.log('Sample product structure:', {
-                id: sampleProduct.id,
-                idType: typeof sampleProduct.id,
-                hasSync: !!sampleProduct.sync_product,
-                syncName: sampleProduct.sync_product?.name,
-                fullProduct: sampleProduct
-            });
-        }
-
-        console.log('Total products received:', data.length);
         state.products = data;
+        console.log(`Loaded ${data.length} products successfully`);
         renderProducts();
 
     } catch (error) {
-        console.error('Detailed error:', error);
+        console.error('Error loading products:', error);
         productsContainer.innerHTML = `
             <div class="error-message">
                 <h3>Failed to load products</h3>
@@ -71,38 +53,6 @@ async function initStore() {
                 <button onclick="initStore()">Try Again</button>
             </div>
         `;
-    }
-}
-
-// Filter products by category
-function filterProducts(products, category) {
-    if (category === 'all') return products;
-    return products.filter(product => {
-        const tags = product.sync_product.name.toLowerCase();
-        switch(category) {
-            case 'hats':
-                return tags.includes("hat") || tags.includes("cap") || tags.includes("beanie");
-            default:
-                return true;
-        }
-    });
-}
-
-// Sort products
-function sortProducts(products, sortType) {
-    const productsArray = [...products];
-    switch(sortType) {
-        case 'price-low-high':
-            return productsArray.sort((a, b) => 
-                (a.retail_price || 0) - (b.retail_price || 0));
-        case 'price-high-low':
-            return productsArray.sort((a, b) => 
-                (b.retail_price || 0) - (a.retail_price || 0));
-        case 'name-a-z':
-            return productsArray.sort((a, b) => 
-                a.name.localeCompare(b.name));
-        default: // 'featured'
-            return productsArray;
     }
 }
 
@@ -120,53 +70,38 @@ function renderProducts() {
         return;
     }
 
-    const filteredProducts = filterProducts(state.products, state.currentCategory);
-    const sortedProducts = sortProducts(filteredProducts, state.currentSort);
+    const productsHTML = state.products.map(product => {
+        if (!product.sync_product) {
+            console.error('Product missing sync_product data');
+            return '';
+        }
 
-    if (sortedProducts.length === 0) {
-        productsContainer.innerHTML = `
-            <div class="no-products">
-                <h3>No Products in This Category</h3>
-                <p>Check out our other categories!</p>
-            </div>
-        `;
-        return;
-    }
+        const imageUrl = product.sync_product.thumbnail_url;
+        const productName = product.sync_product.name;
+        const productId = product.sync_product.id;
+        const price = product.sync_variants && product.sync_variants[0] ? 
+            parseFloat(product.sync_variants[0].retail_price).toFixed(2) : '0.00';
 
-    console.log('Products data:', sortedProducts); // Add this to debug the data structure
-
-    console.log('Rendering products:', sortedProducts);
-    
-    const productsHTML = sortedProducts.map(product => {
-        // Debug logging for each product being rendered
-        console.log('Rendering product:', {
-            id: product.id,
-            idType: typeof product.id,
-            name: product.sync_product?.name
-        });
-
-        // Get the lowest price from all variants
-        const variants = product.sync_variants || [];
-        const prices = variants.map(v => parseFloat(v.retail_price)).filter(p => !isNaN(p));
-        const lowestPrice = prices.length > 0 ? Math.min(...prices) : null;
-        const priceDisplay = lowestPrice ? `$${lowestPrice.toFixed(2)}` : 'Price varies by size';
-        
-        // Store the product ID both as a number and string to handle both cases
-        const productId = product.id;
-        
         return `
-            <div class="product-card" data-product-id="${productId}">
+            <div class="product-card" data-product-id="${productId}" role="button" tabindex="0">
                 <div class="product-image-container">
                     <img 
-                        src="${product.sync_product.thumbnail_url}" 
-                        alt="${product.sync_product.name}"
+                        src="${imageUrl}" 
+                        alt="${productName}"
                         class="product-image"
                         loading="lazy"
+                        onerror="this.src='broken-heart.png'"
                     >
                 </div>
                 <div class="product-info">
-                    <h3 class="product-title">${product.sync_product.name}</h3>
-                    <button class="view-variants-btn" onclick="handleProductClick(${productId})">${priceDisplay}</button>
+                    <h3 class="product-title">${productName}</h3>
+                    <p class="product-price">$${price}</p>
+                    <button 
+                        class="view-variants-btn" 
+                        data-product-id="${productId}"
+                    >
+                        Select Size
+                    </button>
                 </div>
             </div>
         `;
@@ -176,191 +111,147 @@ function renderProducts() {
 }
 
 // Show product details
-// Global handler for product clicks
-function handleProductClick(productId) {
-    console.log('handleProductClick called with:', productId, typeof productId);
-    showProductDetails(productId);
-    return false; // Prevent default and stop propagation
-}
-
-async function showProductDetails(productId, event) {
+function showProductDetails(productId) {
     try {
-        // Prevent any event bubbling if event is provided
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
+        console.log('Opening details for product ID:', productId);
         
-        console.log('showProductDetails called with:', {
-            productId: productId,
-            idType: typeof productId,
-            availableProducts: state.products.length
-        });
-        
-        // Find the product by ID
-        const foundProduct = state.products.find(p => String(p.id) === String(productId));
-        
-        if (!foundProduct) {
-            console.error('Product lookup failed:', {
-                searchId: productId,
-                searchIdType: typeof productId,
-                availableIds: state.products.map(p => ({
-                    id: p.id,
-                    idType: typeof p.id
-                }))
-            });
-            throw new Error(`Product not found: ${productId}`);
-        }
-        
-        console.log('Found product:', foundProduct);
-        
-        // Find the product in the existing state first
-        const product = state.products.find(p => p.id === numericId);
+        const product = state.products.find(p => String(p.sync_product.id) === String(productId));
         if (!product) {
-            console.error('Product not found:', numericId);
-            throw new Error(`Product not found: ${numericId}`);
-        }
-        
-        console.log('Found product:', product);
-
-        // Remove any existing dialog
-        const existingDialog = document.querySelector('.product-dialog');
-        if (existingDialog) {
-            existingDialog.close();
-            existingDialog.remove();
+            throw new Error('Product not found');
         }
 
-        // Create and show the modal dialog
-        const modalDialog = document.createElement('dialog');
-        modalDialog.className = 'product-dialog';
-        
-        // Ensure dialog is properly removed when closed
-        modalDialog.addEventListener('close', () => {
-            modalDialog.remove();
-        });
-        
-        // Create the modal content with variants
+        if (!product.sync_variants || !product.sync_variants.length) {
+            throw new Error('No variants available for this product');
+        }
+
+        // Sort variants by size
         const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
-        const variants = (product.sync_variants || []).sort((a, b) => {
+        const sortedVariants = [...product.sync_variants].sort((a, b) => {
             return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
         });
-        
-        const variantsHtml = variants
-            .map(v => `
-                <button 
-                    class="size-button" 
-                    data-variant-id="${v.id}"
-                    data-price="${v.retail_price}"
-                    ${v.availability_status !== 'active' ? 'disabled' : ''}
-                >
-                    ${v.size}
-                </button>
-            `)
-            .join('');
 
-        console.log('Product details:', product);
-        const description = product.sync_product?.description || product.description || 'No description available';
-        modalDialog.innerHTML = `
+        const modal = document.createElement('div');
+        modal.className = 'product-dialog';
+        modal.innerHTML = `
+            <div class="dialog-overlay"></div>
             <div class="dialog-content">
                 <div class="dialog-header">
-                    <h2>${product.sync_product?.name || 'Product Details'}</h2>
-                    <button class="close-button" onclick="this.closest('dialog').close()">×</button>
+                    <h2>${product.sync_product.name}</h2>
+                    <button class="close-button" id="closeProductDialog">×</button>
                 </div>
                 <div class="dialog-body">
                     <div class="product-image-section">
-                        <img src="${product.sync_product?.thumbnail_url}" 
-                             alt="${product.sync_product?.name || 'Product'}" 
+                        <img src="${product.sync_product.thumbnail_url}" 
+                             alt="${product.sync_product.name}" 
                              class="dialog-image">
                     </div>
                     <div class="product-details">
-                        <p class="price">$${product.sync_variants?.[0]?.retail_price || '0.00'}</p>
-                        <div class="product-description" style="white-space: pre-line">
-                            ${description}
+                        <p class="price">$${parseFloat(sortedVariants[0].retail_price).toFixed(2)}</p>
+                        <div class="product-description">
+                            ${product.sync_product.description || 'No description available'}
                         </div>
                         <div class="size-selector">
-                            <h3>Select Size:</h3>
+                            <h3>Size</h3>
                             <div class="size-grid">
-                                ${variantsHtml}
+                                ${sortedVariants.map(v => `
+                                    <button 
+                                        class="size-button" 
+                                        data-variant-id="${v.id}"
+                                        ${v.availability_status !== 'active' ? 'disabled' : ''}
+                                    >
+                                        ${v.size}
+                                    </button>
+                                `).join('')}
                             </div>
                         </div>
-                        <button class="add-to-cart-btn" disabled>Add to Cart</button>
+                        <div class="quantity-selector">
+                            <label>Quantity</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-decrease">−</button>
+                                <span>1</span>
+                                <button class="quantity-increase">+</button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn" disabled>Add to cart</button>
                     </div>
                 </div>
             </div>
         `;
+
+        document.body.appendChild(modal);
+
+        const closeBtn = modal.querySelector('#closeProductDialog');
+        const overlay = modal.querySelector('.dialog-overlay');
         
-        document.body.appendChild(modalDialog);
-        modalDialog.showModal();
+        const closeModal = () => modal.remove();
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
 
         // Add event listeners for size buttons
-        modalDialog.querySelectorAll('.size-button').forEach(button => {
+        modal.querySelectorAll('.size-button').forEach(button => {
             button.addEventListener('click', () => {
-                modalDialog.querySelectorAll('.size-button').forEach(b => b.classList.remove('active'));
+                modal.querySelectorAll('.size-button').forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
-                modalDialog.querySelector('.add-to-cart-btn').disabled = false;
+                modal.querySelector('.add-to-cart-btn').disabled = false;
                 const variantId = button.dataset.variantId;
-                state.selectedVariant = product.sync_variants.find(v => v.id === parseInt(variantId));
+                state.selectedVariant = sortedVariants.find(v => v.id === parseInt(variantId));
+                
+                if (state.selectedVariant) {
+                    modal.querySelector('.price').textContent = `$${parseFloat(state.selectedVariant.retail_price).toFixed(2)}`;
+                }
             });
         });
 
+        // Add quantity control functionality
+        let quantity = 1;
+        const quantitySpan = modal.querySelector('.quantity-controls span');
+        const decreaseBtn = modal.querySelector('.quantity-decrease');
+        const increaseBtn = modal.querySelector('.quantity-increase');
+
+        decreaseBtn.addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                quantitySpan.textContent = quantity;
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            if (quantity < 10) {  // Set a reasonable maximum
+                quantity++;
+                quantitySpan.textContent = quantity;
+            }
+        });
+
         // Add to cart functionality
-        modalDialog.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+        modal.querySelector('.add-to-cart-btn').addEventListener('click', () => {
             if (state.selectedVariant) {
-                const productData = {
+                addToCart({
                     id: product.id,
                     name: product.sync_product.name,
                     thumbnail_url: product.sync_product.thumbnail_url,
-                    selectedVariant: state.selectedVariant
-                };
-                addToCart(productData);
-                modalDialog.close();
-                
-                // Show confirmation toast
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.textContent = 'Added to cart';
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    toast.classList.add('show');
-                    setTimeout(() => {
-                        toast.classList.remove('show');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 2000);
-                }, 100);
+                    selectedVariant: state.selectedVariant,
+                    quantity: quantity
+                });
+                closeModal();
             }
         });
 
     } catch (error) {
-        console.error('Error loading product details:', error);
-        const modalDialog = document.querySelector('.product-dialog');
-        if (modalDialog) {
-            modalDialog.innerHTML = `
-                <div class="error-message">
-                    <h3>Failed to load product details</h3>
-                    <p>${error.message}</p>
-                    <button onclick="this.closest('dialog').close()">Close</button>
-                </div>
-            `;
-        }
+        console.error('Error showing product details:', error);
     }
 }
 
 // Cart functionality
 function addToCart(product) {
-    if (!product.selectedVariant) {
-        console.error('No variant selected');
-        return;
-    }
-
     const cartItem = {
         id: product.selectedVariant.id,
         productId: product.id,
         name: product.name,
         price: parseFloat(product.selectedVariant.retail_price),
         size: product.selectedVariant.size,
-        color: product.selectedVariant.color || '',
+        color: product.selectedVariant.color,
         thumbnail: product.thumbnail_url,
-        quantity: 1
+        quantity: product.quantity || 1
     };
 
     const existingItem = state.cart.find(item => item.id === cartItem.id);
@@ -375,23 +266,21 @@ function addToCart(product) {
 }
 
 function updateCartCount() {
-    const cartButton = document.querySelector('.cart-button');
     const cartCount = document.querySelector('.cart-count');
     const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
     cartCount.style.display = totalItems > 0 ? 'block' : 'none';
-    
-    // Add or remove has-items class based on cart state
-    if (totalItems > 0) {
-        cartButton.classList.add('has-items');
-    } else {
-        cartButton.classList.remove('has-items');
-    }
 }
 
 function updateCartSidebar() {
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
+    const cartSidebar = document.getElementById('cart-sidebar');
+
+    if (!cartItems || !cartTotal) {
+        console.error('Cart elements not found');
+        return;
+    }
 
     if (state.cart.length === 0) {
         cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
@@ -421,12 +310,27 @@ function updateCartSidebar() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     cartTotal.textContent = `$${total.toFixed(2)}`;
 
-    // Add checkout button if there are items in cart
-    const checkoutBtn = document.createElement('button');
-    checkoutBtn.className = 'checkout-btn';
-    checkoutBtn.textContent = 'Proceed to Checkout';
-    checkoutBtn.onclick = showCheckoutForm;
-    cartItems.appendChild(checkoutBtn);
+    // Add checkout button to cart footer
+    const cartFooter = document.createElement('div');
+    cartFooter.className = 'cart-footer';
+    cartFooter.innerHTML = `
+        <div class="cart-total-section">
+            <strong>Total:</strong>
+            <span class="cart-total">$${total.toFixed(2)}</span>
+        </div>
+        <button class="checkout-btn">Proceed to Checkout</button>
+    `;
+    
+    // Remove any existing footer
+    const existingFooter = cartSidebar.querySelector('.cart-footer');
+    if (existingFooter) {
+        existingFooter.remove();
+    }
+    
+    cartSidebar.appendChild(cartFooter);
+
+    // Add event listener to checkout button
+    cartFooter.querySelector('.checkout-btn').addEventListener('click', showCheckoutForm);
 }
 
 function updateQuantity(itemId, newQuantity) {
@@ -443,66 +347,131 @@ function updateQuantity(itemId, newQuantity) {
 }
 
 // Checkout functionality
-async function showCheckoutForm() {
-    const modalDialog = document.createElement('dialog');
-    modalDialog.className = 'checkout-dialog';
-    modalDialog.innerHTML = `
-        <div class="dialog-content">
+function showCheckoutForm() {
+    // First, close the cart sidebar
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    if (cartSidebar && cartOverlay) {
+        cartSidebar.classList.remove('open');
+        cartOverlay.style.display = 'none';
+    }
+
+    // Create checkout modal
+    const modal = document.createElement('div');
+    modal.className = 'checkout-modal';
+    modal.innerHTML = `
+        <div class="checkout-overlay"></div>
+        <div class="checkout-content">
             <div class="dialog-header">
                 <h2>Checkout</h2>
-                <button class="close-button" onclick="this.closest('dialog').close()">×</button>
+                <button class="close-button" id="closeCheckout">×</button>
             </div>
             <div class="dialog-body">
-                <form id="checkout-form">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
+                <form id="checkout-form" class="checkout-form">
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="address1">Address</label>
-                        <input type="text" id="address1" name="address1" required>
+                    
+                    <div class="form-section">
+                        <h3>Shipping Address</h3>
+                        <div class="form-group">
+                            <label for="address1">Street Address</label>
+                            <input type="text" id="address1" name="address1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address2">Apartment, suite, etc. (optional)</label>
+                            <input type="text" id="address2" name="address2">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" name="state" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip">ZIP Code</label>
+                                <input type="text" id="zip" name="zip" required pattern="[0-9]{5}">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" required>
+
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        <div class="order-items">
+                            ${state.cart.map(item => `
+                                <div class="order-item">
+                                    <img src="${item.thumbnail}" alt="${item.name}">
+                                    <div class="order-item-details">
+                                        <p class="item-name">${item.name}</p>
+                                        <p class="item-variant">Size: ${item.size}</p>
+                                        <p class="item-quantity">Qty: ${item.quantity}</p>
+                                    </div>
+                                    <p class="item-price">$${(item.price * item.quantity).toFixed(2)}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-total">
+                            <p><strong>Total:</strong> $${state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="state">State</label>
-                        <input type="text" id="state" name="state" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="zip">ZIP Code</label>
-                        <input type="text" id="zip" name="zip" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Place Order</button>
+
+                    <button type="submit" class="submit-btn">
+                        <span>Place Order</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M4 12h16M16 6l6 6-6 6"/>
+                        </svg>
+                    </button>
                 </form>
             </div>
         </div>
     `;
-    document.body.appendChild(modalDialog);
-    modalDialog.showModal();
 
-    // Handle form submission
-    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    document.body.appendChild(modal);
+
+    const closeBtn = document.getElementById('closeCheckout');
+    const overlay = modal.querySelector('.checkout-overlay');
+    const form = document.getElementById('checkout-form');
+
+    const closeModal = () => modal.remove();
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = form.querySelector('.submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Processing...</span>';
         
-        const formData = new FormData(e.target);
-        const orderData = {
-            recipient: {
-                name: formData.get('name'),
-                address1: formData.get('address1'),
-                city: formData.get('city'),
-                state_code: formData.get('state'),
-                country_code: 'US',
-                zip: formData.get('zip')
-            },
-            items: state.cart.map(item => ({
-                sync_variant_id: item.id,
-                quantity: item.quantity
-            }))
-        };
-
         try {
+            const formData = new FormData(e.target);
+            const orderData = {
+                recipient: {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    address1: formData.get('address1'),
+                    address2: formData.get('address2'),
+                    city: formData.get('city'),
+                    state_code: formData.get('state'),
+                    country_code: 'US',
+                    zip: formData.get('zip')
+                },
+                items: state.cart.map(item => ({
+                    sync_variant_id: item.id,
+                    quantity: item.quantity
+                }))
+            };
+
             const response = await fetch(`${SUPABASE_URL}/order`, {
                 method: 'POST',
                 headers: {
@@ -514,16 +483,29 @@ async function showCheckoutForm() {
 
             const data = await response.json();
             if (response.ok) {
-                alert('Order placed successfully!');
-                state.cart = []; // Clear cart
+                state.cart = [];
                 updateCartCount();
                 updateCartSidebar();
-                modalDialog.close();
+                closeModal();
+                
+                const successMessage = document.createElement('div');
+                successMessage.className = 'success-message';
+                successMessage.textContent = 'Order placed successfully!';
+                document.body.appendChild(successMessage);
+                setTimeout(() => successMessage.remove(), 3000);
             } else {
                 throw new Error(data.error || 'Failed to place order');
             }
         } catch (error) {
-            alert(error.message);
+            console.error('Checkout error:', error);
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = error.message;
+            document.body.appendChild(errorMessage);
+            setTimeout(() => errorMessage.remove(), 3000);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Place Order</span>';
         }
     });
 }
@@ -544,29 +526,31 @@ document.getElementById('cart-overlay')?.addEventListener('click', () => {
     document.getElementById('cart-overlay').style.display = 'none';
 });
 
-// Handle category selection
-function initCategoryButtons() {
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Update active state
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Update state and re-render
-            state.currentCategory = button.dataset.category;
-            renderProducts();
+// Initialize product click handlers
+function initProductClickHandlers() {
+    const productsContainer = document.getElementById('products-container');
+    if (productsContainer) {
+        productsContainer.addEventListener('click', (event) => {
+            const productCard = event.target.closest('.product-card');
+            if (productCard) {
+                event.preventDefault();
+                const productId = productCard.dataset.productId;
+                showProductDetails(productId);
+            }
         });
-    });
-}
 
-// Initialize sort select
-function initSortSelect() {
-    const sortSelect = document.getElementById('sort-select');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (e) => {
-            state.currentSort = e.target.value;
-            renderProducts();
+        // Add keyboard accessibility
+        productsContainer.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                const productCard = event.target.closest('.product-card');
+                if (productCard) {
+                    event.preventDefault();
+                    const productId = productCard.dataset.productId;
+                    if (productId) {
+                        showProductDetails(productId);
+                    }
+                }
+            }
         });
     }
 }
@@ -574,6 +558,5 @@ function initSortSelect() {
 // Initialize the store
 document.addEventListener('DOMContentLoaded', () => {
     initStore();
-    initCategoryButtons();
-    initSortSelect();
+    initProductClickHandlers();
 });
