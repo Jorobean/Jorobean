@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success - Jorobean</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/store.css">
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            fill: #4CAF50;
+            animation: checkmark 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .success-header {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .order-details {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .tracking-info {
+            background: var(--section-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border: 2px solid var(--border-color);
+        }
+
+        .step.active .step-icon {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
+        }
+
+        .button {
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .primary-button {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-button {
+            background: var(--section-bg);
+            color: var(--text-color);
+        }
+
+        .order-items {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .order-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .item-details h4 {
+            margin: 0 0 8px 0;
+        }
+
+        .item-price {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .success-container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .step-indicator {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .step-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="/" class="logo logo-centered">
+                <img src="jorobean_logo.webp" alt="Jorobean Logo" class="logo-img">
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="success-container">
+            <svg class="success-icon" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <div class="success-header">
+                <h1>Thank You For Your Order!</h1>
+                <p>Your order has been successfully placed and is being processed.</p>
+            </div>
+
+            <div class="order-details">
+                <h2>Order Details</h2>
+                <div id="order-info">
+                    <!-- Will be populated by JavaScript -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Loading order details...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tracking-info">
+                <h3>Order Status</h3>
+                <div class="step-indicator">
+                    <div class="step-line"></div>
+                    <div class="step active">
+                        <div class="step-icon">1</div>
+                        <p>Order Placed</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <p>Processing</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <p>Shipped</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">4</div>
+                        <p>Delivered</p>
+                    </div>
+                </div>
+                <p>You'll receive an email confirmation with your order details shortly.</p>
+                <p>Once your order ships, we'll send you tracking information.</p>
+            </div>
+
+            <div class="button-group">
+                <a href="/store.html" class="button secondary-button">Continue Shopping</a>
+                <a href="/account.html" class="button primary-button">Track Your Order</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/stripe-checkout.js"></script>
+</body>
+</html>

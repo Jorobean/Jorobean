@@ -27,6 +27,7 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/store.css">
+  <link rel="stylesheet" href="css/product-dialog.css">
   <script src="js/header.js" defer></script>
   <script src="js/scrollBehavior.js" defer></script>
   <script src="js/store.js" defer></script>
@@ -50,23 +51,6 @@
   </div>
 
   <main>
-    <div class="store-controls">
-      <div class="controls-wrapper">
-        <div class="store-categories">
-          <button class="category-btn active" data-category="all">All Products</button>
-          <button class="category-btn" data-category="hats">Hats</button>
-        </div>
-        <div class="store-sort">
-          <select id="sort-select" aria-label="Sort products">
-            <option value="featured">Featured</option>
-            <option value="price-low-high">Price: Low to High</option>
-            <option value="price-high-low">Price: High to Low</option>
-            <option value="name-a-z">Name: A to Z</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    
     <div class="store-content">
       <div class="products-grid" id="products-container">
         <div class="loading-spinner">

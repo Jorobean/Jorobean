@@ -40,6 +40,15 @@ async function initStore() {
             throw new Error(data.error);
         }
 
+        // Reorder products - swap Keep Loading tee with Red Boot tee
+        const keepLoadingTee = data.find(p => p.sync_product.name.includes('Keep Loading'));
+        const redBootTee = data.find(p => p.sync_product.name.includes('Red Boot'));
+        if (keepLoadingTee && redBootTee) {
+            const keepLoadingIndex = data.indexOf(keepLoadingTee);
+            const redBootIndex = data.indexOf(redBootTee);
+            [data[keepLoadingIndex], data[redBootIndex]] = [data[redBootIndex], data[keepLoadingIndex]];
+        }
+        
         state.products = data;
         console.log(`Loaded ${data.length} products successfully`);
         renderProducts();
@@ -83,7 +92,7 @@ function renderProducts() {
             parseFloat(product.sync_variants[0].retail_price).toFixed(2) : '0.00';
 
         return `
-            <div class="product-card" data-product-id="${productId}" role="button" tabindex="0">
+            <div class="product-card" data-product-id="${productId}" role="button" tabindex="0" onclick="showProductDetails('${productId}')">
                 <div class="product-image-container">
                     <img 
                         src="${imageUrl}" 
@@ -98,7 +107,7 @@ function renderProducts() {
                     <p class="product-price">$${price}</p>
                     <button 
                         class="view-variants-btn" 
-                        data-product-id="${productId}"
+                        onclick="event.stopPropagation(); showProductDetails('${productId}')"
                     >
                         Select Size
                     </button>
@@ -124,10 +133,64 @@ function showProductDetails(productId) {
             throw new Error('No variants available for this product');
         }
 
-        // Sort variants by size
-        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
-        const sortedVariants = [...product.sync_variants].sort((a, b) => {
-            return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
+        // Function to handle image zoom
+        function handleImageZoom(imageContainer, image) {
+            const ZOOM_LEVEL = 2.5;
+            
+            function onMouseMove(e) {
+                const rect = imageContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xPercent = x / rect.width * 100;
+                const yPercent = y / rect.height * 100;
+                
+                image.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                image.style.transform = `scale(${ZOOM_LEVEL})`;
+            }
+            
+            function onMouseLeave() {
+                image.style.transformOrigin = 'center';
+                image.style.transform = 'scale(1)';
+            }
+            
+            imageContainer.addEventListener('mousemove', onMouseMove);
+            imageContainer.addEventListener('mouseleave', onMouseLeave);
+            
+            // Cleanup function
+            return () => {
+                imageContainer.removeEventListener('mousemove', onMouseMove);
+                imageContainer.removeEventListener('mouseleave', onMouseLeave);
+            };
+        }
+
+        // Get unique colors and sizes from variants
+        const colors = [...new Set(product.sync_variants.map(v => v.color))];
+        const sizes = [...new Set(product.sync_variants.map(v => v.size))];
+        
+        // Sort sizes in standard order
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
+        const sortedSizes = sizes.sort((a, b) => {
+            const indexA = sizeOrder.indexOf(a);
+            const indexB = sizeOrder.indexOf(b);
+            
+            // If both sizes are in our order array, sort by their index
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            
+            // If only one size is in our order array, put it first
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            
+            // If neither size is in our order array, maintain their original order
+            return 0;
+        });
+        
+        // Group variants by color
+        const variantsByColor = {};
+        colors.forEach(color => {
+            variantsByColor[color] = product.sync_variants.filter(v => v.color === color);
         });
 
         const modal = document.createElement('div');
@@ -135,44 +198,112 @@ function showProductDetails(productId) {
         modal.innerHTML = `
             <div class="dialog-overlay"></div>
             <div class="dialog-content">
-                <div class="dialog-header">
-                    <h2>${product.sync_product.name}</h2>
-                    <button class="close-button" id="closeProductDialog">×</button>
-                </div>
+                <button class="close-button-top-right" id="closeProductDialog">×</button>
                 <div class="dialog-body">
-                    <div class="product-image-section">
-                        <img src="${product.sync_product.thumbnail_url}" 
-                             alt="${product.sync_product.name}" 
-                             class="dialog-image">
-                    </div>
-                    <div class="product-details">
-                        <p class="price">$${parseFloat(sortedVariants[0].retail_price).toFixed(2)}</p>
-                        <div class="product-description">
-                            ${product.sync_product.description || 'No description available'}
+                    <div class="product-main-content">
+                        <div class="product-image-section">
+                            <img src="${product.sync_product.thumbnail_url}" 
+                                 alt="${product.sync_product.name}" 
+                                 class="dialog-image">
                         </div>
+                        <div class="product-details">
+                            <h2>${product.sync_product.name}</h2>
+                            
+                            ${colors.length > 1 ? `
+                            <div class="color-selector">
+                                <h3>Color</h3>
+                                <div class="color-grid">
+                                    ${colors.map(color => `
+                                        <button 
+                                            class="color-button ${color.toLowerCase()}"
+                                            data-color="${color}"
+                                            title="${color}"
+                                        >
+                                            <span class="color-swatch" style="background-color: ${color.toLowerCase()}"></span>
+                                            <span class="color-name">${color}</span>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        
                         <div class="size-selector">
                             <h3>Size</h3>
                             <div class="size-grid">
-                                ${sortedVariants.map(v => `
+                                ${sortedSizes.map(size => `
                                     <button 
                                         class="size-button" 
-                                        data-variant-id="${v.id}"
-                                        ${v.availability_status !== 'active' ? 'disabled' : ''}
+                                        data-size="${size}"
+                                        disabled
                                     >
-                                        ${v.size}
+                                        ${size}
                                     </button>
                                 `).join('')}
                             </div>
                         </div>
+                        
                         <div class="quantity-selector">
-                            <label>Quantity</label>
+                            <h3>Quantity</h3>
                             <div class="quantity-controls">
                                 <button class="quantity-decrease">−</button>
                                 <span>1</span>
                                 <button class="quantity-increase">+</button>
                             </div>
                         </div>
+
+                        <p class="price">$${parseFloat(product.sync_variants[0].retail_price).toFixed(2)}</p>
                         <button class="add-to-cart-btn" disabled>Add to cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-description">
+                        <h3>About product</h3>
+                        <div class="product-description-content">
+                            <div class="product-description-main">
+                                ${product.sync_product.name.toLowerCase().includes('trucker') ? `
+                                    <p>This six-panel trucker cap with a mesh back will be a comfy and classic choice for a perfect day in the sun.</p>
+                                ` : product.sync_product.name.toLowerCase().includes('bucket') ? `
+                                    <p>Combine practicality, comfort, and fashion in one. Keep the sun out of your eyes with this 100% cotton twill bucket hat. Cotton fabric and sewn eyelets are sure to help you stay cool during any activity, be it a stroll in the park or an intense game of sports.</p>
+                                ` : `
+                                    <p>This t-shirt is everything you've dreamed of and more. It feels soft and lightweight, with the right amount of stretch. It's comfortable and flattering for all.</p>
+                                `}
+                            </div>
+                            <div class="product-description-details">
+                                <div class="product-features">
+                                    <h4>Features</h4>
+                                    ${product.sync_product.name.toLowerCase().includes('trucker') ? `
+                                        <p>• 26% cotton, 74% polyester</p>
+                                        <p>• Mid-profile cap with a low-profile embroidery area</p>
+                                        <p>• Structured, six-panel cap</p>
+                                        <p>• 3.5″ crown (8.9 cm)</p>
+                                        <p>• Hard buckram front panels</p>
+                                        <p>• Mesh back</p>
+                                        <p>• Permacurv® visor, matching undervisor</p>
+                                        <p>• Plastic adjustable closure</p>
+                                        <p>• Head circumference: 21⅝″–23⅝″ (54.9 cm–60 cm)</p>
+                                        <p>• Blank product sourced from Vietnam or Bangladesh</p>
+                                    ` : product.sync_product.name.toLowerCase().includes('bucket') ? `
+                                        <p>• 100% cotton twill</p>
+                                        <p>• 3 ¾″ (7.6 cm) crown</p>
+                                        <p>• 2 ¼″ (5.1 cm) brim</p>
+                                        <p>• One size fits most</p>
+                                        <p>• Sewn eyelets for breathability</p>
+                                    ` : `
+                                        <p>• 100% combed and ring-spun cotton (Heather colors contain polyester)</p>
+                                        <p>• Fabric weight: 4.2 oz./yd.² (142 g/m²)</p>
+                                        <p>• Pre-shrunk fabric</p>
+                                        <p>• Side-seamed construction</p>
+                                        <p>• Shoulder-to-shoulder taping</p>
+                                        <p>• Blank product sourced from Nicaragua, Mexico, Honduras, or the US</p>
+                                    `}
+                                </div>
+                                <div class="product-note">
+                                    <h4>Sustainability</h4>
+                                    <p>This product is made especially for you as soon as you place an order, which is why it takes us a bit longer to deliver it to you. Making products on demand instead of in bulk helps reduce overproduction, so thank you for making thoughtful purchasing decisions!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -180,24 +311,95 @@ function showProductDetails(productId) {
 
         document.body.appendChild(modal);
 
+        // Initialize image zoom
+        const imageContainer = modal.querySelector('.product-image-section');
+        const image = modal.querySelector('.dialog-image');
+        const cleanup = handleImageZoom(imageContainer, image);
+
         const closeBtn = modal.querySelector('#closeProductDialog');
         const overlay = modal.querySelector('.dialog-overlay');
         
-        const closeModal = () => modal.remove();
-        closeBtn.addEventListener('click', closeModal);
-        overlay.addEventListener('click', closeModal);
+        function handleClose(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            cleanup(); // Remove event listeners
+            if (modal && modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+            }
+        }
+        
+        closeBtn.onclick = handleClose;
+        overlay.onclick = handleClose;
+
+        // Add event listeners for color buttons
+        let selectedColor = colors[0];
+        let selectedSize = null;
+
+        function updateAvailableSizes(color) {
+            const availableSizes = variantsByColor[color].map(v => v.size);
+            modal.querySelectorAll('.size-button').forEach(button => {
+                const size = button.dataset.size;
+                const variant = variantsByColor[color].find(v => v.size === size);
+                button.disabled = !variant || variant.availability_status !== 'active';
+                button.classList.remove('active');
+            });
+            selectedSize = null;
+            
+            // Reset add to cart button
+            const addToCartBtn = modal.querySelector('.add-to-cart-btn');
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.remove('added');
+            addToCartBtn.innerHTML = 'Add to cart';
+        }
+
+        function updateSelectedVariant() {
+            const addToCartBtn = modal.querySelector('.add-to-cart-btn');
+            
+            // Reset the button state
+            addToCartBtn.classList.remove('added');
+            addToCartBtn.innerHTML = 'Add to cart';
+            
+            if (selectedColor && selectedSize) {
+                state.selectedVariant = product.sync_variants.find(v => 
+                    v.color === selectedColor && v.size === selectedSize
+                );
+                
+                if (state.selectedVariant) {
+                    modal.querySelector('.price').textContent = 
+                        `$${parseFloat(state.selectedVariant.retail_price).toFixed(2)}`;
+                    addToCartBtn.disabled = false;
+                }
+            }
+        }
+
+        if (colors.length > 1) {
+            modal.querySelectorAll('.color-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const color = button.dataset.color;
+                    modal.querySelectorAll('.color-button').forEach(b => 
+                        b.classList.remove('active'));
+                    button.classList.add('active');
+                    selectedColor = color;
+                    updateAvailableSizes(color);
+                });
+            });
+            
+            // Initialize with first color
+            modal.querySelector('.color-button').classList.add('active');
+            updateAvailableSizes(selectedColor);
+        } else {
+            updateAvailableSizes(selectedColor);
+        }
 
         // Add event listeners for size buttons
         modal.querySelectorAll('.size-button').forEach(button => {
             button.addEventListener('click', () => {
-                modal.querySelectorAll('.size-button').forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-                modal.querySelector('.add-to-cart-btn').disabled = false;
-                const variantId = button.dataset.variantId;
-                state.selectedVariant = sortedVariants.find(v => v.id === parseInt(variantId));
-                
-                if (state.selectedVariant) {
-                    modal.querySelector('.price').textContent = `$${parseFloat(state.selectedVariant.retail_price).toFixed(2)}`;
+                if (!button.disabled) {
+                    modal.querySelectorAll('.size-button').forEach(b => 
+                        b.classList.remove('active'));
+                    button.classList.add('active');
+                    selectedSize = button.dataset.size;
+                    updateSelectedVariant();
                 }
             });
         });
@@ -223,8 +425,17 @@ function showProductDetails(productId) {
         });
 
         // Add to cart functionality
-        modal.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+        const addToCartBtn = modal.querySelector('.add-to-cart-btn');
+        addToCartBtn.addEventListener('click', () => {
             if (state.selectedVariant) {
+                // Save original button text
+                const originalText = addToCartBtn.innerHTML;
+                
+                // Change button to show checkmark
+                addToCartBtn.innerHTML = '✓';
+                addToCartBtn.classList.add('added');
+                addToCartBtn.disabled = true;
+                
                 addToCart({
                     id: product.id,
                     name: product.sync_product.name,
@@ -232,7 +443,11 @@ function showProductDetails(productId) {
                     selectedVariant: state.selectedVariant,
                     quantity: quantity
                 });
-                closeModal();
+                
+                // After a short delay, close the modal
+                setTimeout(() => {
+                    closeModal();
+                }, 1000);
             }
         });
 
@@ -254,9 +469,9 @@ function addToCart(product) {
         quantity: product.quantity || 1
     };
 
-    const existingItem = state.cart.find(item => item.id === cartItem.id);
+    const existingItem = state.cart.find(item => String(item.id) === String(cartItem.id));
     if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += product.quantity || 1;
     } else {
         state.cart.push(cartItem);
     }
@@ -268,18 +483,43 @@ function addToCart(product) {
 function updateCartCount() {
     const cartCount = document.querySelector('.cart-count');
     const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-    cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+    console.log('Cart total items:', totalItems);
+    console.log('Current cart state:', state.cart);
+    
+    if (cartCount) {
+        cartCount.textContent = totalItems;
+        cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+    } else {
+        console.error('Cart count element not found');
+    }
 }
 
 function updateCartSidebar() {
+    // Ensure cart structure exists
+    initCartStructure();
+
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
     const cartSidebar = document.getElementById('cart-sidebar');
+    
+    console.log('Updating cart sidebar');
+    console.log('Cart items element exists:', !!cartItems);
+    console.log('Cart total element exists:', !!cartTotal);
+    console.log('Cart sidebar element exists:', !!cartSidebar);
 
-    if (!cartItems || !cartTotal) {
-        console.error('Cart elements not found');
-        return;
+    // Try to initialize again if elements are missing
+    if (!cartItems || !cartTotal || !cartSidebar) {
+        console.warn('Cart elements not found, reinitializing...');
+        initCartStructure();
+        // Get references again without redeclaring
+        cartItems = document.getElementById('cart-items');
+        cartTotal = document.getElementById('cart-total');
+        cartSidebar = document.getElementById('cart-sidebar');
+        
+        if (!cartItems || !cartTotal || !cartSidebar) {
+            console.error('Cart elements still not found after reinitialization');
+            return;
+        }
     }
 
     if (state.cart.length === 0) {
@@ -289,16 +529,16 @@ function updateCartSidebar() {
     }
 
     cartItems.innerHTML = state.cart.map(item => `
-        <div class="cart-item">
+        <div class="cart-item" data-item-id="${item.id}">
             <img src="${item.thumbnail}" alt="${item.name}" class="cart-item-image">
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
                 <p>Size: ${item.size}</p>
                 <p>Color: ${item.color}</p>
                 <div class="quantity-controls">
-                    <button onclick="updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="updateQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                    <button class="quantity-decrease" data-item-id="${item.id}">-</button>
+                    <span class="quantity-value">${item.quantity}</span>
+                    <button class="quantity-increase" data-item-id="${item.id}">+</button>
                 </div>
             </div>
             <div class="cart-item-price">
@@ -331,13 +571,34 @@ function updateCartSidebar() {
 
     // Add event listener to checkout button
     cartFooter.querySelector('.checkout-btn').addEventListener('click', showCheckoutForm);
+
+    // Add event listeners for quantity controls
+    cartItems.querySelectorAll('.quantity-decrease').forEach(button => {
+        button.addEventListener('click', () => {
+            const itemId = button.dataset.itemId;
+            const item = state.cart.find(item => String(item.id) === String(itemId));
+            if (item) {
+                updateQuantity(itemId, item.quantity - 1);
+            }
+        });
+    });
+
+    cartItems.querySelectorAll('.quantity-increase').forEach(button => {
+        button.addEventListener('click', () => {
+            const itemId = button.dataset.itemId;
+            const item = state.cart.find(item => String(item.id) === String(itemId));
+            if (item) {
+                updateQuantity(itemId, item.quantity + 1);
+            }
+        });
+    });
 }
 
 function updateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) {
-        state.cart = state.cart.filter(item => item.id !== parseInt(itemId));
+        state.cart = state.cart.filter(item => String(item.id) !== String(itemId));
     } else {
-        const item = state.cart.find(item => item.id === parseInt(itemId));
+        const item = state.cart.find(item => String(item.id) === String(itemId));
         if (item) {
             item.quantity = newQuantity;
         }
@@ -347,7 +608,7 @@ function updateQuantity(itemId, newQuantity) {
 }
 
 // Checkout functionality
-function showCheckoutForm() {
+async function showCheckoutForm() {
     // First, close the cart sidebar
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
@@ -356,7 +617,43 @@ function showCheckoutForm() {
         cartOverlay.style.display = 'none';
     }
 
-    // Create checkout modal
+    // Prepare cart data for Stripe
+    const cartData = state.cart.map(item => ({
+        price_data: {
+            currency: 'usd',
+            product_data: {
+                name: item.name,
+                description: `Size: ${item.size}${item.color ? `, Color: ${item.color}` : ''}`,
+                images: [item.thumbnail]
+            },
+            unit_amount: Math.round(item.price * 100) // Stripe expects amounts in cents
+        },
+        quantity: item.quantity
+    }));
+
+    // Show loading state
+    const loadingMessage = document.createElement('div');
+    loadingMessage.className = 'loading-message';
+    loadingMessage.innerHTML = `
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Preparing checkout...</p>
+        </div>
+    `;
+    document.body.appendChild(loadingMessage);
+
+    try {
+        await createCheckoutSession(cartData);
+    } catch (error) {
+        console.error('Checkout error:', error);
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.textContent = error.message;
+        document.body.appendChild(errorMessage);
+        setTimeout(() => errorMessage.remove(), 3000);
+    } finally {
+        loadingMessage.remove();
+    }
     const modal = document.createElement('div');
     modal.className = 'checkout-modal';
     modal.innerHTML = `
@@ -406,6 +703,14 @@ function showCheckoutForm() {
                         </div>
                     </div>
 
+                    <div class="form-section">
+                        <h3>Payment Information</h3>
+                        <div class="form-group">
+                            <div id="card-element"></div>
+                            <div id="card-errors" class="error-text"></div>
+                        </div>
+                    </div>
+
                     <div class="order-summary">
                         <h3>Order Summary</h3>
                         <div class="order-items">
@@ -426,8 +731,8 @@ function showCheckoutForm() {
                         </div>
                     </div>
 
-                    <button type="submit" class="submit-btn">
-                        <span>Place Order</span>
+                    <button type="submit" class="submit-btn" id="submit-payment">
+                        <span>Pay and Place Order</span>
                         <svg viewBox="0 0 24 24" width="16" height="16">
                             <path fill="currentColor" d="M4 12h16M16 6l6 6-6 6"/>
                         </svg>
@@ -455,7 +760,12 @@ function showCheckoutForm() {
         
         try {
             const formData = new FormData(e.target);
+            // First, calculate the total amount
+            const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // 1. Create a payment intent with Stripe
             const orderData = {
+                amount: total * 100, // Stripe expects amount in cents
                 recipient: {
                     name: formData.get('name'),
                     email: formData.get('email'),
@@ -468,17 +778,49 @@ function showCheckoutForm() {
                 },
                 items: state.cart.map(item => ({
                     sync_variant_id: item.id,
-                    quantity: item.quantity
+                    quantity: item.quantity,
+                    retail_price: item.price
                 }))
             };
 
-            const response = await fetch(`${SUPABASE_URL}/order`, {
+            // Create payment intent
+            const paymentResponse = await fetch(`${SUPABASE_URL}/create-payment-intent`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(orderData)
+            });
+
+            const paymentData = await paymentResponse.json();
+            if (!paymentResponse.ok) {
+                throw new Error(paymentData.error || 'Failed to create payment intent');
+            }
+
+            // 2. Confirm the payment with Stripe.js
+            const { error: stripeError } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: `${window.location.origin}/order-confirmation`,
+                }
+            });
+
+            if (stripeError) {
+                throw new Error(stripeError.message);
+            }
+
+            // 3. If payment successful, create order in Printful
+            const printfulResponse = await fetch(`${SUPABASE_URL}/create-printful-order`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    paymentIntentId: paymentData.paymentIntentId,
+                    ...orderData
+                })
             });
 
             const data = await response.json();
@@ -555,8 +897,70 @@ function initProductClickHandlers() {
     }
 }
 
+// Initialize cart structure
+function initCartStructure() {
+    // Create cart count if it doesn't exist
+    if (!document.querySelector('.cart-count')) {
+        const cartButton = document.getElementById('cart-button');
+        if (cartButton) {
+            const cartCount = document.createElement('span');
+            cartCount.className = 'cart-count';
+            cartCount.style.display = 'none';
+            cartButton.appendChild(cartCount);
+        }
+    }
+
+    // Create cart sidebar if it doesn't exist
+    if (!document.getElementById('cart-sidebar')) {
+        // Create container for all cart elements
+        const cartContainer = document.createElement('div');
+        cartContainer.id = 'cart-container';
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'cart-overlay';
+        overlay.className = 'cart-overlay';
+        cartContainer.appendChild(overlay);
+        
+        // Create sidebar
+        const sidebar = document.createElement('div');
+        sidebar.id = 'cart-sidebar';
+        sidebar.className = 'cart-sidebar';
+        
+        // Add cart content
+        sidebar.innerHTML = `
+            <div class="cart-header">
+                <button class="close-cart">×</button>
+                <h2>Shopping Cart</h2>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total-section">
+                    <strong>Total:</strong>
+                    <span id="cart-total">$0.00</span>
+                </div>
+            </div>
+        `;
+        
+        cartContainer.appendChild(sidebar);
+        document.body.appendChild(cartContainer);
+        
+        // Reinitialize cart event listeners
+        document.querySelector('.close-cart')?.addEventListener('click', () => {
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('cart-overlay').style.display = 'none';
+        });
+
+        document.getElementById('cart-overlay')?.addEventListener('click', () => {
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('cart-overlay').style.display = 'none';
+        });
+    }
+}
+
 // Initialize the store
 document.addEventListener('DOMContentLoaded', () => {
+    initCartStructure();
     initStore();
     initProductClickHandlers();
 });

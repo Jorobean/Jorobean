@@ -148,7 +148,19 @@ function showProductDetails(productId) {
                     <div class="product-details">
                         <p class="price">$${parseFloat(sortedVariants[0].retail_price).toFixed(2)}</p>
                         <div class="product-description">
-                            ${product.sync_product.description || product.sync_product.name}
+                            <h3>About Product</h3>
+                            <p>This t-shirt is everything you've dreamed of and more. It feels soft and lightweight, with the right amount of stretch. It's comfortable and flattering for all.</p>
+                            
+                            <ul>
+                                • 100% combed and ring-spun cotton (Heather colors contain polyester)
+                                • Fabric weight: 4.2 oz./yd.² (142 g/m²)
+                                • Pre-shrunk fabric
+                                • Side-seamed construction
+                                • Shoulder-to-shoulder taping
+                                • Blank product sourced from Nicaragua, Mexico, Honduras, or the US
+                            </ul>
+
+                            <p>This product is made especially for you as soon as you place an order, which is why it takes us a bit longer to deliver it to you. Making products on demand instead of in bulk helps reduce overproduction, so thank you for making thoughtful purchasing decisions!</p>
                         </div>
                         <div class="size-selector">
                             <h3>Size</h3>
