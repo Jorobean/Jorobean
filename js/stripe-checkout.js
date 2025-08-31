@@ -1,5 +1,5 @@
 // Stripe configuration
-const stripe = Stripe('pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz'); // Replace with your publishable key
+const stripe = Stripe('pk_test_51RFSO1GHx57yahd0itlr5irlhNNztiEHP76LuHkL6m0FEdhjouIb2vDiL5f3JBS7zBKafVAKSSpRjNtfS3TYffnq00eAbYeRB0'); // Replace with your publishable key
 
 async function createCheckoutSession(items) {
     try {

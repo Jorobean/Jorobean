@@ -498,9 +498,10 @@ function updateCartSidebar() {
     // Ensure cart structure exists
     initCartStructure();
 
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const cartSidebar = document.getElementById('cart-sidebar');
+    let cartItems = document.getElementById('cart-items');
+    let cartTotal = document.getElementById('cart-total');
+    let cartSidebar = document.getElementById('cart-sidebar');
+    let checkoutButton = document.getElementById('checkout-button');
     
     console.log('Updating cart sidebar');
     console.log('Cart items element exists:', !!cartItems);
@@ -511,7 +512,7 @@ function updateCartSidebar() {
     if (!cartItems || !cartTotal || !cartSidebar) {
         console.warn('Cart elements not found, reinitializing...');
         initCartStructure();
-        // Get references again without redeclaring
+        // Get references again
         cartItems = document.getElementById('cart-items');
         cartTotal = document.getElementById('cart-total');
         cartSidebar = document.getElementById('cart-sidebar');
@@ -522,19 +523,40 @@ function updateCartSidebar() {
         }
     }
 
+    console.log('Current cart state before rendering:', state.cart);
+    
     if (state.cart.length === 0) {
         cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
         cartTotal.textContent = '$0.00';
+        if (checkoutButton) {
+            checkoutButton.disabled = true;
+            checkoutButton.removeEventListener('click', showCheckoutForm);
+        }
         return;
     }
+    
+    // Enable checkout button if cart has items
+    if (checkoutButton) {
+        checkoutButton.disabled = false;
+        // Remove any existing listeners before adding a new one
+        checkoutButton.removeEventListener('click', showCheckoutForm);
+        checkoutButton.addEventListener('click', showCheckoutForm);
+    }
 
-    cartItems.innerHTML = state.cart.map(item => `
-        <div class="cart-item" data-item-id="${item.id}">
+    // Clear existing content
+    cartItems.innerHTML = '';
+    
+    // Add each item individually
+    state.cart.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item';
+        itemElement.dataset.itemId = item.id;
+        itemElement.innerHTML = `
             <img src="${item.thumbnail}" alt="${item.name}" class="cart-item-image">
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
                 <p>Size: ${item.size}</p>
-                <p>Color: ${item.color}</p>
+                ${item.color ? `<p>Color: ${item.color}</p>` : ''}
                 <div class="quantity-controls">
                     <button class="quantity-decrease" data-item-id="${item.id}">-</button>
                     <span class="quantity-value">${item.quantity}</span>
@@ -544,8 +566,9 @@ function updateCartSidebar() {
             <div class="cart-item-price">
                 $${(item.price * item.quantity).toFixed(2)}
             </div>
-        </div>
-    `).join('');
+        `;
+        cartItems.appendChild(itemElement);
+    });
 
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     cartTotal.textContent = `$${total.toFixed(2)}`;
@@ -558,7 +581,7 @@ function updateCartSidebar() {
             <strong>Total:</strong>
             <span class="cart-total">$${total.toFixed(2)}</span>
         </div>
-        <button class="checkout-btn">Proceed to Checkout</button>
+        <button class="checkout-button" id="checkout-button" onclick="showCheckoutForm()">Proceed to Checkout</button>
     `;
     
     // Remove any existing footer
@@ -568,9 +591,6 @@ function updateCartSidebar() {
     }
     
     cartSidebar.appendChild(cartFooter);
-
-    // Add event listener to checkout button
-    cartFooter.querySelector('.checkout-btn').addEventListener('click', showCheckoutForm);
 
     // Add event listeners for quantity controls
     cartItems.querySelectorAll('.quantity-decrease').forEach(button => {
@@ -609,23 +629,23 @@ function updateQuantity(itemId, newQuantity) {
 
 // Checkout functionality
 async function showCheckoutForm() {
-    // First, close the cart sidebar
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const cartOverlay = document.getElementById('cart-overlay');
-    if (cartSidebar && cartOverlay) {
-        cartSidebar.classList.remove('open');
-        cartOverlay.style.display = 'none';
+    console.log('showCheckoutForm called');
+    
+    const checkoutButton = document.getElementById('checkout-button');
+    if (checkoutButton) {
+        checkoutButton.classList.add('loading');
+        checkoutButton.disabled = true;
     }
 
     // Prepare cart data for Stripe
     const cartData = state.cart.map(item => ({
+        product_data: {
+            name: item.name,
+            description: `Size: ${item.size}${item.color ? `, Color: ${item.color}` : ''}`,
+            images: [item.thumbnail]
+        },
         price_data: {
             currency: 'usd',
-            product_data: {
-                name: item.name,
-                description: `Size: ${item.size}${item.color ? `, Color: ${item.color}` : ''}`,
-                images: [item.thumbnail]
-            },
             unit_amount: Math.round(item.price * 100) // Stripe expects amounts in cents
         },
         quantity: item.quantity
@@ -643,213 +663,63 @@ async function showCheckoutForm() {
     document.body.appendChild(loadingMessage);
 
     try {
-        await createCheckoutSession(cartData);
+        // Create a Checkout Session
+        const response = await fetch(`${SUPABASE_URL}/create-checkout-session`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+                items: cartData
+            })
+        });
+
+        const { sessionId } = await response.json();
+        if (!sessionId) {
+            throw new Error('Failed to create checkout session');
+        }
+
+        // Redirect to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId
+        });
+
+        if (result.error) {
+            throw new Error(result.error.message);
+        }
+
+        // Only close cart if checkout redirect is successful
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const cartOverlay = document.getElementById('cart-overlay');
+        if (cartSidebar && cartOverlay) {
+            cartSidebar.classList.remove('open');
+            cartOverlay.style.display = 'none';
+        }
     } catch (error) {
         console.error('Checkout error:', error);
+        // Show error message without removing the cart
         const errorMessage = document.createElement('div');
         errorMessage.className = 'error-message';
-        errorMessage.textContent = error.message;
+        errorMessage.style.position = 'fixed';
+        errorMessage.style.top = '20px';
+        errorMessage.style.left = '50%';
+        errorMessage.style.transform = 'translateX(-50%)';
+        errorMessage.style.backgroundColor = '#ff4444';
+        errorMessage.style.color = 'white';
+        errorMessage.style.padding = '1rem 2rem';
+        errorMessage.style.borderRadius = '4px';
+        errorMessage.style.zIndex = '2000';
+        errorMessage.textContent = error.message || 'An error occurred during checkout';
         document.body.appendChild(errorMessage);
-        setTimeout(() => errorMessage.remove(), 3000);
+        setTimeout(() => errorMessage.remove(), 5000);
     } finally {
         loadingMessage.remove();
-    }
-    const modal = document.createElement('div');
-    modal.className = 'checkout-modal';
-    modal.innerHTML = `
-        <div class="checkout-overlay"></div>
-        <div class="checkout-content">
-            <div class="dialog-header">
-                <h2>Checkout</h2>
-                <button class="close-button" id="closeCheckout">×</button>
-            </div>
-            <div class="dialog-body">
-                <form id="checkout-form" class="checkout-form">
-                    <div class="form-section">
-                        <h3>Contact Information</h3>
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <h3>Shipping Address</h3>
-                        <div class="form-group">
-                            <label for="address1">Street Address</label>
-                            <input type="text" id="address1" name="address1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="address2">Apartment, suite, etc. (optional)</label>
-                            <input type="text" id="address2" name="address2">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="city">City</label>
-                                <input type="text" id="city" name="city" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="state">State</label>
-                                <input type="text" id="state" name="state" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="zip">ZIP Code</label>
-                                <input type="text" id="zip" name="zip" required pattern="[0-9]{5}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>Payment Information</h3>
-                        <div class="form-group">
-                            <div id="card-element"></div>
-                            <div id="card-errors" class="error-text"></div>
-                        </div>
-                    </div>
-
-                    <div class="order-summary">
-                        <h3>Order Summary</h3>
-                        <div class="order-items">
-                            ${state.cart.map(item => `
-                                <div class="order-item">
-                                    <img src="${item.thumbnail}" alt="${item.name}">
-                                    <div class="order-item-details">
-                                        <p class="item-name">${item.name}</p>
-                                        <p class="item-variant">Size: ${item.size}</p>
-                                        <p class="item-quantity">Qty: ${item.quantity}</p>
-                                    </div>
-                                    <p class="item-price">$${(item.price * item.quantity).toFixed(2)}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="order-total">
-                            <p><strong>Total:</strong> $${state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}</p>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="submit-payment">
-                        <span>Pay and Place Order</span>
-                        <svg viewBox="0 0 24 24" width="16" height="16">
-                            <path fill="currentColor" d="M4 12h16M16 6l6 6-6 6"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    const closeBtn = document.getElementById('closeCheckout');
-    const overlay = modal.querySelector('.checkout-overlay');
-    const form = document.getElementById('checkout-form');
-
-    const closeModal = () => modal.remove();
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitBtn = form.querySelector('.submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Processing...</span>';
-        
-        try {
-            const formData = new FormData(e.target);
-            // First, calculate the total amount
-            const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            // 1. Create a payment intent with Stripe
-            const orderData = {
-                amount: total * 100, // Stripe expects amount in cents
-                recipient: {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    address1: formData.get('address1'),
-                    address2: formData.get('address2'),
-                    city: formData.get('city'),
-                    state_code: formData.get('state'),
-                    country_code: 'US',
-                    zip: formData.get('zip')
-                },
-                items: state.cart.map(item => ({
-                    sync_variant_id: item.id,
-                    quantity: item.quantity,
-                    retail_price: item.price
-                }))
-            };
-
-            // Create payment intent
-            const paymentResponse = await fetch(`${SUPABASE_URL}/create-payment-intent`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orderData)
-            });
-
-            const paymentData = await paymentResponse.json();
-            if (!paymentResponse.ok) {
-                throw new Error(paymentData.error || 'Failed to create payment intent');
-            }
-
-            // 2. Confirm the payment with Stripe.js
-            const { error: stripeError } = await stripe.confirmPayment({
-                elements,
-                confirmParams: {
-                    return_url: `${window.location.origin}/order-confirmation`,
-                }
-            });
-
-            if (stripeError) {
-                throw new Error(stripeError.message);
-            }
-
-            // 3. If payment successful, create order in Printful
-            const printfulResponse = await fetch(`${SUPABASE_URL}/create-printful-order`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    paymentIntentId: paymentData.paymentIntentId,
-                    ...orderData
-                })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                state.cart = [];
-                updateCartCount();
-                updateCartSidebar();
-                closeModal();
-                
-                const successMessage = document.createElement('div');
-                successMessage.className = 'success-message';
-                successMessage.textContent = 'Order placed successfully!';
-                document.body.appendChild(successMessage);
-                setTimeout(() => successMessage.remove(), 3000);
-            } else {
-                throw new Error(data.error || 'Failed to place order');
-            }
-        } catch (error) {
-            console.error('Checkout error:', error);
-            const errorMessage = document.createElement('div');
-            errorMessage.className = 'error-message';
-            errorMessage.textContent = error.message;
-            document.body.appendChild(errorMessage);
-            setTimeout(() => errorMessage.remove(), 3000);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Place Order</span>';
+        if (checkoutButton) {
+            checkoutButton.classList.remove('loading');
+            checkoutButton.disabled = false;
         }
-    });
+    }
 }
 
 // Cart sidebar toggle
@@ -963,4 +833,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initCartStructure();
     initStore();
     initProductClickHandlers();
+    
+    // Add checkout button event listener
+    const checkoutButton = document.getElementById('checkout-button');
+    if (checkoutButton) {
+        checkoutButton.removeEventListener('click', showCheckoutForm);
+        checkoutButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            await showCheckoutForm();
+        });
+    }
 });

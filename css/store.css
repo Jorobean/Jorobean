@@ -540,17 +540,17 @@ body.scrolled .logo-corner {
 
 /* Cart Sidebar */
 .cart-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1998;
-  display: none;
-}
-
-.cart-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: none;
+    z-index: 999;
+}.cart-sidebar {
   position: fixed;
   top: 0;
   right: -400px;

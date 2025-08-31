@@ -28,6 +28,11 @@
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/store.css">
   <link rel="stylesheet" href="css/product-dialog.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    const stripe = Stripe('your_publishable_key'); // Replace with your actual Stripe publishable key
+  </script>
   <script src="js/header.js" defer></script>
   <script src="js/scrollBehavior.js" defer></script>
   <script src="js/store.js" defer></script>
@@ -73,7 +78,7 @@
         <div class="cart-total">
           Total: <span id="cart-total">$0.00</span>
         </div>
-        <button class="checkout-button" id="checkout-button">Proceed to Checkout</button>
+        <button class="checkout-button" id="checkout-button" onclick="showCheckoutForm()">Proceed to Checkout</button>
       </div>
     </div>
   </main>
