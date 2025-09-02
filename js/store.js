@@ -18,10 +18,38 @@ const saveCart = () => {
 };
 
 window.clearCart = function() {
-    state.cart = [];
-    saveCart();
-    updateCartCount();
-    updateCartSidebar();
+    const cartItemsContainer = document.getElementById('cart-items');
+    if (!cartItemsContainer) return;
+
+    // Animate all items fading out
+    const cartItems = cartItemsContainer.querySelectorAll('.cart-item');
+    cartItems.forEach(item => {
+        item.style.transition = 'all 0.3s ease';
+        item.style.opacity = '0';
+        item.style.height = '0';
+    });
+
+    // After animation, clear the cart
+    setTimeout(() => {
+        state.cart = [];
+        saveCart();
+        updateCartCount();
+        
+        // Clear the cart items container
+        cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+        
+        // Update the total
+        updateCartTotal();
+        
+        // Disable checkout button
+        const checkoutButton = document.getElementById('checkout-button');
+        if (checkoutButton) {
+            checkoutButton.disabled = true;
+        }
+    }, 300);
+
+    // Update the total immediately
+    updateCartTotal();
 };
 
 const getCartTotal = () => {
@@ -512,7 +540,22 @@ function addToCart(product) {
     
     saveCart();
     updateCartCount();
+
+    // Enable checkout button if cart has items
+    const checkoutButton = document.getElementById('checkout-button');
+    if (checkoutButton) {
+        checkoutButton.disabled = false;
+    }
+
+    // Clear any "empty cart" message
+    const cartItems = document.getElementById('cart-items');
+    if (cartItems && cartItems.querySelector('.empty-cart')) {
+        cartItems.innerHTML = '';
+    }
+
+    // Update cart display
     updateCartSidebar();
+    updateCartTotal();
 }
 
 function updateCartCount() {
@@ -593,9 +636,9 @@ function updateCartSidebar() {
                 <p>Size: ${item.size}</p>
                 ${item.color ? `<p>Color: ${item.color}</p>` : ''}
                 <div class="quantity-controls">
-                    <button class="quantity-decrease" data-item-id="${item.id}">-</button>
+                    <button type="button" class="quantity-decrease" data-item-id="${item.id}" aria-label="Decrease quantity">-</button>
                     <span class="quantity-value">${item.quantity}</span>
-                    <button class="quantity-increase" data-item-id="${item.id}">+</button>
+                    <button type="button" class="quantity-increase" data-item-id="${item.id}" aria-label="Increase quantity">+</button>
                 </div>
             </div>
             <div class="cart-item-price">
@@ -625,54 +668,91 @@ function updateCartSidebar() {
         existingFooter.querySelector('.cart-total').textContent = `$${total.toFixed(2)}`;
     }
 
-    // Set up quantity control handlers
-    const setupQuantityControls = () => {
-        const decreaseButtons = cartItems.querySelectorAll('.quantity-decrease');
-        const increaseButtons = cartItems.querySelectorAll('.quantity-increase');
+    // Add event listeners for quantity controls
+    // Add direct click handlers to the cart items container using event delegation
+    cartItems.addEventListener('click', (e) => {
+        const decreaseBtn = e.target.closest('.quantity-decrease');
+        const increaseBtn = e.target.closest('.quantity-increase');
+        
+        if (decreaseBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const itemId = decreaseBtn.dataset.itemId;
+            const item = state.cart.find(item => String(item.id) === String(itemId));
+            if (item) {
+                updateQuantity(itemId, item.quantity - 1);
+            }
+        } else if (increaseBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const itemId = increaseBtn.dataset.itemId;
+            const item = state.cart.find(item => String(item.id) === String(itemId));
+            if (item) {
+                updateQuantity(itemId, item.quantity + 1);
+            }
+        }
+    });
+}
 
-        decreaseButtons.forEach(button => {
-            button.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const itemId = button.dataset.itemId;
-                const item = state.cart.find(item => String(item.id) === String(itemId));
-                if (item) {
-                    updateQuantity(itemId, item.quantity - 1);
-                }
-            };
-        });
-
-        increaseButtons.forEach(button => {
-            button.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const itemId = button.dataset.itemId;
-                const item = state.cart.find(item => String(item.id) === String(itemId));
-                if (item) {
-                    updateQuantity(itemId, item.quantity + 1);
-                }
-            };
-        });
-    };
-
-    // Initialize quantity controls
-    setupQuantityControls();
+function updateCartTotal() {
+    const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    // Update all cart total elements (there might be multiple on the page)
+    const cartTotalElements = document.querySelectorAll('.cart-total, #cart-total');
+    cartTotalElements.forEach(element => {
+        if (element) {
+            element.textContent = `$${total.toFixed(2)}`;
+        }
+    });
 }
 
 function updateQuantity(itemId, newQuantity) {
     console.log('Updating quantity for item:', itemId, 'to:', newQuantity);
+    
+    // Find the specific cart item
+    const cartItem = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+    if (!cartItem) return;
+    
+    // Find the quantity span within this specific cart item
+    const quantitySpan = cartItem.querySelector('.quantity-value');
+    if (quantitySpan) {
+        quantitySpan.textContent = Math.max(0, newQuantity);
+    }
+    
     if (newQuantity <= 0) {
         console.log('Removing item from cart');
-        state.cart = state.cart.filter(item => String(item.id) !== String(itemId));
+        // Animate item removal
+        cartItem.style.transition = 'all 0.3s ease';
+        cartItem.style.opacity = '0';
+        cartItem.style.height = '0';
+        setTimeout(() => {
+            state.cart = state.cart.filter(item => String(item.id) !== String(itemId));
+            saveCart();
+            updateCartCount();
+            updateCartTotal();
+            cartItem.remove(); // Remove the element from DOM
+            
+            // If cart is empty, show empty message
+            if (state.cart.length === 0) {
+                const cartItems = document.getElementById('cart-items');
+                if (cartItems) {
+                    cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+                }
+            }
+        }, 300);
     } else {
         const item = state.cart.find(item => String(item.id) === String(itemId));
         if (item) {
             item.quantity = newQuantity;
+            // Update the price display within this specific cart item
+            const priceDisplay = cartItem.querySelector('.cart-item-price');
+            if (priceDisplay) {
+                priceDisplay.textContent = `$${(item.price * newQuantity).toFixed(2)}`;
+            }
+            saveCart();
+            updateCartCount();
+            updateCartTotal();
         }
     }
-    saveCart();
-    updateCartCount();
-    updateCartSidebar();
 }
 
 // Checkout functionality

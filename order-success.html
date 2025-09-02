@@ -50,23 +50,87 @@
         .success-header {
             animation: fadeInUp 0.6s ease-out 0.2s both;
         }
+        
+        @media (prefers-color-scheme: dark) {
+            .success-header {
+                color: black;
+            }
+            .success-header p {
+                color: black;
+            }
+        }
 
+        :root {
+            --success-bg: #ffffff;
+            --success-text: #333333;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --success-bg: #1a1a1a;  /* Success message area background */
+                --success-text: #ffffff;
+            }
+        }
+        
+        body {
+            background-color: black;  /* Main page background */
+            color: var(--success-text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .logo-container-fixed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .heart-logo {
+            width: 110px;
+            height: auto;
+        }
+
+        .success-container {
+            padding-top: 60px;
+        }
+        
         .order-details {
-            background: var(--card-bg);
+            background: var(--success-bg);
             border-radius: 12px;
             padding: 30px;
             margin: 30px 0;
             text-align: left;
             box-shadow: 0 4px 6px var(--shadow-color);
             animation: fadeInUp 0.6s ease-out 0.4s both;
+            border: 1px solid var(--border-color);
         }
 
         .tracking-info {
-            background: var(--section-bg);
+            background: var(--success-bg);
             border-radius: 12px;
             padding: 25px;
             margin: 30px 0;
             animation: fadeInUp 0.6s ease-out 0.6s both;
+            border: 1px solid var(--border-color);
+        }
+        
+        .success-container {
+            color: var(--success-text);
+        }
+        
+        .step-icon {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+        
+        .order-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .item-price {
+            color: var(--primary-color);
         }
 
         .step-indicator {
@@ -189,13 +253,11 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <a href="/" class="logo logo-centered">
-                <img src="jorobean_logo.webp" alt="Jorobean Logo" class="logo-img">
-            </a>
-        </div>
-    </header>
+    <div class="logo-container-fixed">
+        <a href="/">
+            <img src="logo2.webp" alt="Jorobean Logo" class="heart-logo">
+        </a>
+    </div>
 
     <main>
         <div class="success-container">
@@ -244,12 +306,33 @@
             </div>
 
             <div class="button-group">
-                <a href="/store.html" class="button secondary-button">Continue Shopping</a>
-                <a href="/account.html" class="button primary-button">Track Your Order</a>
+                <a href="/store.html" class="button primary-button">Continue Shopping</a>
             </div>
         </div>
     </main>
 
     <script src="js/stripe-checkout.js"></script>
+    <style>
+        .tracking-info-message {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out 0.7s both;
+        }
+        
+        .tracking-info-message p {
+            margin: 10px 0;
+            color: var(--text-color);
+        }
+        
+        /* Ensure text is readable in both light and dark modes */
+        @media (prefers-color-scheme: dark) {
+            .tracking-info-message {
+                background: var(--section-bg);
+            }
+        }
+    </style>
 </body>
 </html>

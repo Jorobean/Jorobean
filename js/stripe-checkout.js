@@ -1,5 +1,6 @@
 // Stripe configuration
-const stripe = Stripe('pk_test_51RFSO1GHx57yahd0itlr5irlhNNztiEHP76LuHkL6m0FEdhjouIb2vDiL5f3JBS7zBKafVAKSSpRjNtfS3TYffnq00eAbYeRB0'); // Replace with your publishable key
+const STRIPE_KEY = 'pk_test_51RFSO1GHx57yahd0itlr5irlhNNztiEHP76LuHkL6m0FEdhjouIb2vDiL5f3JBS7zBKafVAKSSpRjNtfS3TYffnq00eAbYeRB0';
+const stripe = Stripe(STRIPE_KEY);
 
 async function createCheckoutSession(items) {
     try {
@@ -16,8 +17,6 @@ async function createCheckoutSession(items) {
         if (error) {
             throw new Error(error);
         }
-
-        const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
         const { error: stripeError } = await stripe.redirectToCheckout({
             sessionId,
             successUrl: `${window.location.origin}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
