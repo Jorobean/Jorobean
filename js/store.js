@@ -164,12 +164,11 @@ function renderProducts() {
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">${productName}</h3>
-                    <p class="product-price">$${price}</p>
                     <button 
                         class="view-variants-btn" 
                         onclick="event.stopPropagation(); showProductDetails('${productId}')"
                     >
-                        Select Size
+                        $${price}
                     </button>
                 </div>
             </div>
@@ -950,15 +949,16 @@ function initCartStructure() {
             <div class="cart-header">
                 <h2>Shopping Cart</h2>
                 <div class="cart-header-buttons">
-                    <button class="clear-cart" onclick="clearCart()">Clear Cart</button>
                     <button class="close-cart" aria-label="Close Cart">×</button>
                 </div>
             </div>
             <div id="cart-items" class="cart-items"></div>
             <div class="cart-footer" id="cart-footer">
-                <div class="cart-total-section">
-                    <strong>Total:</strong>
-                    <span id="cart-total">$0.00</span>
+                <div class="cart-total-row">
+                    <div class="cart-total">
+                        Total: <span id="cart-total">$0.00</span>
+                    </div>
+                    <button type="button" class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
                 </div>
                 <button class="checkout-button" id="checkout-button">Proceed to Checkout</button>
             </div>

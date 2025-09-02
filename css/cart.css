@@ -1,7 +1,7 @@
 .checkout-button {
     width: 100%;
     padding: 1rem;
-    background: #ff0000;  /* Bright red to match your brand */
+    background: #b71111;  /* Dark red to match your brand */
     color: white;
     border: none;
     border-radius: 8px;
@@ -110,22 +110,6 @@
     gap: 1rem;
 }
 
-.clear-cart {
-    background: transparent;
-    border: 2px solid #b71111;
-    color: #b71111;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: bold;
-    transition: all 0.2s ease;
-}
-
-.clear-cart:hover {
-    background: #b71111;
-    color: white;
-}
 
 .close-cart {
     background: transparent;
@@ -168,12 +152,39 @@
     margin-top: auto;
 }
 
-.cart-total-section {
+.cart-total-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+.cart-total {
     font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.clear-cart-btn {
+    background: transparent;
+    border: 1.5px solid #b71111;
+    color: #b71111;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clear-cart-btn:hover {
+    background: rgba(183, 17, 17, 0.1);
+    transform: translateY(-1px);
+}
+
+.clear-cart-btn:active {
+    transform: translateY(0px);
 }
 
 .cart-item {
