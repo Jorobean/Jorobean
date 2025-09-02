@@ -27,7 +27,7 @@ serve(async (req) => {
     // First get all products
     const productsResponse = await fetch(`${PRINTFUL_API_URL}/store/products`, {
       headers: {
-        'Authorization': `Bearer ${printfulApiToken}`,
+        'Authorization': `Basic ${btoa(printfulApiToken)}`,
         'Content-Type': 'application/json'
       }
     })
@@ -44,7 +44,7 @@ serve(async (req) => {
       productsData.result.map(async (product) => {
         const detailResponse = await fetch(`${PRINTFUL_API_URL}/store/products/${product.id}`, {
           headers: {
-            'Authorization': `Bearer ${printfulApiToken}`,
+            'Authorization': `Basic ${btoa(printfulApiToken)}`,
             'Content-Type': 'application/json'
           }
         })
