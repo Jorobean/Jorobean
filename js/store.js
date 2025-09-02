@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I';
 
 // Initialize Stripe
-const stripe = Stripe('pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz');
+const stripeInstance = Stripe('pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz');
 
 // Store state with persistent cart
 const state = {
@@ -708,7 +708,7 @@ async function showCheckoutForm() {
         }
 
         // Redirect to Stripe Checkout
-        const result = await window.stripeInstance.redirectToCheckout({
+        const result = await stripeInstance.redirectToCheckout({
             sessionId: sessionId
         });
 
@@ -859,6 +859,13 @@ function initCartStructure() {
 // Initialize the store
 document.addEventListener('DOMContentLoaded', () => {
     initCartStructure();
+    // Load cart from localStorage and update display
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+        state.cart = JSON.parse(savedCart);
+        updateCartCount();
+        updateCartSidebar();
+    }
     initStore();
     initProductClickHandlers();
     
