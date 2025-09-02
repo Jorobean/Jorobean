@@ -24,10 +24,16 @@ serve(async (req) => {
 
     console.log('Using Printful API token:', printfulApiToken.substring(0, 5) + '...')
     
+    // Get store ID from environment variables
+    const storeId = Deno.env.get('PRINTFUL_STORE_ID')
+    if (!storeId) {
+      throw new Error('PRINTFUL_STORE_ID is not set')
+    }
+
     // First get all products
-    const productsResponse = await fetch(`${PRINTFUL_API_URL}/store/products`, {
+    const productsResponse = await fetch(`${PRINTFUL_API_URL}/store/products?store_id=${storeId}`, {
       headers: {
-        'Authorization': `Basic ${btoa(printfulApiToken)}`,
+        'Authorization': `Bearer ${printfulApiToken}`,
         'Content-Type': 'application/json'
       }
     })
@@ -42,9 +48,9 @@ serve(async (req) => {
     // Then get detailed information for each product including variants and retail prices
     const productsWithDetails = await Promise.all(
       productsData.result.map(async (product) => {
-        const detailResponse = await fetch(`${PRINTFUL_API_URL}/store/products/${product.id}`, {
+        const detailResponse = await fetch(`${PRINTFUL_API_URL}/store/products/${product.id}?store_id=${storeId}`, {
           headers: {
-            'Authorization': `Basic ${btoa(printfulApiToken)}`,
+            'Authorization': `Bearer ${printfulApiToken}`,
             'Content-Type': 'application/json'
           }
         })

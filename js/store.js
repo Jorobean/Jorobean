@@ -2,11 +2,27 @@
 const SUPABASE_URL = 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I';
 
-// Store state
+// Initialize Stripe
+const stripe = Stripe('pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz');
+
+// Store state with persistent cart
 const state = {
     products: [],
-    cart: [],
-    selectedVariant: null
+    selectedVariant: null,
+    cart: JSON.parse(localStorage.getItem('cart')) || []
+};
+
+// Cart helper functions
+const saveCart = () => {
+    localStorage.setItem('cart', JSON.stringify(state.cart));
+};
+
+const getCartTotal = () => {
+    return state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+};
+
+const getCartCount = () => {
+    return state.cart.reduce((sum, item) => sum + item.quantity, 0);
 };
 
 // Initialize store
@@ -23,11 +39,20 @@ async function initStore() {
         `;
 
         // Fetch products from Supabase Edge Function
+        console.log('Fetching products from:', `${SUPABASE_URL}/products`);
         const response = await fetch(`${SUPABASE_URL}/products`, {
             headers: {
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             }
         });
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error:', errorText);
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        }
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -446,7 +471,9 @@ function showProductDetails(productId) {
                 
                 // After a short delay, close the modal
                 setTimeout(() => {
-                    closeModal();
+                    if (modal && modal.parentNode) {
+                        modal.parentNode.removeChild(modal);
+                    }
                 }, 1000);
             }
         });
@@ -471,11 +498,12 @@ function addToCart(product) {
 
     const existingItem = state.cart.find(item => String(item.id) === String(cartItem.id));
     if (existingItem) {
-        existingItem.quantity += product.quantity || 1;
+        existingItem.quantity += cartItem.quantity;
     } else {
         state.cart.push(cartItem);
     }
-
+    
+    saveCart();
     updateCartCount();
     updateCartSidebar();
 }
@@ -570,7 +598,7 @@ function updateCartSidebar() {
         cartItems.appendChild(itemElement);
     });
 
-    const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = getCartTotal();
     cartTotal.textContent = `$${total.toFixed(2)}`;
 
     // Add checkout button to cart footer
@@ -584,13 +612,11 @@ function updateCartSidebar() {
         <button class="checkout-button" id="checkout-button" onclick="showCheckoutForm()">Proceed to Checkout</button>
     `;
     
-    // Remove any existing footer
+    // Update existing footer instead of replacing it
     const existingFooter = cartSidebar.querySelector('.cart-footer');
     if (existingFooter) {
-        existingFooter.remove();
+        existingFooter.querySelector('.cart-total').textContent = `$${total.toFixed(2)}`;
     }
-    
-    cartSidebar.appendChild(cartFooter);
 
     // Add event listeners for quantity controls
     cartItems.querySelectorAll('.quantity-decrease').forEach(button => {
@@ -623,6 +649,7 @@ function updateQuantity(itemId, newQuantity) {
             item.quantity = newQuantity;
         }
     }
+    saveCart();
     updateCartCount();
     updateCartSidebar();
 }
@@ -681,7 +708,7 @@ async function showCheckoutForm() {
         }
 
         // Redirect to Stripe Checkout
-        const result = await stripe.redirectToCheckout({
+        const result = await window.stripeInstance.redirectToCheckout({
             sessionId: sessionId
         });
 
@@ -804,11 +831,12 @@ function initCartStructure() {
                 <h2>Shopping Cart</h2>
             </div>
             <div id="cart-items" class="cart-items"></div>
-            <div class="cart-footer">
+            <div class="cart-footer" id="cart-footer">
                 <div class="cart-total-section">
                     <strong>Total:</strong>
                     <span id="cart-total">$0.00</span>
                 </div>
+                <button class="checkout-button" id="checkout-button">Proceed to Checkout</button>
             </div>
         `;
         
