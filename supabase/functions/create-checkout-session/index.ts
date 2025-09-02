@@ -1,5 +1,9 @@
 import { serve } from 'std/http/server.ts'
 import Stripe from 'stripe'
+import { getPrintfulShippingRates, convertToStripeShippingOptions } from '../_shared/printful-api.ts'
+
+// Minimum shipping cost if Printful API fails
+const DEFAULT_SHIPPING_COST = 595; // $5.95 in cents
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -65,6 +69,32 @@ serve(async (req) => {
 
     console.log('Creating Stripe session with line items:', lineItems);
 
+    // Prepare Printful items for shipping rate calculation
+    const printfulItems = items.map((item: any) => ({
+      variant_id: String(item.variant_id || ''),
+      quantity: item.quantity
+    }));
+
+    // Default shipping options with a minimum cost
+    const defaultShippingOptions = [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: DEFAULT_SHIPPING_COST, currency: 'usd' },
+          display_name: 'Standard Shipping',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 5 },
+            maximum: { unit: 'business_day', value: 7 },
+          },
+        },
+      }
+    ];
+
+    let shippingOptions = defaultShippingOptions;
+
+    // We'll handle shipping calculations after the session is created
+    // The actual shipping cost will be calculated when the customer enters their address
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -75,22 +105,21 @@ serve(async (req) => {
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: { amount: 0, currency: 'usd' },
-            display_name: 'Free shipping',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 5 },
-              maximum: { unit: 'business_day', value: 7 },
-            },
+      shipping_options: [{
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 595, // $5.95 in cents
+            currency: 'usd',
           },
-        },
-      ],
-    });
-
-    return new Response(
+          display_name: 'Standard Shipping',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 5 },
+            maximum: { unit: 'business_day', value: 7 },
+          }
+        }
+      }],
+    });    return new Response(
       JSON.stringify({ sessionId: session.id }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

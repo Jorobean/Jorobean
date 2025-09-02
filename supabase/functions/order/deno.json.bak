@@ -2,9 +2,15 @@
   "tasks": {
     "start": "deno run --allow-net --allow-env index.ts"
   },
-  "importMap": "import_map.json",
+  "importMap": "./import_map.json",
   "compilerOptions": {
     "lib": ["deno.window"],
     "strict": true
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 100,
+      "indentWidth": 2
+    }
   }
 }

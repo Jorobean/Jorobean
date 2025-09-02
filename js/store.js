@@ -152,7 +152,7 @@ function renderProducts() {
             parseFloat(product.sync_variants[0].retail_price).toFixed(2) : '0.00';
 
         return `
-            <div class="product-card" data-product-id="${productId}" role="button" tabindex="0" onclick="showProductDetails('${productId}')">
+            <div class="product-card" data-product-id="${productId}" role="button" tabindex="0">
                 <div class="product-image-container">
                     <img 
                         src="${imageUrl}" 
@@ -166,7 +166,7 @@ function renderProducts() {
                     <h3 class="product-title">${productName}</h3>
                     <button 
                         class="view-variants-btn" 
-                        onclick="event.stopPropagation(); showProductDetails('${productId}')"
+                        data-product-id="${productId}"
                     >
                         $${price}
                     </button>
@@ -264,6 +264,9 @@ function showProductDetails(productId) {
                             <img src="${product.sync_product.thumbnail_url}" 
                                  alt="${product.sync_product.name}" 
                                  class="dialog-image">
+                            <div class="mockup-gallery">
+                                <!-- Additional mockup thumbnails will be added here -->
+                            </div>
                         </div>
                         <div class="product-details">
                             <h2>${product.sync_product.name}</h2>
@@ -378,14 +381,48 @@ function showProductDetails(productId) {
         const closeBtn = modal.querySelector('#closeProductDialog');
         const overlay = modal.querySelector('.dialog-overlay');
         
+        let isClosing = false;
+
         function handleClose(e) {
-            e.preventDefault();
-            e.stopPropagation();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            if (isClosing) return; // Prevent double-closing
+            isClosing = true;
+            
             cleanup(); // Remove event listeners
-            if (modal && modal.parentNode) {
-                modal.parentNode.removeChild(modal);
+            document.removeEventListener('keydown', handleEscape);
+            
+            // Add fade out animation
+            const overlay = modal.querySelector('.dialog-overlay');
+            const content = modal.querySelector('.dialog-content');
+            
+            if (overlay && content) {
+                overlay.style.opacity = '0';
+                content.style.opacity = '0';
+                content.style.transform = 'scale(0.95)';
+            }
+            
+            modal.style.pointerEvents = 'none'; // Prevent further interactions
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (modal && modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+                isClosing = false;
+            }, 200);
+        }
+        
+        // Also handle Escape key
+        function handleEscape(e) {
+            if (e.key === 'Escape') {
+                handleClose();
             }
         }
+        document.addEventListener('keydown', handleEscape);
         
         closeBtn.onclick = handleClose;
         overlay.onclick = handleClose;
@@ -422,6 +459,46 @@ function showProductDetails(productId) {
                 state.selectedVariant = product.sync_variants.find(v => 
                     v.color === selectedColor && v.size === selectedSize
                 );
+                
+                // Update product images based on variant
+                if (state.selectedVariant) {
+                    const previewImage = modal.querySelector('.dialog-image');
+                    const mockupGallery = modal.querySelector('.mockup-gallery');
+                    
+                    if (previewImage && mockupGallery) {
+                        let mockupUrls = [];
+                        
+                        // Collect all available mockup URLs
+                        if (state.selectedVariant.mockup_urls && state.selectedVariant.mockup_urls.length > 0) {
+                            mockupUrls = state.selectedVariant.mockup_urls;
+                        } else if (state.selectedVariant.files && state.selectedVariant.files.length > 0) {
+                            mockupUrls = state.selectedVariant.files
+                                .filter(f => f.preview_url)
+                                .map(f => f.preview_url);
+                        }
+                        
+                        // Update main image
+                        if (mockupUrls.length > 0) {
+                            previewImage.src = mockupUrls[0];
+                        } else if (state.selectedVariant.preview_url) {
+                            previewImage.src = state.selectedVariant.preview_url;
+                        }
+                        
+                        // Update mockup gallery
+                        if (mockupUrls.length > 1) {
+                            mockupGallery.innerHTML = mockupUrls
+                                .map((url, index) => `
+                                    <img src="${url}"
+                                         class="mockup-thumbnail ${index === 0 ? 'active' : ''}"
+                                         alt="Product view ${index + 1}"
+                                         onclick="updateMainImage(this, '${url}')"
+                                    >
+                                `).join('');
+                        } else {
+                            mockupGallery.innerHTML = '';
+                        }
+                    }
+                }
                 
                 if (state.selectedVariant) {
                     modal.querySelector('.price').textContent = 
@@ -779,7 +856,8 @@ async function showCheckoutForm() {
                     images: [item.thumbnail]
                 }
             },
-            quantity: item.quantity
+            quantity: item.quantity,
+            variant_id: item.id // Add Printful variant ID for shipping calculation
         };
     });
     console.log('Prepared cart data:', cartData);
@@ -845,21 +923,23 @@ async function showCheckoutForm() {
         }
     } catch (error) {
         console.error('Checkout error:', error);
-        // Show error message without removing the cart
-        const errorMessage = document.createElement('div');
-        errorMessage.className = 'error-message';
-        errorMessage.style.position = 'fixed';
-        errorMessage.style.top = '20px';
-        errorMessage.style.left = '50%';
-        errorMessage.style.transform = 'translateX(-50%)';
-        errorMessage.style.backgroundColor = '#ff4444';
-        errorMessage.style.color = 'white';
-        errorMessage.style.padding = '1rem 2rem';
-        errorMessage.style.borderRadius = '4px';
-        errorMessage.style.zIndex = '2000';
-        errorMessage.textContent = error.message || 'An error occurred during checkout';
-        document.body.appendChild(errorMessage);
-        setTimeout(() => errorMessage.remove(), 5000);
+        // Ignore redirectToCheckout "errors" as they're expected
+        if (!error.message?.includes('redirectToCheckout') && !error.message?.includes('loadFail')) {
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.style.position = 'fixed';
+            errorMessage.style.top = '20px';
+            errorMessage.style.left = '50%';
+            errorMessage.style.transform = 'translateX(-50%)';
+            errorMessage.style.backgroundColor = '#ff4444';
+            errorMessage.style.color = 'white';
+            errorMessage.style.padding = '1rem 2rem';
+            errorMessage.style.borderRadius = '4px';
+            errorMessage.style.zIndex = '2000';
+            errorMessage.textContent = error.message || 'An error occurred during checkout';
+            document.body.appendChild(errorMessage);
+            setTimeout(() => errorMessage.remove(), 5000);
+        }
     } finally {
         loadingMessage.remove();
         if (checkoutButton) {
@@ -890,20 +970,32 @@ function initProductClickHandlers() {
     const productsContainer = document.getElementById('products-container');
     if (productsContainer) {
         productsContainer.addEventListener('click', (event) => {
+            event.preventDefault();
+            const priceButton = event.target.closest('.view-variants-btn');
             const productCard = event.target.closest('.product-card');
-            if (productCard) {
-                event.preventDefault();
+            
+            // If clicked on price button, use that product ID
+            if (priceButton) {
+                const productId = priceButton.dataset.productId;
+                if (productId) {
+                    showProductDetails(productId);
+                }
+            }
+            // If clicked anywhere else on the card, use the card's product ID
+            else if (productCard && !event.target.closest('.view-variants-btn')) {
                 const productId = productCard.dataset.productId;
-                showProductDetails(productId);
+                if (productId) {
+                    showProductDetails(productId);
+                }
             }
         });
 
         // Add keyboard accessibility
         productsContainer.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
                 const productCard = event.target.closest('.product-card');
                 if (productCard) {
-                    event.preventDefault();
                     const productId = productCard.dataset.productId;
                     if (productId) {
                         showProductDetails(productId);
@@ -979,6 +1071,19 @@ function initCartStructure() {
         });
     }
 }
+
+// Function to update main image when clicking thumbnails
+window.updateMainImage = function(thumbnailElement, newSrc) {
+    const mainImage = thumbnailElement.closest('.product-image-section').querySelector('.dialog-image');
+    const allThumbnails = thumbnailElement.closest('.mockup-gallery').querySelectorAll('.mockup-thumbnail');
+    
+    // Update main image
+    mainImage.src = newSrc;
+    
+    // Update thumbnail active states
+    allThumbnails.forEach(thumb => thumb.classList.remove('active'));
+    thumbnailElement.classList.add('active');
+};
 
 // Initialize the store
 document.addEventListener('DOMContentLoaded', () => {
