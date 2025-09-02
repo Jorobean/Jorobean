@@ -102,6 +102,50 @@
 
 .cart-header h2 {
     margin: 0;
+}
+
+.cart-header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.clear-cart {
+    background: transparent;
+    border: 2px solid #b71111;
+    color: #b71111;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.clear-cart:hover {
+    background: #b71111;
+    color: white;
+}
+
+.close-cart {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-cart:hover {
+    opacity: 0.7;
+}
+
+.cart-header h2 {
+    margin: 0;
     font-size: 1.5rem;
 }
 

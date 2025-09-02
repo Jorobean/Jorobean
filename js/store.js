@@ -17,6 +17,13 @@ const saveCart = () => {
     localStorage.setItem('cart', JSON.stringify(state.cart));
 };
 
+window.clearCart = function() {
+    state.cart = [];
+    saveCart();
+    updateCartCount();
+    updateCartSidebar();
+};
+
 const getCartTotal = () => {
     return state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 };
@@ -618,30 +625,44 @@ function updateCartSidebar() {
         existingFooter.querySelector('.cart-total').textContent = `$${total.toFixed(2)}`;
     }
 
-    // Add event listeners for quantity controls
-    cartItems.querySelectorAll('.quantity-decrease').forEach(button => {
-        button.addEventListener('click', () => {
-            const itemId = button.dataset.itemId;
-            const item = state.cart.find(item => String(item.id) === String(itemId));
-            if (item) {
-                updateQuantity(itemId, item.quantity - 1);
-            }
-        });
-    });
+    // Set up quantity control handlers
+    const setupQuantityControls = () => {
+        const decreaseButtons = cartItems.querySelectorAll('.quantity-decrease');
+        const increaseButtons = cartItems.querySelectorAll('.quantity-increase');
 
-    cartItems.querySelectorAll('.quantity-increase').forEach(button => {
-        button.addEventListener('click', () => {
-            const itemId = button.dataset.itemId;
-            const item = state.cart.find(item => String(item.id) === String(itemId));
-            if (item) {
-                updateQuantity(itemId, item.quantity + 1);
-            }
+        decreaseButtons.forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const itemId = button.dataset.itemId;
+                const item = state.cart.find(item => String(item.id) === String(itemId));
+                if (item) {
+                    updateQuantity(itemId, item.quantity - 1);
+                }
+            };
         });
-    });
+
+        increaseButtons.forEach(button => {
+            button.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const itemId = button.dataset.itemId;
+                const item = state.cart.find(item => String(item.id) === String(itemId));
+                if (item) {
+                    updateQuantity(itemId, item.quantity + 1);
+                }
+            };
+        });
+    };
+
+    // Initialize quantity controls
+    setupQuantityControls();
 }
 
 function updateQuantity(itemId, newQuantity) {
-    if (newQuantity < 1) {
+    console.log('Updating quantity for item:', itemId, 'to:', newQuantity);
+    if (newQuantity <= 0) {
+        console.log('Removing item from cart');
         state.cart = state.cart.filter(item => String(item.id) !== String(itemId));
     } else {
         const item = state.cart.find(item => String(item.id) === String(itemId));
@@ -665,18 +686,24 @@ async function showCheckoutForm() {
     }
 
     // Prepare cart data for Stripe
-    const cartData = state.cart.map(item => ({
-        product_data: {
-            name: item.name,
-            description: `Size: ${item.size}${item.color ? `, Color: ${item.color}` : ''}`,
-            images: [item.thumbnail]
-        },
-        price_data: {
-            currency: 'usd',
-            unit_amount: Math.round(item.price * 100) // Stripe expects amounts in cents
-        },
-        quantity: item.quantity
-    }));
+    console.log('Cart state before preparing data:', state.cart);
+    const cartData = state.cart.map(item => {
+        // Log each item as we process it
+        console.log('Processing cart item:', item);
+        return {
+            price_data: {
+                currency: 'usd',
+                unit_amount: Math.round(item.price * 100), // Convert to cents
+                product_data: {
+                    name: item.name,
+                    description: `Size: ${item.size}${item.color ? `, Color: ${item.color}` : ''}`,
+                    images: [item.thumbnail]
+                }
+            },
+            quantity: item.quantity
+        };
+    });
+    console.log('Prepared cart data:', cartData);
 
     // Show loading state
     const loadingMessage = document.createElement('div');
@@ -690,31 +717,45 @@ async function showCheckoutForm() {
     document.body.appendChild(loadingMessage);
 
     try {
+        console.log('Sending cart data:', cartData);
+        
         // Create a Checkout Session
         const response = await fetch(`${SUPABASE_URL}/create-checkout-session`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'apikey': SUPABASE_ANON_KEY
             },
             body: JSON.stringify({
                 items: cartData
             })
         });
 
-        const { sessionId } = await response.json();
-        if (!sessionId) {
-            throw new Error('Failed to create checkout session');
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('Checkout session error:', errorData);
+            throw new Error(`Failed to create checkout session: ${errorData}`);
+        }
+
+        const data = await response.json();
+        console.log('Received response:', data);
+
+        if (!data.sessionId) {
+            throw new Error('No session ID returned from server');
         }
 
         // Redirect to Stripe Checkout
         const result = await stripeInstance.redirectToCheckout({
-            sessionId: sessionId
+            sessionId: data.sessionId // Using data.sessionId instead of sessionId
         });
 
         if (result.error) {
             throw new Error(result.error.message);
         }
+
+        // Clear cart only after successful redirect
+        clearCart();
 
         // Only close cart if checkout redirect is successful
         const cartSidebar = document.getElementById('cart-sidebar');
@@ -827,8 +868,11 @@ function initCartStructure() {
         // Add cart content
         sidebar.innerHTML = `
             <div class="cart-header">
-                <button class="close-cart">×</button>
                 <h2>Shopping Cart</h2>
+                <div class="cart-header-buttons">
+                    <button class="clear-cart" onclick="clearCart()">Clear Cart</button>
+                    <button class="close-cart" aria-label="Close Cart">×</button>
+                </div>
             </div>
             <div id="cart-items" class="cart-items"></div>
             <div class="cart-footer" id="cart-footer">
