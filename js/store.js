@@ -100,13 +100,14 @@ async function initStore() {
             throw new Error(data.error);
         }
 
-        // Reorder products - swap Keep Loading tee with Red Boot tee
-        const keepLoadingTee = data.find(p => p.sync_product.name.includes('Keep Loading'));
-        const redBootTee = data.find(p => p.sync_product.name.includes('Red Boot'));
-        if (keepLoadingTee && redBootTee) {
-            const keepLoadingIndex = data.indexOf(keepLoadingTee);
-            const redBootIndex = data.indexOf(redBootTee);
-            [data[keepLoadingIndex], data[redBootIndex]] = [data[redBootIndex], data[keepLoadingIndex]];
+        // Find hoodie and move it to second position
+        const hoodie = data.find(p => p.sync_product.name.toLowerCase().includes('hoodie'));
+        if (hoodie) {
+            const hoodieIndex = data.indexOf(hoodie);
+            // Remove hoodie from current position
+            data.splice(hoodieIndex, 1);
+            // Insert hoodie at index 1 (second position)
+            data.splice(1, 0, hoodie);
         }
         
         state.products = data;
@@ -194,33 +195,137 @@ function showProductDetails(productId) {
 
         // Function to handle image zoom
         function handleImageZoom(imageContainer, image) {
-            const ZOOM_LEVEL = 2.5;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const ZOOM_LEVEL = isMobile ? 1.75 : 2.5;
+            let isZoomed = false;
+            let lastTouchX = 0;
+            let lastTouchY = 0;
             
-            function onMouseMove(e) {
+            function updateZoom(x, y) {
                 const rect = imageContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const xPercent = x / rect.width * 100;
-                const yPercent = y / rect.height * 100;
+                const xPercent = Math.max(0, Math.min(100, (x - rect.left) / rect.width * 100));
+                const yPercent = Math.max(0, Math.min(100, (y - rect.top) / rect.height * 100));
                 
                 image.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-                image.style.transform = `scale(${ZOOM_LEVEL})`;
+                image.style.transform = isZoomed ? `scale(${ZOOM_LEVEL})` : 'scale(1)';
+            }
+            
+            function onMouseMove(e) {
+                if (!isMobile && isZoomed) {
+                    updateZoom(e.clientX, e.clientY);
+                }
+            }
+            
+            function onMouseEnter(e) {
+                if (!isMobile) {
+                    isZoomed = true;
+                    updateZoom(e.clientX, e.clientY);
+                }
             }
             
             function onMouseLeave() {
-                image.style.transformOrigin = 'center';
-                image.style.transform = 'scale(1)';
+                if (!isMobile) {
+                    isZoomed = false;
+                    image.style.transformOrigin = 'center';
+                    image.style.transform = 'scale(1)';
+                }
             }
             
-            imageContainer.addEventListener('mousemove', onMouseMove);
-            imageContainer.addEventListener('mouseleave', onMouseLeave);
+            function onTouchStart(e) {
+                if (isMobile) {
+                    isZoomed = !isZoomed;
+                    const touch = e.touches[0];
+                    lastTouchX = touch.clientX;
+                    lastTouchY = touch.clientY;
+                    updateZoom(touch.clientX, touch.clientY);
+                }
+            }
+            
+            function onTouchMove(e) {
+                if (isMobile && isZoomed) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    updateZoom(touch.clientX, touch.clientY);
+                }
+            }
+            
+            if (isMobile) {
+                imageContainer.addEventListener('touchstart', onTouchStart);
+                imageContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+            } else {
+                imageContainer.addEventListener('mouseenter', onMouseEnter);
+                imageContainer.addEventListener('mousemove', onMouseMove);
+                imageContainer.addEventListener('mouseleave', onMouseLeave);
+            }
             
             // Cleanup function
             return () => {
-                imageContainer.removeEventListener('mousemove', onMouseMove);
-                imageContainer.removeEventListener('mouseleave', onMouseLeave);
+                if (isMobile) {
+                    imageContainer.removeEventListener('touchstart', onTouchStart);
+                    imageContainer.removeEventListener('touchmove', onTouchMove);
+                } else {
+                    imageContainer.removeEventListener('mouseenter', onMouseEnter);
+                    imageContainer.removeEventListener('mousemove', onMouseMove);
+                    imageContainer.removeEventListener('mouseleave', onMouseLeave);
+                }
             };
+        }
+
+        // Function to update product images
+        function updateProductImages(variant) {
+            const previewImage = modal.querySelector('.dialog-image');
+            const mockupGallery = modal.querySelector('.mockup-gallery');
+            
+            if (previewImage && mockupGallery) {
+                let mockupUrls = [];
+                
+                // Collect all available mockup URLs
+                if (variant.mockup_urls && variant.mockup_urls.length > 0) {
+                    mockupUrls = variant.mockup_urls;
+                } else if (variant.files && variant.files.length > 0) {
+                    mockupUrls = variant.files
+                        .filter(f => f.preview_url)
+                        .map(f => f.preview_url);
+                }
+
+                                // Handle specific products
+                const productName = product.sync_product.name.toLowerCase();
+                
+                // Products that should only show their last image
+                if (productName.includes('wear the love') || 
+                    productName.includes('trucker') || 
+                    productName.includes('bucket') ||
+                    productName.includes('hoodie')) {
+                    // Keep only the last image for these products
+                    mockupUrls = [mockupUrls[mockupUrls.length - 1]];
+                }
+                // Trail tee specific handling
+                else if (product.sync_product.name.includes('Trail') && mockupUrls.length === 3) {
+                    mockupUrls = [mockupUrls[2], mockupUrls[0]];
+                }
+                // Default behavior for other products
+                else if (mockupUrls.length > 1) {
+                    const lastImage = mockupUrls[mockupUrls.length - 1];
+                    mockupUrls = [lastImage, ...mockupUrls.slice(0, -1)];
+                }
+                
+                // Update main image
+                if (mockupUrls.length > 0) {
+                    previewImage.src = mockupUrls[0];
+                } else if (variant.preview_url) {
+                    previewImage.src = variant.preview_url;
+                }
+                
+                // Always update mockup gallery
+                mockupGallery.innerHTML = mockupUrls
+                    .map((url, index) => `
+                        <img src="${url}"
+                             class="mockup-thumbnail ${index === 0 ? 'active' : ''}"
+                             alt="Product view ${index + 1}"
+                             onclick="updateMainImage(this, '${url}')"
+                        >
+                    `).join('');
+            }
         }
 
         // Get unique colors and sizes from variants
@@ -373,12 +478,21 @@ function showProductDetails(productId) {
 
         document.body.appendChild(modal);
 
-        // Initialize image zoom
-        const imageContainer = modal.querySelector('.product-image-section');
-        const image = modal.querySelector('.dialog-image');
-        const cleanup = handleImageZoom(imageContainer, image);
+            // Create and setup the main image container
+            const mainImage = modal.querySelector('.dialog-image');
+            const mainImageContainer = document.createElement('div');
+            mainImageContainer.className = 'main-image-container';
+            mainImage.parentElement.insertBefore(mainImageContainer, mainImage);
+            mainImageContainer.appendChild(mainImage);
+            
+            const image = modal.querySelector('.dialog-image');
+            const cleanup = handleImageZoom(mainImageContainer, image);
 
-        const closeBtn = modal.querySelector('#closeProductDialog');
+            // Show initial product images for the first available variant
+            const defaultVariant = product.sync_variants.find(v => v.availability_status === 'active');
+            if (defaultVariant) {
+                updateProductImages(defaultVariant);
+            }        const closeBtn = modal.querySelector('#closeProductDialog');
         const overlay = modal.querySelector('.dialog-overlay');
         
         let isClosing = false;
@@ -462,42 +576,7 @@ function showProductDetails(productId) {
                 
                 // Update product images based on variant
                 if (state.selectedVariant) {
-                    const previewImage = modal.querySelector('.dialog-image');
-                    const mockupGallery = modal.querySelector('.mockup-gallery');
-                    
-                    if (previewImage && mockupGallery) {
-                        let mockupUrls = [];
-                        
-                        // Collect all available mockup URLs
-                        if (state.selectedVariant.mockup_urls && state.selectedVariant.mockup_urls.length > 0) {
-                            mockupUrls = state.selectedVariant.mockup_urls;
-                        } else if (state.selectedVariant.files && state.selectedVariant.files.length > 0) {
-                            mockupUrls = state.selectedVariant.files
-                                .filter(f => f.preview_url)
-                                .map(f => f.preview_url);
-                        }
-                        
-                        // Update main image
-                        if (mockupUrls.length > 0) {
-                            previewImage.src = mockupUrls[0];
-                        } else if (state.selectedVariant.preview_url) {
-                            previewImage.src = state.selectedVariant.preview_url;
-                        }
-                        
-                        // Update mockup gallery
-                        if (mockupUrls.length > 1) {
-                            mockupGallery.innerHTML = mockupUrls
-                                .map((url, index) => `
-                                    <img src="${url}"
-                                         class="mockup-thumbnail ${index === 0 ? 'active' : ''}"
-                                         alt="Product view ${index + 1}"
-                                         onclick="updateMainImage(this, '${url}')"
-                                    >
-                                `).join('');
-                        } else {
-                            mockupGallery.innerHTML = '';
-                        }
-                    }
+                    updateProductImages(state.selectedVariant);
                 }
                 
                 if (state.selectedVariant) {
@@ -516,6 +595,18 @@ function showProductDetails(productId) {
                         b.classList.remove('active'));
                     button.classList.add('active');
                     selectedColor = color;
+                    
+                    // Find the first available variant for this color
+                    const colorVariant = product.sync_variants.find(v => 
+                        v.color === color && v.availability_status === 'active'
+                    );
+                    
+                    // Update images immediately when color changes
+                    if (colorVariant) {
+                        updateProductImages(colorVariant);
+                    }
+                    
+                    // Update available sizes
                     updateAvailableSizes(color);
                 });
             });
