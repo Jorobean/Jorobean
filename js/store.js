@@ -291,17 +291,71 @@ function showProductDetails(productId) {
                                 // Handle specific products
                 const productName = product.sync_product.name.toLowerCase();
                 
-                // Products that should only show their last image
-                if (productName.includes('wear the love') || 
-                    productName.includes('trucker') || 
-                    productName.includes('bucket') ||
-                    productName.includes('hoodie')) {
-                    // Keep only the last image for these products
+                // Handle specific products with additional images
+                if (productName.includes('bucket')) {
+                    // Add bucket hat additional images
+                    const bucketImages = [
+                        mockupUrls[mockupUrls.length - 1],
+                        '/product-variants/bucket1.png'
+                    ];
+                    mockupUrls = bucketImages;
+                }
+                else if (productName.includes('trucker')) {
+                    // Add trucker cap additional images
+                    const capImages = [
+                        mockupUrls[mockupUrls.length - 1],
+                        '/product-variants/cap1.png',
+                        '/product-variants/cap2.png',
+                        '/product-variants/cap3.png',
+                        '/product-variants/cap4.png',
+                        '/product-variants/cap5.png'
+                    ];
+                    mockupUrls = capImages;
+                }
+                else if (productName.includes('wear the love')) {
+                    const lastImage = mockupUrls[mockupUrls.length - 1];
+                    if (productName.includes('black')) {
+                        // Add black wear love tee additional images
+                        const blackImages = [
+                            lastImage,
+                            '/product-variants/black1.png',
+                            '/product-variants/black2.png',
+                            '/product-variants/black3.png',
+                            '/product-variants/black4.png',
+                            '/product-variants/black5.png'
+                        ];
+                        mockupUrls = blackImages;
+                    } else if (productName.includes('red')) {
+                        // Add red wear love tee additional images
+                        const redImages = [
+                            lastImage,
+                            '/product-variants/red1.png',
+                            '/product-variants/red2.png',
+                            '/product-variants/red3.png',
+                            '/product-variants/red4.png',
+                            '/product-variants/red5.png',
+                            '/product-variants/red6.png'
+                        ];
+                        mockupUrls = redImages;
+                    } else {
+                        mockupUrls = [lastImage];
+                    }
+                }
+                else if (productName.includes('hoodie')) {
+                    // Keep only the last image for hoodies
                     mockupUrls = [mockupUrls[mockupUrls.length - 1]];
                 }
                 // Trail tee specific handling
-                else if (product.sync_product.name.includes('Trail') && mockupUrls.length === 3) {
-                    mockupUrls = [mockupUrls[2], mockupUrls[0]];
+                else if (product.sync_product.name.includes('Trail')) {
+                    // Add additional trail images
+                    const additionalTrailImages = [
+                        '/product-variants/trail5.png',
+                        '/product-variants/trail6.png',
+                        '/product-variants/trail7.png',
+                        '/product-variants/trail8.png',
+                        '/product-variants/trail9.png'
+                    ];
+                    mockupUrls = [mockupUrls[2], mockupUrls[0], ...additionalTrailImages];
                 }
                 // Default behavior for other products
                 else if (mockupUrls.length > 1) {
@@ -569,8 +623,16 @@ function showProductDetails(productId) {
             addToCartBtn.classList.remove('added');
             addToCartBtn.innerHTML = 'Add to cart';
             
-            if (selectedColor && selectedSize) {
+            // For products without color variants (like postcards), treat them as having a default color
+            if (colors.length <= 1) {
+                selectedColor = colors[0] || 'default';
+            }
+            
+            if (selectedSize) {
+                // Find variant by size only if there's no color, or by both size and color if there is a color
                 state.selectedVariant = product.sync_variants.find(v => 
+                    colors.length <= 1 ? 
+                    v.size === selectedSize :
                     v.color === selectedColor && v.size === selectedSize
                 );
                 
@@ -583,6 +645,9 @@ function showProductDetails(productId) {
                     modal.querySelector('.price').textContent = 
                         `$${parseFloat(state.selectedVariant.retail_price).toFixed(2)}`;
                     addToCartBtn.disabled = false;
+                    console.log('Variant selected:', state.selectedVariant); // Debug log
+                } else {
+                    console.log('No variant found for size:', selectedSize, 'color:', selectedColor); // Debug log
                 }
             }
         }
@@ -629,6 +694,23 @@ function showProductDetails(productId) {
                     updateSelectedVariant();
                 }
             });
+        });
+        
+        // Automatically select the size if there's only one option
+        const enabledSizeButtons = Array.from(modal.querySelectorAll('.size-button')).filter(button => !button.disabled);
+        if (enabledSizeButtons.length === 1) {
+            enabledSizeButtons[0].classList.add('active');
+            selectedSize = enabledSizeButtons[0].dataset.size;
+            console.log('Auto-selecting size:', selectedSize); // Debug log
+            updateSelectedVariant();
+        }
+        
+        // Log the initial state
+        console.log('Initial state:', {
+            selectedSize,
+            selectedColor,
+            availableVariants: product.sync_variants,
+            enabledSizeButtons: enabledSizeButtons.length
         });
 
         // Add quantity control functionality
@@ -687,6 +769,21 @@ function showProductDetails(productId) {
 
 // Cart functionality
 function addToCart(product) {
+    // Determine the correct thumbnail URL
+    let thumbnailUrl = product.thumbnail_url;
+    
+    // For hoodies, use the variant-specific image
+    if (product.name.toLowerCase().includes('hoodie') && product.selectedVariant) {
+        // Try to get the variant-specific image
+        if (product.selectedVariant.files && product.selectedVariant.files.length > 0) {
+            thumbnailUrl = product.selectedVariant.files[product.selectedVariant.files.length - 1].preview_url;
+        } else if (product.selectedVariant.preview_url) {
+            thumbnailUrl = product.selectedVariant.preview_url;
+        } else if (product.selectedVariant.mockup_urls && product.selectedVariant.mockup_urls.length > 0) {
+            thumbnailUrl = product.selectedVariant.mockup_urls[product.selectedVariant.mockup_urls.length - 1];
+        }
+    }
+    
     const cartItem = {
         id: product.selectedVariant.id,
         productId: product.id,
@@ -694,35 +791,85 @@ function addToCart(product) {
         price: parseFloat(product.selectedVariant.retail_price),
         size: product.selectedVariant.size,
         color: product.selectedVariant.color,
-        thumbnail: product.thumbnail_url,
+        thumbnail: thumbnailUrl,
         quantity: product.quantity || 1
     };
 
+    // Ensure cart structure exists first
+    initCartStructure();
+
+    const cartItems = document.getElementById('cart-items');
+    if (!cartItems) return;
+
     const existingItem = state.cart.find(item => String(item.id) === String(cartItem.id));
+    
     if (existingItem) {
+        // Update existing item
         existingItem.quantity += cartItem.quantity;
+        
+        // Update the visual quantity in the cart immediately
+        const existingElement = cartItems.querySelector(`[data-item-id="${existingItem.id}"]`);
+        if (existingElement) {
+            const quantitySpan = existingElement.querySelector('.quantity-value');
+            const priceDisplay = existingElement.querySelector('.cart-item-price');
+            if (quantitySpan) quantitySpan.textContent = existingItem.quantity;
+            if (priceDisplay) priceDisplay.textContent = `$${(existingItem.price * existingItem.quantity).toFixed(2)}`;
+        }
     } else {
+        // Add new item
         state.cart.push(cartItem);
+        
+        // Add new item to cart visually immediately
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item';
+        itemElement.dataset.itemId = cartItem.id;
+        itemElement.innerHTML = `
+            <img src="${cartItem.thumbnail}" alt="${cartItem.name}" class="cart-item-image">
+            <div class="cart-item-details">
+                <h4>${cartItem.name}</h4>
+                <p>Size: ${cartItem.size}</p>
+                ${cartItem.color ? `<p>Color: ${cartItem.color}</p>` : ''}
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-decrease" data-item-id="${cartItem.id}" aria-label="Decrease quantity">-</button>
+                    <span class="quantity-value">${cartItem.quantity}</span>
+                    <button type="button" class="quantity-increase" data-item-id="${cartItem.id}" aria-label="Increase quantity">+</button>
+                </div>
+            </div>
+            <div class="cart-item-price">
+                $${(cartItem.price * cartItem.quantity).toFixed(2)}
+            </div>
+        `;
+        cartItems.appendChild(itemElement);
     }
     
+    // Save cart state and update displays
     saveCart();
     updateCartCount();
+    updateCartTotal();
 
-    // Enable checkout button if cart has items
+    // Update checkout button state
     const checkoutButton = document.getElementById('checkout-button');
     if (checkoutButton) {
         checkoutButton.disabled = false;
+        checkoutButton.removeEventListener('click', showCheckoutForm);
+        checkoutButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            await showCheckoutForm();
+        });
     }
 
-    // Clear any "empty cart" message
-    const cartItems = document.getElementById('cart-items');
-    if (cartItems && cartItems.querySelector('.empty-cart')) {
-        cartItems.innerHTML = '';
+    // Show the cart sidebar
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    if (cartSidebar && cartOverlay) {
+        // Remove any empty cart message if it exists
+        const emptyMessage = cartItems.querySelector('.empty-cart');
+        if (emptyMessage) emptyMessage.remove();
+        
+        cartSidebar.classList.add('open');
+        cartOverlay.style.display = 'block';
     }
-
-    // Update cart display
-    updateCartSidebar();
-    updateCartTotal();
 }
 
 function updateCartCount() {
@@ -740,32 +887,19 @@ function updateCartCount() {
 }
 
 function updateCartSidebar() {
-    // Ensure cart structure exists
+    // Always ensure cart structure exists first
     initCartStructure();
 
-    let cartItems = document.getElementById('cart-items');
-    let cartTotal = document.getElementById('cart-total');
-    let cartSidebar = document.getElementById('cart-sidebar');
-    let checkoutButton = document.getElementById('checkout-button');
+    // Get all necessary cart elements
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const checkoutButton = document.getElementById('checkout-button');
     
-    console.log('Updating cart sidebar');
-    console.log('Cart items element exists:', !!cartItems);
-    console.log('Cart total element exists:', !!cartTotal);
-    console.log('Cart sidebar element exists:', !!cartSidebar);
-
-    // Try to initialize again if elements are missing
-    if (!cartItems || !cartTotal || !cartSidebar) {
-        console.warn('Cart elements not found, reinitializing...');
-        initCartStructure();
-        // Get references again
-        cartItems = document.getElementById('cart-items');
-        cartTotal = document.getElementById('cart-total');
-        cartSidebar = document.getElementById('cart-sidebar');
-        
-        if (!cartItems || !cartTotal || !cartSidebar) {
-            console.error('Cart elements still not found after reinitialization');
-            return;
-        }
+    // Verify all elements exist
+    if (!cartItems || !cartTotal || !cartSidebar || !checkoutButton) {
+        console.error('Required cart elements not found');
+        return;
     }
 
     console.log('Current cart state before rendering:', state.cart);
@@ -796,8 +930,19 @@ function updateCartSidebar() {
         const itemElement = document.createElement('div');
         itemElement.className = 'cart-item';
         itemElement.dataset.itemId = item.id;
+        
+        // Set proper height for the image container to prevent layout shifts
+        const imageStyle = 'object-fit: cover; width: 100%; height: 100%;';
+        
         itemElement.innerHTML = `
-            <img src="${item.thumbnail}" alt="${item.name}" class="cart-item-image">
+            <div class="cart-item-image-container" style="width: 80px; height: 80px; overflow: hidden; border-radius: 4px;">
+                <img 
+                    src="${item.thumbnail}" 
+                    alt="${item.name}" 
+                    class="cart-item-image"
+                    style="${imageStyle}"
+                >
+            </div>
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
                 <p>Size: ${item.size}</p>
@@ -863,6 +1008,7 @@ function updateCartSidebar() {
 
 function updateCartTotal() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
     // Update all cart total elements (there might be multiple on the page)
     const cartTotalElements = document.querySelectorAll('.cart-total, #cart-total');
     cartTotalElements.forEach(element => {
@@ -870,6 +1016,22 @@ function updateCartTotal() {
             element.textContent = `$${total.toFixed(2)}`;
         }
     });
+
+    // Update checkout button state
+    const checkoutButton = document.getElementById('checkout-button');
+    if (checkoutButton) {
+        const hasItems = state.cart.length > 0;
+        checkoutButton.disabled = !hasItems;
+        
+        if (hasItems) {
+            checkoutButton.removeEventListener('click', showCheckoutForm);
+            checkoutButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await showCheckoutForm();
+            });
+        }
+    }
 }
 
 function updateQuantity(itemId, newQuantity) {
@@ -879,6 +1041,10 @@ function updateQuantity(itemId, newQuantity) {
     const cartItem = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
     if (!cartItem) return;
     
+    // Find the specific item in the cart state
+    const item = state.cart.find(item => String(item.id) === String(itemId));
+    if (!item) return;
+
     // Find the quantity span within this specific cart item
     const quantitySpan = cartItem.querySelector('.quantity-value');
     if (quantitySpan) {
@@ -1143,12 +1309,29 @@ function initCartStructure() {
                     </div>
                     <button type="button" class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
                 </div>
-                <button class="checkout-button" id="checkout-button">Proceed to Checkout</button>
+                <button class="checkout-button" id="checkout-button" ${state.cart.length === 0 ? 'disabled' : ''}>
+                    Proceed to Checkout
+                </button>
             </div>
         `;
         
         cartContainer.appendChild(sidebar);
         document.body.appendChild(cartContainer);
+        
+        // Initialize checkout button state
+        const checkoutButton = document.getElementById('checkout-button');
+        if (checkoutButton) {
+            const hasItems = state.cart.length > 0;
+            checkoutButton.disabled = !hasItems;
+            
+            if (hasItems) {
+                checkoutButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    await showCheckoutForm();
+                });
+            }
+        }
         
         // Reinitialize cart event listeners
         document.querySelector('.close-cart')?.addEventListener('click', () => {
@@ -1178,14 +1361,29 @@ window.updateMainImage = function(thumbnailElement, newSrc) {
 
 // Initialize the store
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize cart structure first
     initCartStructure();
-    // Load cart from localStorage and update display
+    
+    // Load cart from localStorage
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-        state.cart = JSON.parse(savedCart);
-        updateCartCount();
-        updateCartSidebar();
+        try {
+            state.cart = JSON.parse(savedCart);
+            // Ensure we have a valid cart array
+            if (!Array.isArray(state.cart)) {
+                state.cart = [];
+            }
+        } catch (e) {
+            console.error('Error loading cart from localStorage:', e);
+            state.cart = [];
+        }
     }
+    
+    // Update cart display
+    updateCartCount();
+    updateCartSidebar();
+    
+    // Initialize store and product handlers
     initStore();
     initProductClickHandlers();
     
