@@ -1,5 +1,5 @@
-import { serve } from 'std/http/server.ts'
-import Stripe from 'stripe'
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
+import Stripe from 'https://esm.sh/stripe@11.1.0?target=deno'
 import { getPrintfulShippingRates, convertToStripeShippingOptions } from '../_shared/printful-api.ts'
 
 // Minimum shipping cost if Printful API fails
@@ -95,7 +95,7 @@ serve(async (req) => {
     // We'll handle shipping calculations after the session is created
     // The actual shipping cost will be calculated when the customer enters their address
 
-    // Create Checkout Session
+    // Create Checkout Session with dynamic shipping rates
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
@@ -105,20 +105,11 @@ serve(async (req) => {
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      shipping_options: [{
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: {
-            amount: 595, // $5.95 in cents
-            currency: 'usd',
-          },
-          display_name: 'Standard Shipping',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 5 },
-            maximum: { unit: 'business_day', value: 7 },
-          }
-        }
-      }],
+      shipping_options: [], // Empty array to enable dynamic shipping rates
+      billing_address_collection: 'required',
+      metadata: {
+        items: JSON.stringify(printfulItems), // Pass Printful items for shipping calculation
+      },
     });    return new Response(
       JSON.stringify({ sessionId: session.id }),
       {

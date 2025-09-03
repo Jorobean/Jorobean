@@ -36,8 +36,17 @@ export async function getPrintfulShippingRates(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      recipient: address,
-      items: items,
+      recipient: {
+        address1: address.address1 || '',
+        city: address.city || '',
+        state_code: address.state_code || '',
+        country_code: address.country_code || 'US',
+        zip: address.zip || '',
+      },
+      items: items.map(item => ({
+        variant_id: item.variant_id,
+        quantity: item.quantity,
+      })),
     }),
   });
 

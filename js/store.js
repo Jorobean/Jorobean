@@ -1092,6 +1092,14 @@ function updateQuantity(itemId, newQuantity) {
 async function showCheckoutForm() {
     console.log('showCheckoutForm called');
     
+    // Prevent multiple checkout attempts
+    if (window.checkoutInProgress) {
+        console.log('Checkout already in progress');
+        return;
+    }
+    
+    window.checkoutInProgress = true;
+    
     const checkoutButton = document.getElementById('checkout-button');
     if (checkoutButton) {
         checkoutButton.classList.add('loading');
@@ -1119,18 +1127,38 @@ async function showCheckoutForm() {
     });
     console.log('Prepared cart data:', cartData);
 
-    // Show loading state
-    const loadingMessage = document.createElement('div');
-    loadingMessage.className = 'loading-message';
-    loadingMessage.innerHTML = `
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Preparing checkout...</p>
-        </div>
-    `;
-    document.body.appendChild(loadingMessage);
+        // Show loading state
+        const loadingMessage = document.createElement('div');
+        loadingMessage.id = 'checkout-loading-message';
+        loadingMessage.className = 'loading-message';
+        loadingMessage.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Preparing checkout...</p>
+            </div>
+        `;
+        document.body.appendChild(loadingMessage);
 
-    try {
+        // Add visibility change listener to handle browser back button
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                const existingLoadingMessage = document.getElementById('checkout-loading-message');
+                if (existingLoadingMessage) {
+                    existingLoadingMessage.remove();
+                }
+                if (checkoutButton) {
+                    checkoutButton.classList.remove('loading');
+                    checkoutButton.disabled = false;
+                }
+            }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Clean up the listener after 5 minutes (longer than typical checkout duration)
+        setTimeout(() => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        }, 300000);    try {
         console.log('Sending cart data:', cartData);
         
         // Create a Checkout Session
@@ -1146,10 +1174,20 @@ async function showCheckoutForm() {
             })
         });
 
+        let errorMessage;
         if (!response.ok) {
             const errorData = await response.text();
             console.error('Checkout session error:', errorData);
-            throw new Error(`Failed to create checkout session: ${errorData}`);
+            
+            try {
+                // Try to parse the error as JSON
+                const errorJson = JSON.parse(errorData);
+                errorMessage = errorJson.error || 'Failed to create checkout session';
+            } catch {
+                // If not JSON, use the raw error text
+                errorMessage = errorData;
+            }
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -1159,29 +1197,37 @@ async function showCheckoutForm() {
             throw new Error('No session ID returned from server');
         }
 
-        // Redirect to Stripe Checkout
-        const result = await stripeInstance.redirectToCheckout({
-            sessionId: data.sessionId // Using data.sessionId instead of sessionId
-        });
+        // Only proceed with Stripe redirect if we have a valid session ID
+        if (data.sessionId) {
+            // Redirect to Stripe Checkout
+            const result = await stripeInstance.redirectToCheckout({
+                sessionId: data.sessionId
+            });
 
-        if (result.error) {
-            throw new Error(result.error.message);
-        }
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
 
-        // Clear cart only after successful redirect
-        clearCart();
+            // Clear cart only after successful redirect
+            clearCart();
 
-        // Only close cart if checkout redirect is successful
-        const cartSidebar = document.getElementById('cart-sidebar');
-        const cartOverlay = document.getElementById('cart-overlay');
-        if (cartSidebar && cartOverlay) {
-            cartSidebar.classList.remove('open');
-            cartOverlay.style.display = 'none';
+            // Only close cart if checkout redirect is successful
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            if (cartSidebar && cartOverlay) {
+                cartSidebar.classList.remove('open');
+                cartOverlay.style.display = 'none';
+            }
         }
     } catch (error) {
         console.error('Checkout error:', error);
-        // Ignore redirectToCheckout "errors" as they're expected
-        if (!error.message?.includes('redirectToCheckout') && !error.message?.includes('loadFail')) {
+        
+        // Only show error message for actual errors, not redirects
+        if (!error.message?.includes('redirectToCheckout') && 
+            !error.message?.includes('loadFail') && 
+            !error.message?.includes('stripe.com')) {
+            
+            // Create a styled error message container
             const errorMessage = document.createElement('div');
             errorMessage.className = 'error-message';
             errorMessage.style.position = 'fixed';
@@ -1193,12 +1239,29 @@ async function showCheckoutForm() {
             errorMessage.style.padding = '1rem 2rem';
             errorMessage.style.borderRadius = '4px';
             errorMessage.style.zIndex = '2000';
-            errorMessage.textContent = error.message || 'An error occurred during checkout';
+            errorMessage.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+            errorMessage.style.textAlign = 'center';
+            
+            // Show a user-friendly error message
+            errorMessage.textContent = error.message || 'An error occurred during checkout. Please try again.';
             document.body.appendChild(errorMessage);
-            setTimeout(() => errorMessage.remove(), 5000);
+            setTimeout(() => {
+                errorMessage.style.opacity = '0';
+                setTimeout(() => errorMessage.remove(), 300);
+            }, 4700);
         }
     } finally {
-        loadingMessage.remove();
+        // Reset checkout state
+        window.checkoutInProgress = false;
+        
+        // Clean up loading message if it exists
+        const existingLoadingMessage = document.getElementById('checkout-loading-message');
+        if (existingLoadingMessage) {
+            existingLoadingMessage.remove();
+        }
+        
+        // Reset checkout button
+        const checkoutButton = document.getElementById('checkout-button');
         if (checkoutButton) {
             checkoutButton.classList.remove('loading');
             checkoutButton.disabled = false;
@@ -1360,6 +1423,25 @@ window.updateMainImage = function(thumbnailElement, newSrc) {
 };
 
 // Initialize the store
+// Reset any lingering checkout state when the page loads
+window.addEventListener('pageshow', (event) => {
+    // Reset checkout state even if the page is loaded from the bfcache
+    window.checkoutInProgress = false;
+    
+    // Clean up any lingering loading messages
+    const existingLoadingMessage = document.getElementById('checkout-loading-message');
+    if (existingLoadingMessage) {
+        existingLoadingMessage.remove();
+    }
+    
+    // Reset checkout button state
+    const checkoutButton = document.getElementById('checkout-button');
+    if (checkoutButton) {
+        checkoutButton.classList.remove('loading');
+        checkoutButton.disabled = false;
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize cart structure first
     initCartStructure();
