@@ -22,7 +22,7 @@ export interface PrintfulAddress {
 
 export async function getPrintfulShippingRates(
   items: PrintfulShippingItem[],
-  address: PrintfulAddress
+  address?: PrintfulAddress
 ): Promise<PrintfulShippingRate[]> {
   const PRINTFUL_API_KEY = Deno.env.get('PRINTFUL_API_KEY');
   if (!PRINTFUL_API_KEY) {
@@ -36,12 +36,14 @@ export async function getPrintfulShippingRates(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      recipient: {
+      recipient: address ? {
         address1: address.address1 || '',
         city: address.city || '',
         state_code: address.state_code || '',
         country_code: address.country_code || 'US',
         zip: address.zip || '',
+      } : {
+        country_code: 'US'
       },
       items: items.map(item => ({
         variant_id: item.variant_id,

@@ -25,7 +25,14 @@ const DEFAULT_SHIPPING_RATE = {
 };
 
 serve(async (req) => {
+  console.log('Received shipping calculation request:', {
+    method: req.method,
+    url: req.url,
+    headers: Object.fromEntries(req.headers.entries())
+  });
+
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return new Response(null, {
       status: 204,
       headers: corsHeaders
@@ -33,7 +40,9 @@ serve(async (req) => {
   }
 
   try {
-    const { items, address } = await req.json();
+    const body = await req.json();
+    console.log('Request body:', JSON.stringify(body, null, 2));
+    const { items, address } = body;
 
     if (!items || !address) {
       return new Response(

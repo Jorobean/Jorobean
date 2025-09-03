@@ -89,10 +89,6 @@ async function initStore() {
             throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const responseText = await response.text();
         const data = JSON.parse(responseText);
 
@@ -111,7 +107,8 @@ async function initStore() {
         }
         
         state.products = data;
-        console.log(`Loaded ${data.length} products successfully`);
+        
+        console.log('Full product data:', data);
         renderProducts();
 
     } catch (error) {
@@ -786,6 +783,7 @@ function addToCart(product) {
     
     const cartItem = {
         id: product.selectedVariant.id,
+        variant_id: product.selectedVariant.variant_id, // Using the Printful variant_id instead of sync_variant_id
         productId: product.id,
         name: product.name,
         price: parseFloat(product.selectedVariant.retail_price),
@@ -1122,7 +1120,7 @@ async function showCheckoutForm() {
                 }
             },
             quantity: item.quantity,
-            variant_id: item.id // Add Printful variant ID for shipping calculation
+            variant_id: item.variant_id // Use the correct Printful variant_id
         };
     });
     console.log('Prepared cart data:', cartData);
