@@ -2,9 +2,14 @@
   "tasks": {
     "start": "deno run --allow-net --allow-env index.ts"
   },
-  "importMap": "import_map.json",
   "compilerOptions": {
-    "lib": ["deno.window"],
+    "allowJs": true,
+    "lib": ["deno.window", "deno.ns", "esnext"],
     "strict": true
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.177.0/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.8.0",
+    "stripe": "https://esm.sh/stripe@12.1.1"
   }
 }

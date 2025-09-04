@@ -40,12 +40,18 @@ serve(async (req) => {
   try {
     console.log('Processing POST request');
     
-    if (!Deno.env.get('STRIPE_SECRET_KEY')) {
-      throw new Error('STRIPE_SECRET_KEY is not set');
-    }
-
-    if (!Deno.env.get('PRINTFUL_API_KEY')) {
-      throw new Error('PRINTFUL_API_KEY is not set');
+    if (!Deno.env.get('STRIPE_SECRET_KEY') || !Deno.env.get('PRINTFUL_API_KEY')) {
+      console.error('Missing required environment variables');
+      return new Response(
+        JSON.stringify({
+          error: "Service configuration error. Please try again later.",
+          code: "CONFIG_ERROR"
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      );
     }
 
     const requestBody = await req.json();
@@ -68,7 +74,16 @@ serve(async (req) => {
       // Validate item structure
       if (!item.price_data?.product_data?.name) {
         console.error('Invalid item structure:', item);
-        throw new Error(`Invalid item structure. Expected price_data.product_data.name but got: ${JSON.stringify(item)}`);
+        return new Response(
+          JSON.stringify({
+            error: "Invalid cart data. Please refresh and try again.",
+            code: "INVALID_CART"
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 400,
+          }
+        );
       }
 
       return {
@@ -139,8 +154,19 @@ serve(async (req) => {
         throw new Error('Unable to get shipping rates from Printful');
       }
     } catch (error) {
+      // Log the detailed error server-side
       console.error('Printful shipping rate error:', error);
-      throw new Error(`Failed to get Printful shipping rates: ${error.message}`);
+      // Use default shipping rates instead of exposing the error
+      printfulRates = [
+        {
+          id: "default_rate",
+          name: "Standard Shipping",
+          rate: DEFAULT_SHIPPING_COST / 100, // Convert cents to dollars for consistency
+          currency: "USD",
+          minDeliveryDays: 5,
+          maxDeliveryDays: 7
+        }
+      ];
     }
 
     // Create Checkout Session with dynamic shipping rates and automatic tax
@@ -165,15 +191,14 @@ serve(async (req) => {
       }
     )
   } catch (error) {
+    // Log the detailed error server-side for debugging
     console.error('Checkout session error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    const errorDetails = error instanceof Error ? error.stack : String(error);
     
+    // Send a generic error message to the client
     return new Response(
       JSON.stringify({
-        error: errorMessage,
-        details: errorDetails,
-        timestamp: new Date().toISOString()
+        error: "Unable to create checkout session. Please try again later.",
+        code: "CHECKOUT_ERROR"
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
