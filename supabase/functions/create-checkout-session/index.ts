@@ -1,6 +1,13 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.8.0'
 import Stripe from 'https://esm.sh/stripe@11.1.0?target=deno'
 import { getPrintfulShippingRates, convertToStripeShippingOptions, PrintfulShippingRate } from '../_shared/printful-api.ts'
+
+// Initialize Supabase client
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') || '',
+  Deno.env.get('SUPABASE_SERVICE_KEY') || ''
+);
 
 // Minimum shipping cost if Printful API fails
 const DEFAULT_SHIPPING_COST = 595; // $5.95 in cents
@@ -169,6 +176,42 @@ serve(async (req) => {
       ];
     }
 
+    // Generate a unique order ID
+    const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    try {
+        // Create initial order record in database
+        const { data: orderData, error: orderError } = await supabase
+            .from('orders')
+            .insert([
+                {
+                    id: orderId,
+                    status: 'pending',
+                    total: items.reduce((sum: number, item: any) => 
+                        sum + (item.price_data.unit_amount * item.quantity), 0) / 100,
+                    order_items: items.map((item: any) => ({
+                        name: item.price_data.product_data.name,
+                        price: item.price_data.unit_amount / 100,
+                        quantity: item.quantity,
+                        color: item.price_data.product_data.color || 'N/A',
+                        size: item.price_data.product_data.size || 'N/A',
+                        variant_id: item.variant_id
+                    }))
+                }
+            ])
+            .select();
+
+        if (orderError) {
+            console.error('Error creating order:', orderError);
+            throw new Error('Database error while creating order');
+        }
+
+        console.log('Order created successfully:', orderId);
+    } catch (error) {
+        console.error('Failed to create order:', error);
+        throw new Error('Unable to process order');
+    }
+
     // Create Checkout Session with dynamic shipping rates and automatic tax
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -180,6 +223,9 @@ serve(async (req) => {
       shipping_options: convertToStripeShippingOptions(printfulRates),
       automatic_tax: {
         enabled: true
+      },
+      metadata: {
+        orderId: orderId // Link the session to our order
       },
       success_url: `${req.headers.get('origin') || 'https://jorobean.com'}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin') || 'https://jorobean.com'}/store`,

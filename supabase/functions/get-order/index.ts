@@ -44,6 +44,7 @@ const corsHeaders = {
 } as const;
 
 serve(async (req: Request): Promise<Response> => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -54,39 +55,60 @@ serve(async (req: Request): Promise<Response> => {
 
   if (!sessionId && !orderId) {
     return new Response(
-      JSON.stringify({ error: 'Either session_id or order_id is required' }),
+      JSON.stringify({ 
+        error: 'Invalid request',
+        message: 'Order information not found'
+      }),
       { status: 400, headers: corsHeaders }
     );
   }
 
   try {
+    // Get environment variables
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_KEY');
     
     if (!stripeKey || !supabaseUrl || !supabaseKey) {
-      throw new Error('Missing required environment variables');
+      console.error('Missing environment variables');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuration error',
+          message: 'Unable to process request'
+        }),
+        { status: 500, headers: corsHeaders }
+      );
     }
 
-    const stripe = new Stripe(stripeKey);
+    // Initialize clients
+    const stripe = new Stripe(stripeKey, {
+      apiVersion: '2023-10-16',
+    });
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
+
     try {
-      // If we have a session ID, get the order ID from Stripe first
+      // If we have a session ID, get the order ID from Stripe
       if (sessionId && !orderId) {
+        console.log('Retrieving order ID from session:', sessionId);
         const session = await stripe.checkout.sessions.retrieve(sessionId);
-        orderId = session.metadata?.orderId ?? null;
+        orderId = session.metadata?.orderId || null;
       }
 
       if (!orderId) {
+        console.error('No order ID found in session');
         return new Response(
-          JSON.stringify({ error: 'Could not find order ID' }),
+          JSON.stringify({ 
+            error: 'Order not found',
+            message: 'Unable to locate order information'
+          }),
           { status: 404, headers: corsHeaders }
         );
       }
 
+      console.log('Fetching order details for:', orderId);
+
       // Get the order details from Supabase
-      const { data, error: dbError } = await supabase
+      const { data: order, error: dbError } = await supabase
         .from('orders')
         .select(`
           id,
@@ -100,212 +122,59 @@ serve(async (req: Request): Promise<Response> => {
             color,
             quantity,
             price
-          ),
-          shipping_address:recipient_address (
-            name,
-            address1,
-            address2,
-            city,
-            state_code,
-            country_code,
-            zip
           )
         `)
         .eq('id', orderId)
         .single();
 
-      if (dbError) throw new Error(dbError.message);
-      if (!data) {
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to retrieve order details');
+      }
+
+      if (!order) {
+        console.error('Order not found in database:', orderId);
         return new Response(
-          JSON.stringify({ error: 'Order not found' }),
+          JSON.stringify({ 
+            error: 'Order not found',
+            message: 'Unable to locate order information'
+          }),
           { status: 404, headers: corsHeaders }
         );
       }
 
+      console.log('Successfully retrieved order:', order.id);
+      
       return new Response(
-        JSON.stringify(data as Order),
+        JSON.stringify({
+          id: order.id,
+          created_at: order.created_at,
+          status: order.status || 'processing',
+          total: order.total,
+          order_items: order.order_items
+        }),
         { headers: corsHeaders }
       );
 
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Error:', errorMessage);
+      console.error('Error processing order request:', error);
       return new Response(
-        JSON.stringify({ error: errorMessage }),
+        JSON.stringify({ 
+          error: 'Processing error',
+          message: 'Unable to retrieve order information'
+        }),
         { status: 500, headers: corsHeaders }
       );
     }
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error:', errorMessage);
+    console.error('System error:', error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: corsHeaders }
-    );
-  }
-
-  try {
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_KEY');
-    
-    if (!stripeKey || !supabaseUrl || !supabaseKey) {
-      throw new Error('Missing required environment variables');
-    }
-
-    const stripe = new Stripe(stripeKey, {
-      apiVersion: '2023-10-16',
-    });
-    
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // If we have a session ID, get the order ID from Stripe first
-    if (sessionId && !orderId) {
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      orderId = session.metadata?.orderId || null;
-      
-      if (!orderId) {
-        return new Response(
-          JSON.stringify({ error: 'Could not find order ID in session' }),
-          { status: 404, headers: corsHeaders }
-        );
-      }
-    }
-
-    // Query the orders table
-    const { data: order, error } = await supabase
-      .from('orders')
-      .select(`
-        id,
-        created_at,
-        total,
-        status,
-        order_items (
-          id,
-          name,
-          size,
-          color,
-          quantity,
-          price
-        ),
-        shipping_address:recipient_address (
-          name,
-          address1,
-          address2,
-          city,
-          state_code,
-          country_code,
-          zip
-        )
-      `)
-      .eq('id', orderId)
-      .single();
-
-    if (error) throw error;
-    if (!order) {
-      return new Response(
-        JSON.stringify({ error: 'Order not found' }),
-        { status: 404, headers: corsHeaders }
-      );
-    }
-
-    return new Response(
-      JSON.stringify(order),
-      { headers: corsHeaders }
-    );
-
-  } catch (error) {
-    console.error('Error:', error.message);
-    return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: 'System error',
+        message: 'Unable to process request'
+      }),
       { status: 500, headers: corsHeaders }
     );
   }
 });
-    
-    if (!orderId) {
-      return new Response(
-        JSON.stringify({ error: 'Could not find order ID in session' }),
-        { 
-          status: 404,
-          headers: { 
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'authorization, content-type'
-          }
-        }
-      )
-    }
-  }
-
-  try {
-    // Connect to your Supabase database
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_KEY')
-    
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Missing Supabase configuration')
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    // Query the orders table
-    const { data: order, error } = await supabase
-      .from('orders')
-      .select(`
-        id,
-        created_at,
-        total,
-        status,
-        order_items (
-          id,
-          name,
-          size,
-          color,
-          quantity,
-          price
-        ),
-        shipping_address:recipient_address (
-          name,
-          address1,
-          address2,
-          city,
-          state_code,
-          country_code,
-          zip
-        )
-      `)
-      .eq('id', orderId)
-      .single()
-
-    if (error) throw error
-
-    return new Response(
-      JSON.stringify(order),
-      { 
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'authorization, content-type'
-        }
-      }
-    )
-
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        status: 500,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'authorization, content-type'
-        }
-      }
-    )
-  }
-})
