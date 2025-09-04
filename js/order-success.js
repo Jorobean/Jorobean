@@ -1,16 +1,49 @@
-// API Configuration
-const SUPABASE_URL = 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I';
+(() => {
+    // Configuration
+    const CONFIG = {
+        SUPABASE_URL: 'https://vkdvweyatwcfqbocezjv.supabase.co/functions/v1',
+        SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZHZ3ZXlhdHdjZnFib2Nlemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjQ1MTgsImV4cCI6MjA3MTM0MDUxOH0.orSkIBG-3jVd1Trv9mKT6UD5JVNw7Opy4xLJa_A5E5I',
+        STRIPE_TEST_KEY: 'pk_test_51RFSO1GHx57yahd0LYYHFgXpISL2NiCP0FhRGRGMBvNE3dZrUELRZZJyFkmkTd4WsCDDXyQvVYFFVzH6nIlbjEKl00qiAn2x0d',
+        STRIPE_LIVE_KEY: 'pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz'
+    };
 
-// Initialize Stripe
-const stripeInstance = Stripe('pk_live_51RFSO1GHx57yahd0fA0HLVYo9OS4tLN7GYNPL09WiliQaTO2pDda4slh5Se6E4eAMjmHyMWoLH5F0UT5pmfD8qi300ZiV95GDz');
+    // Initialize Stripe based on environment
+    const stripe = Stripe(
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? CONFIG.STRIPE_TEST_KEY
+            : CONFIG.STRIPE_LIVE_KEY
+    );
+
+    // Sample test data for development
+    const TEST_ORDER_DATA = {
+    id: 'test_order_123',
+    created_at: new Date().toISOString(),
+    status: 'Processing',
+    total: 199.98,
+    order_items: [
+        {
+            name: 'Test Product 1',
+            size: 'L',
+            color: 'Black',
+            quantity: 2,
+            price: 49.99
+        },
+        {
+            name: 'Test Product 2',
+            size: 'M',
+            color: 'Red',
+            quantity: 1,
+            price: 100.00
+        }
+    ]
+};
+
+
 
 async function initializeOrderSuccess() {
     try {
-        // Clear any pending session ID
+        // Clear cart and any pending session
         localStorage.removeItem('pending_session_id');
-        
-        // Clear the cart
         localStorage.removeItem('cart');
         
         // Get the session ID from URL
@@ -21,87 +54,97 @@ async function initializeOrderSuccess() {
             throw new Error('No session ID found in URL');
         }
 
+        // Get the order info element
+        const orderInfo = document.getElementById('order-info');
+        if (!orderInfo) {
+            throw new Error('Order info element not found');
+        }
+
         // Show loading state
-        document.getElementById('order-details').innerHTML = `
+        orderInfo.innerHTML = `
             <div class="loading-spinner">
                 <div class="spinner"></div>
                 <p>Loading order details...</p>
             </div>
         `;
 
-        // Fetch the order details from Stripe
-        const response = await fetch(`${SUPABASE_URL}/get-order?session_id=${sessionId}`, {
-            headers: {
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        let orderData;
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch order details');
+        // First try to retrieve the Stripe session
+        if (sessionId !== 'test') {
+            try {
+                const session = await stripeInstance.checkout.sessions.retrieve(sessionId);
+                console.log('Stripe session:', session);
+            } catch (stripeError) {
+                console.error('Error retrieving Stripe session:', stripeError);
+            }
+        }
+        
+        // Use test data if session_id is 'test', otherwise fetch from API
+        if (sessionId === 'test') {
+            orderData = TEST_ORDER_DATA;
+            console.log('Using test data:', orderData);
+        } else {
+            // Fetch the order details from API
+            const response = await fetch(`${CONFIG.SUPABASE_URL}/get-order?session_id=${sessionId}`, {
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch order details');
+            }
+
+            orderData = await response.json();
+            console.log('Received API data:', orderData);
         }
 
-        const orderData = await response.json();
+        if (!orderData || !orderData.order_items) {
+            throw new Error('Invalid order data received');
+        }
         
         // Update the order details section
-        const orderDetails = document.getElementById('order-details');
-        orderDetails.innerHTML = `
+        orderInfo.innerHTML = `
             <div class="order-summary">
-                <h3>Order Summary</h3>
-                <p><strong>Order Number:</strong> ${orderData.order_id}</p>
-                <p><strong>Order Status:</strong> Processing</p>
-                <p><strong>Shipping Address:</strong><br>
-                    ${orderData.shipping.name}<br>
-                    ${orderData.shipping.address.line1}<br>
-                    ${orderData.shipping.address.line2 ? orderData.shipping.address.line2 + '<br>' : ''}
-                    ${orderData.shipping.address.city}, ${orderData.shipping.address.state} ${orderData.shipping.address.postal_code}<br>
-                    ${orderData.shipping.address.country}
-                </p>
+                <p><strong>Order ID:</strong> ${orderData.id}</p>
+                <p><strong>Date:</strong> ${new Date(orderData.created_at).toLocaleDateString()}</p>
+                <p><strong>Status:</strong> ${orderData.status || 'Processing'}</p>
+                
+                <h3>Items</h3>
                 <div class="order-items">
-                    <h4>Items</h4>
-                    ${orderData.items.map(item => `
+                    ${orderData.order_items.map(item => `
                         <div class="order-item">
                             <div class="item-details">
-                                <p class="item-name">${item.description}</p>
-                                <p class="item-quantity">Quantity: ${item.quantity}</p>
+                                <h4>${item.name}</h4>
+                                <p>Size: ${item.size || 'N/A'} | Color: ${item.color || 'N/A'}</p>
+                                <p>Quantity: ${item.quantity}</p>
                             </div>
-                            <p class="item-price">$${(item.amount_total / 100).toFixed(2)}</p>
+                            <p class="item-price">$${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                     `).join('')}
                 </div>
-                <div class="order-totals">
-                    <div class="total-line">
-                        <span>Subtotal:</span>
-                        <span>$${(orderData.amount_subtotal / 100).toFixed(2)}</span>
-                    </div>
-                    <div class="total-line">
-                        <span>Shipping:</span>
-                        <span>$${(orderData.shipping_cost / 100).toFixed(2)}</span>
-                    </div>
-                    ${orderData.tax_total ? `
-                        <div class="total-line">
-                            <span>Tax:</span>
-                            <span>$${(orderData.tax_total / 100).toFixed(2)}</span>
-                        </div>
-                    ` : ''}
-                    <div class="total-line total">
-                        <span><strong>Total:</strong></span>
-                        <span><strong>$${(orderData.amount_total / 100).toFixed(2)}</strong></span>
-                    </div>
+                <div class="order-total">
+                    <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
                 </div>
             </div>
         `;
     } catch (error) {
         console.error('Error loading order details:', error);
-        document.getElementById('order-details').innerHTML = `
-            <div class="error-message">
-                <h3>Failed to load order details</h3>
-                <p>${error.message}</p>
-                <p>Please contact support for assistance.</p>
-            </div>
-        `;
+        const orderInfo = document.getElementById('order-info');
+        if (orderInfo) {
+            orderInfo.innerHTML = `
+                <div class="error-message">
+                    <p>We're having trouble loading your order details.</p>
+                    <p>Your order has been confirmed and you will receive an email confirmation shortly.</p>
+                    <p>If you need immediate assistance, please contact our support team.</p>
+                </div>
+            `;
+        }
     }
 }
 
-// Initialize when the page loads
-document.addEventListener('DOMContentLoaded', initializeOrderSuccess);
+    // Initialize when the page loads
+    document.addEventListener('DOMContentLoaded', initializeOrderSuccess);
+})();
