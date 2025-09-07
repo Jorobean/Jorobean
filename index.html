@@ -1531,24 +1531,71 @@
     .info-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (min-width: 768px) {
+      .product-info-sections .info-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(220px, 1fr)) !important;
+        gap: 16px !important;
+        align-items: start !important;
+      }
     }
 
     .info-image {
       width: 100%;
-      max-width: 280px;
+      max-width: 100%;
       height: auto;
       margin: 0 auto;
       filter: drop-shadow(0 6px 12px var(--image-shadow-color));
       transition: transform 0.3s ease;
     }
 
-    /* Mobile-first ordering */
+    /* Image pair layout */
+    .first-image,
+    .second-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (min-width: 768px) {
+      .first-image .info-image,
+      .second-image .info-image {
+        max-width: 220px;
+      }
+    }
+
+    /* Mobile tweaks: smaller images and tighter tiles when collapsed */
+    @media (max-width: 600px) {
+      .first-image .info-image,
+      .second-image .info-image {
+        max-width: 42vw;
+      }
+      .info-grid {
+        gap: 4px;
+      }
+      .info-collapsible {
+        min-height: 100px;
+      }
+      .info-collapsible summary {
+        padding: 8px 12px 6px 12px;
+        gap: 6px;
+        letter-spacing: 0.08em;
+      }
+      .info-collapsible .info-icon {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+      }
+    }
+
+    /* Mobile-first ordering: four tiles first, images after */
     .section-3d { order: 1; }
-    .first-image { order: 2; }
-    .section-materials { order: 3; }
-    .section-fit { order: 4; }
-    .section-sustainability { order: 5; }
+    .section-materials { order: 2; }
+    .section-fit { order: 3; }
+    .section-sustainability { order: 4; }
+    .first-image { order: 5; }
     .second-image { order: 6; }
     
     .info-section {
@@ -1556,41 +1603,29 @@
       animation: fadeIn 0.6s ease forwards;
     }
 
-    @media (min-width: 900px) {
+    @media (min-width: 768px) {
       .info-grid {
-        grid-template-columns: 1fr 0.8fr 1fr;
-        gap: 60px 40px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
         align-items: start;
       }
 
-      /* Reset mobile ordering */
-      .section-3d, .section-materials, .section-fit, 
-      .section-sustainability, .first-image, .second-image {
-        order: unset;
-      }
+      /* Place four tiles in a row */
+      .section-3d { grid-column: 1; animation-delay: 0.1s; }
+      .section-materials { grid-column: 2; animation-delay: 0.2s; }
+      .section-fit { grid-column: 3; animation-delay: 0.3s; }
+      .section-sustainability { grid-column: 4; animation-delay: 0.4s; }
 
-      /* Desktop layout */
-      .section-3d { grid-area: 1 / 1; animation-delay: 0.1s; }
-      .section-fit { grid-area: 2 / 1; animation-delay: 0.2s; }
-      .section-materials { grid-area: 1 / 3; animation-delay: 0.3s; }
-      .section-sustainability { grid-area: 2 / 3; animation-delay: 0.4s; }
-      
-      /* Center column for images */
-      .first-image,
-      .second-image {
-        grid-column: 2;
-        display: flex;
-        align-items: center;
-      }
-      
+      /* Images below tiles */
       .first-image {
-        grid-row: 1;
-        margin-bottom: 40px;
-      }
-      
-      .second-image {
+        grid-column: 1 / span 2;
         grid-row: 2;
-        margin-top: 40px;
+        margin: 0;
+      }
+      .second-image {
+        grid-column: 3 / span 2;
+        grid-row: 2;
+        margin: 0;
       }
 
       .info-image:hover {
@@ -1598,7 +1633,7 @@
       }
 
       .info-image {
-        max-width: 260px;
+        max-width: 100%;
         transition: transform 0.3s ease;
       }
 
@@ -1634,7 +1669,7 @@
 
     .info-section {
       text-align: left;
-      margin: 0 auto;
+      margin: 0;
       width: 100%;
     }
     
@@ -1676,6 +1711,89 @@
       background-size: 8px 2px;
     }
 
+    /* Collapsible tiles styling */
+    .info-collapsible {
+      border: none;
+      background: var(--bg-color);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px var(--box-shadow-color);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      align-self: stretch;
+    }
+    .info-collapsible:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px var(--box-shadow-color);
+    }
+    .info-collapsible summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: clamp(1rem, 1.6vw, 1.1rem);
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      color: var(--text-color);
+      position: relative;
+      padding: 16px 16px 14px 16px;
+      text-transform: uppercase;
+      outline: none;
+      background: var(--bg-color);
+    }
+    .info-collapsible summary::-webkit-details-marker { display: none; }
+    .info-collapsible .info-icon {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #b71111;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(183, 17, 17, 0.25);
+    }
+
+    /* Force solid section backgrounds in light mode */
+    @media (prefers-color-scheme: light) {
+      .info-collapsible,
+      .info-collapsible summary,
+      .info-collapsible .info-content {
+        background: var(--bg-color);
+      }
+    }
+    .info-collapsible .info-title { flex: 1; }
+    .info-collapsible .chevron {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      opacity: 0.8;
+    }
+    .info-collapsible[open] .chevron { transform: rotate(225deg); }
+    .info-collapsible .info-content {
+      padding: 0 16px 16px 16px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      width: 100%;
+    }
+    .info-collapsible[open] .info-content {
+      max-height: 320px; /* keep inside tile square */
+      opacity: 1;
+    }
+
     .info-section p {
       font-size: clamp(1rem, 1.2vw, 1.1rem);
       line-height: 1.6;
@@ -1686,9 +1804,31 @@
     @media (max-width: 600px) {
       .product-info-sections {
         margin: 10px auto;
-        padding: 0 24px;
-        gap: 20px;
+        padding: 0 16px;
+        gap: 12px;
       }
+      /* Mobile: use flex so images can reliably sit side-by-side */
+      .info-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      /* Tiles span full width (both columns) */
+      .info-collapsible {
+        flex: 0 0 100%;
+        min-height: 100px;
+        width: 100%;
+      }
+      .info-collapsible:hover { transform: none; }
+      .info-collapsible summary { width: 100%; }
+      .info-collapsible:not([open]) { min-height: 88px; box-shadow: 0 1px 4px var(--box-shadow-color); }
+      .info-collapsible:not([open]) summary { padding: 6px 10px; gap: 6px; }
+      .info-collapsible summary { padding: 8px 12px 6px 12px; gap: 6px; }
+      .info-collapsible .info-icon { width: 24px; height: 24px; min-width: 24px; }
+      /* Images each take one column so they appear next to each other */
+      .first-image, .second-image { flex: 0 0 calc(50% - 4px); display: flex; justify-content: center; }
+      .first-image .info-image,
+      .second-image .info-image { max-width: 90%; width: 100%; height: auto; display: block; }
     }
 
     /* Floating Promo Button */
@@ -1897,10 +2037,58 @@
 
   <div class="product-info-sections">
     <div class="info-grid">
-      <section class="info-section section-3d">
-        <h2>3D PRINTED DESIGN</h2>
-        <p>Crafted with precision, Trail is 3D printed using millions of intricate lines that create the perfect blend of support and flexibility. Built for outdoor adventure, from forest paths to mountain trails, this is footwear engineered to take you further.</p>
-      </section>
+      <details class="info-section info-collapsible section-3d">
+        <summary>
+          <span class="info-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5zm0 2.18L5 7v8.82L12 19l7-3.18V7l-7-2.82zM12 8l4 2.22v3.56L12 16l-4-2.22V10.22L12 8z"/></svg>
+          </span>
+          <span class="info-title">3D PRINTED DESIGN</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="info-content">
+          <p>Crafted with precision, Trail is 3D printed using millions of intricate lines that create the perfect blend of support and flexibility. Built for outdoor adventure, from forest paths to mountain trails, this is footwear engineered to take you further.</p>
+        </div>
+      </details>
+
+
+      <details class="info-section info-collapsible section-materials">
+        <summary>
+          <span class="info-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l7 4-7 4-7-4 7-4zm0 7l7 4-7 4-7-4 7-4zm0 7l7 4-7 4-7-4 7-4z"/></svg>
+          </span>
+          <span class="info-title">ADVANCED MATERIALS</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="info-content">
+          <p>Built with ZellerFOAM TPU technology, Trail delivers both comfort and durability. The responsive cushioning adapts to every terrain, while the construction ensures lasting performance through stream crossings, rocky paths, and countless miles of adventure.</p>
+        </div>
+      </details>
+
+      <details class="info-section info-collapsible section-fit">
+        <summary>
+          <span class="info-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 7h18v2H3V7zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+          </span>
+          <span class="info-title">CUSTOM FIT</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="info-content">
+          <p>Using Zellerfeld's 3D printing technology, each Trail is custom-fitted to your unique foot shape. This approach ensures optimal comfort and support, whether you're crossing meadows, climbing hills, or exploring new paths.</p>
+        </div>
+      </details>
+
+      <details class="info-section info-collapsible section-sustainability">
+        <summary>
+          <span class="info-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C7 2 3 6 3 11c0 4 3 7 7 7 5 0 9-4 9-9 0-4-4-7-7-7zm0 2c3 0 5 2 5 5 0 4-3 7-7 7-3 0-5-2-5-5 0-4 3-7 7-7zm1 3c-2 0-4 2-4 4 0 1 1 2 2 2 2 0 4-2 4-4 0-1-1-2-2-2z"/></svg>
+          </span>
+          <span class="info-title">SUSTAINABILITY</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="info-content">
+          <p>Innovative 3D printing processes creates zero material waste, using only what each shoe requires. Trail's materials are fully recyclable, and on-demand production eliminates excess inventory. Experience performance footwear that's better for the planet.</p>
+        </div>
+      </details>
 
       <div class="first-image">
         <img src="image 6.webp" 
@@ -1911,22 +2099,6 @@
              srcset="image 6.webp 280w, image 6.webp 560w"
              sizes="(max-width: 600px) 280px, 260px">
       </div>
-
-      <section class="info-section section-materials">
-        <h2>ADVANCED MATERIALS</h2>
-        <p>Built with ZellerFOAM TPU technology, Trail delivers both comfort and durability. The responsive cushioning adapts to every terrain, while the construction ensures lasting performance through stream crossings, rocky paths, and countless miles of adventure.</p>
-      </section>
-
-      <section class="info-section section-fit">
-        <h2>CUSTOM FIT</h2>
-        <p>Using Zellerfeld's 3D printing technology, each Trail is custom-fitted to your unique foot shape. This approach ensures optimal comfort and support, whether you're crossing meadows, climbing hills, or exploring new paths.</p>
-      </section>
-
-      <section class="info-section section-sustainability">
-        <h2>SUSTAINABILITY</h2>
-        <p>Innovative 3D printing processes creates zero material waste, using only what each shoe requires. Trail's materials are fully recyclable, and on-demand production eliminates excess inventory. Experience performance footwear that's better for the planet.</p>
-      </section>
-
       <div class="second-image">
         <img src="image8.webp" 
              alt="Detailed illustration of Jorobean Trail's advanced 3D printed design" 
@@ -2101,6 +2273,48 @@
     import { initFormHandler } from './js/formHandler.js';
     document.addEventListener('DOMContentLoaded', () => {
       initFormHandler();
+    });
+  </script>
+
+  <!-- Info tiles independent behavior + hover-to-expand (desktop only) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tiles = Array.from(document.querySelectorAll('.info-collapsible'));
+      if (!tiles.length) return;
+
+      // Click to toggle: default details behavior (independent)
+      // No override needed; keep multiple tiles expandable at once
+
+      // Desktop hover: temporarily open hovered tile without affecting others
+      const prefersHover = window.matchMedia('(hover: hover)').matches;
+      const wideScreen = window.matchMedia('(min-width: 900px)').matches;
+      if (prefersHover && wideScreen) {
+        tiles.forEach(tile => {
+          let wasOpen = tile.open;
+          tile.addEventListener('mouseenter', () => {
+            wasOpen = tile.open;
+            tile.open = true;
+          });
+          tile.addEventListener('mouseleave', () => {
+            if (!wasOpen) tile.open = false;
+          });
+        });
+      }
+
+      // Mobile single-open behavior with smooth animation
+      const isMobile = window.matchMedia('(max-width: 600px)');
+      function enforceSingleOpenMobile() {
+        if (!isMobile.matches) return;
+        tiles.forEach(tile => {
+          tile.addEventListener('toggle', () => {
+            if (tile.open) {
+              tiles.forEach(other => { if (other !== tile) other.open = false; });
+            }
+          });
+        });
+      }
+      enforceSingleOpenMobile();
+      isMobile.addEventListener('change', enforceSingleOpenMobile);
     });
   </script>
 
