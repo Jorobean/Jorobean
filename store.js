@@ -96,15 +96,25 @@ async function initStore() {
             throw new Error(data.error);
         }
 
-        // Find hoodie and move it to second position
-        const hoodie = data.find(p => p.sync_product.name.toLowerCase().includes('hoodie'));
-        if (hoodie) {
-            const hoodieIndex = data.indexOf(hoodie);
-            // Remove hoodie from current position
-            data.splice(hoodieIndex, 1);
-            // Insert hoodie at index 1 (second position)
-            data.splice(1, 0, hoodie);
-        }
+        // Reorder products: Trail Tee first, Hoodie second, Test Postcard last, others keep relative order
+        const withIndex = data.map((p, idx) => ({ p, idx }));
+        const priorityFor = (name) => {
+            const n = name.toLowerCase();
+            if (n.includes('trail tee') || n.includes('trail')) return 0; // Trail Tee first
+            if (n.includes('hoodie')) return 1; // Hoodie second
+            if (n.includes('test postcard') || n.includes('postcard')) return 999; // Postcard last
+            return 10; // Others in the middle
+        };
+        withIndex.sort((a, b) => {
+            const pa = priorityFor(a.p.sync_product?.name || '');
+            const pb = priorityFor(b.p.sync_product?.name || '');
+            if (pa !== pb) return pa - pb;
+            // Stable order for same priority
+            return a.idx - b.idx;
+        });
+        const reordered = withIndex.map(x => x.p);
+        data.length = 0;
+        Array.prototype.push.apply(data, reordered);
         
         state.products = data;
         
