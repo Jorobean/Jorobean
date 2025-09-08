@@ -1813,11 +1813,11 @@
         flex-wrap: wrap;
         gap: 8px;
       }
-      /* Tiles span full width (both columns) */
+      /* Tiles span two columns (50% each) */
       .info-collapsible {
-        flex: 0 0 100%;
+        flex: 0 0 calc(50% - 4px);
         min-height: 100px;
-        width: 100%;
+        width: auto;
       }
       .info-collapsible:hover { transform: none; }
       .info-collapsible summary { width: 100%; }
@@ -2301,20 +2301,40 @@
         });
       }
 
-      // Mobile single-open behavior with smooth animation
+      // Mobile: custom open rules
+      // a1 (section-3d) and a2 (section-materials) may be open together (top row)
+      // b1 (section-fit) and b2 (section-sustainability) may be open together (bottom row)
+      // If both top are open, bottom pair must close; if both bottom are open, top pair must close
+      const a1 = document.querySelector('.section-3d');
+      const a2 = document.querySelector('.section-materials');
+      const b1 = document.querySelector('.section-fit');
+      const b2 = document.querySelector('.section-sustainability');
       const isMobile = window.matchMedia('(max-width: 600px)');
-      function enforceSingleOpenMobile() {
-        if (!isMobile.matches) return;
-        tiles.forEach(tile => {
-          tile.addEventListener('toggle', () => {
-            if (tile.open) {
-              tiles.forEach(other => { if (other !== tile) other.open = false; });
-            }
-          });
-        });
+
+      function handleToggle(event) {
+        if (!isMobile.matches) return; // only on mobile
+        const el = event.currentTarget;
+        // Only act when a tile is being opened
+        if (!el.open) return;
+        const isTopRow = (el === a1 || el === a2);
+        if (isTopRow) {
+          if (b1) b1.open = false;
+          if (b2) b2.open = false;
+        } else {
+          if (a1) a1.open = false;
+          if (a2) a2.open = false;
+        }
       }
-      enforceSingleOpenMobile();
-      isMobile.addEventListener('change', enforceSingleOpenMobile);
+
+      // Attach listeners
+      [a1, a2, b1, b2].forEach(el => {
+        if (!el) return;
+        el.addEventListener('toggle', handleToggle);
+      });
+      // Re-evaluate on viewport changes
+      isMobile.addEventListener('change', () => {
+        // No-op; behavior only applies while mobile. When switching, open states remain as-is.
+      });
     });
   </script>
 
