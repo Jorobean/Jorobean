@@ -28,7 +28,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
   <link rel="stylesheet" href="css/loading.css">
   <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/hamburger-menu.css">
   <script src="js/scrollBehavior.js"></script>
+  <script src="js/hamburger-menu.js" defer></script>
   <style>
     :root {
       --bg-color: #f5f5f5;
@@ -557,7 +559,29 @@
       <img src="logo2.webp" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
     <nav class="nav-group" role="navigation" aria-label="Main navigation">
+      <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </nav>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+        </ul>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
   <div style="height: 100px;"></div>
   <!-- Main Content Panel -->

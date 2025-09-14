@@ -29,12 +29,14 @@
   <link rel="stylesheet" href="css/store.css">
   <link rel="stylesheet" href="css/product-dialog.css">
   <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="css/hamburger-menu.css">
   <script src="https://js.stripe.com/v3/"></script>
   <script src="js/header.js" defer></script>
   <script src="js/scrollBehavior.js" defer></script>
   <script src="js/store.js" defer></script>
+  <script src="js/hamburger-menu.js" defer></script>
 </head>
-<body>
+<body class="store-page">
   <div class="logo-container">
     <a href="/" class="logo logo-centered">
       <img src="jorobean_logo.webp" alt="Jorobean Logo" style="width: 100%; height: auto;" class="logo-img" />
@@ -49,6 +51,36 @@
           <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 3c0 .5.4 1 1 1h1l3.6 7.6-1.4 2.5c-.8 1.4.1 3.1 1.7 3.1h12c.5 0 1-.4 1-1s-.4-1-1-1H7l1.1-2h7.4c.7 0 1.4-.4 1.7-1l3.6-6.5c.2-.4-.1-1-.5-1H5.2L4.5 3.5c-.2-.4-.7-.7-1.2-.7H2c-.6.2-1 .6-1 1.2zm16 15c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
         </svg>
       </button>
+      <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <div class="menu-header">
+        <h2>Menu</h2>
+        <div class="hamburger-menu active" role="button" aria-label="Close menu" tabindex="0">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+        </ul>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 

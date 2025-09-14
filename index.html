@@ -311,6 +311,16 @@
       transition: opacity 0.2s ease-out 0.2s, visibility 0s 0.2s;
     }
 
+    body:not(.scrolled) .logo-corner {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    
+    body:not(.scrolled) .logo-corner {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
     .nav-group {
       position: fixed;
       top: 16px;
@@ -1909,7 +1919,10 @@
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/safe-area.css">
   <link rel="stylesheet" href="css/ios-webapp.css">
+  <link rel="stylesheet" href="css/product-sections.css">
   <script src="js/scrollBehavior.js"></script>
+  <link rel="stylesheet" href="css/hamburger-menu.css">
+  <script defer src="js/hamburger-menu.js"></script>
   
   <!-- Video controls hiding -->
   <style>
@@ -1972,8 +1985,53 @@
            style="width: 100%; height: auto;"
            loading="eager" />
     </a>
-    <nav class="nav-group" role="navigation" aria-label="Main navigation">
-    </nav>
+    <nav class="nav-group" role="navigation" aria-label="Main navigation"></nav>
+    
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <!-- Top Section -->
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+        </ul>
+      </div>
+      
+      <!-- Middle Section -->
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <!-- Help & Services Section -->
+      <div class="menu-section help-services">
+        <h3>Help & Services</h3>
+        
+        <div class="accordion-item">
+          <button class="accordion-header">
+            Contact Us
+          </button>
+          <div class="accordion-content">
+            <a href="mailto:contact@jorobean.com" class="contact-button">
+              Email Us
+            </a>
+            <a href="https://instagram.com/jorobean" class="contact-button" target="_blank" rel="noopener noreferrer">
+              Follow on Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="content-wrapper">
     <div class="shoe-container">
@@ -2143,6 +2201,11 @@
       <a href="https://www.jorobean.com/about">ABOUT</a>
     </nav>
   </footer>
+  <div class="footer-logo-section">
+    <div class="footer-logo-wrapper">
+      <img src="jorobean_logo.webp" alt="Jorobean Logo" loading="lazy" />
+    </div>
+  </div>
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
   <script src="js/colorTransition.js"></script>

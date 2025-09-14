@@ -1,0 +1,54 @@
+/* Product sections mobile optimizations */
+@media (max-width: 600px) {
+  .info-collapsible {
+    min-height: 80px;
+    max-height: none;
+  }
+  
+  .info-collapsible summary {
+    font-size: 0.85rem;
+    padding: 8px;
+    min-height: 80px;
+  }
+  
+  .info-collapsible .info-content {
+    padding: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    max-height: none;
+  }
+  
+  .info-section p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+    padding: 8px;
+  }
+  
+  .info-collapsible[open] .info-content {
+    max-height: none;
+    padding: 8px;
+  }
+  
+  .info-collapsible .info-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
+  
+  .info-collapsible:not([open]) {
+    min-height: 80px;
+  }
+  
+  .info-section {
+    margin-bottom: 8px;
+  }
+  
+  .product-info-sections {
+    padding: 0 12px;
+  }
+  
+  .info-grid {
+    gap: 8px;
+  }
+}

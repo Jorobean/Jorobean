@@ -24,7 +24,9 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/hamburger-menu.css">
   <script src="js/scrollBehavior.js"></script>
+  <script src="js/hamburger-menu.js" defer></script>
   <style>
     :root {
       --bg-color: #e1e1e1;
@@ -263,7 +265,28 @@
       <img src="logo2.webp" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
     <div class="nav-group">
-      <!-- Add nav links or icons here if needed -->
+      <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+        </ul>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <main>

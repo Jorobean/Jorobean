@@ -25,6 +25,10 @@
   <!-- Theme Colors -->
   <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: dark)">
+  
+  <!-- Navigation -->
+  <link rel="stylesheet" href="css/hamburger-menu.css">
+  <script src="js/hamburger-menu.js" defer></script>
 
   <link rel="canonical" href="https://jorobean.com/about">
   <meta name="robots" content="index, follow" />
@@ -260,7 +264,29 @@
       <img src="logo2.webp" alt="Jorobean Logo Corner" style="width: 100%; height: auto;" />
     </a>
     <nav class="nav-group" role="navigation" aria-label="Main navigation">
+      <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </nav>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+        </ul>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <a href="https://www.linkedin.com/in/kerry-l" target="_blank" rel="noopener" style="display: block; margin-top: 50px;">
