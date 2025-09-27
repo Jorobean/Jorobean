@@ -117,8 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Add event listeners for both the main hamburger and close button
   hamburgerMenu.addEventListener('click', toggleMenu);
   hamburgerMenu.addEventListener('touchend', toggleMenu);
+  
+  // Handle close button in menu
+  const closeButton = document.querySelector('.close-button');
+  if (closeButton && closeButton !== hamburgerMenu) {
+    closeButton.addEventListener('click', toggleMenu);
+    closeButton.addEventListener('touchend', toggleMenu);
+  }
 
   // Handle accordion items
   accordionItems.forEach(item => {

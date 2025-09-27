@@ -138,6 +138,7 @@ body.scrolled .hamburger-menu {
 .hamburger-menu.active span:nth-child(1) {
   transform: rotate(45deg);
   top: 15px;
+  background-color: var(--text-color, #000);
 }
 
 .hamburger-menu.active span:nth-child(2) {
@@ -147,6 +148,7 @@ body.scrolled .hamburger-menu {
 .hamburger-menu.active span:nth-child(3) {
   transform: rotate(-45deg);
   top: 15px;
+  background-color: var(--text-color, #000);
 }
 
 .menu-overlay {
@@ -170,6 +172,25 @@ body.scrolled .hamburger-menu {
     width: 100%;
     right: 0;
     transform: translateX(100%);
+  }
+
+  .menu-header {
+    padding: 1.25rem;
+    background-color: var(--bg-color);
+  }
+
+  .menu-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .hamburger-menu.close-button {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+
+  .hamburger-menu.close-button span {
+    width: 18px;
   }
 }
 
@@ -208,6 +229,93 @@ body.scrolled .menu-overlay.active ~ .logo-container .logo-corner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 2004;
+  background-color: var(--bg-color);
+}
+
+.menu-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.hamburger-menu.close-button {
+  position: static;
+  width: 32px;
+  height: 32px;
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.hamburger-menu.close-button:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.hamburger-menu.close-button span {
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background-color: var(--text-color);
+  transition: transform 0.3s ease;
+}
+
+.hamburger-menu.close-button span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.hamburger-menu.close-button span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.close-button span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+.menu-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+.menu-header .close-button {
+  position: relative;
+  top: auto;
+  right: auto;
+  width: 32px;
+  height: 32px;
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-header .close-button span {
+  background-color: var(--text-color);
+}
+
+.close-button span:nth-child(1) {
+  transform: rotate(45deg);
+  top: 15px;
+}
+
+.close-button span:nth-child(2) {
+  opacity: 0;
+}
+
+.close-button span:nth-child(3) {
+  transform: rotate(-45deg);
+  top: 15px;
 }
 
 .menu-header h2 {
