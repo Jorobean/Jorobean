@@ -560,3 +560,15 @@ body.scrolled .menu-overlay.active ~ .logo-container .logo-corner {
     font-size: 1.1rem;
   }
 }
+
+/* Hide the store/shop link in both the mobile menu and desktop nav.
+   This is a non-destructive CSS-only change so the HTML remains untouched.
+   It covers both absolute and relative hrefs ("/store.html" and "store.html"). */
+.menu-list a[href="/store.html"],
+.menu-list a[href="store.html"],
+.nav-group a[href="/store.html"],
+.nav-group a[href="store.html"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
