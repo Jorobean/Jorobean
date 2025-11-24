@@ -121,11 +121,14 @@ input, select, button {
   transition: color 0.3s;
 }
 
-.restart-row {
+.button-row {
   display:flex;
   gap:8px;
   margin-top:12px;
-  align-items:stretch;
+}
+
+.button-row button {
+  flex:1;
 }
 
 .input-with-icon {
@@ -441,11 +444,8 @@ input, select, button {
   </div>
 
   <div class="setup-section" id="section-complete">
-    <div style="margin-top:12px">
-      <button id="restart-btn" onclick="restart()">Restart Mirror after setup</button>
-    </div>
-
-    <div style="margin-top:12px">
+    <div class="button-row">
+      <button id="restart-btn" class="btn-primary" onclick="restart()">Restart Mirror after setup</button>
       <button class="btn-danger" onclick="showFactoryResetModal()">Factory Reset</button>
     </div>
   </div>
