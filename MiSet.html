@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Mirror Setup</title>
 <style>
 /* Default dark mode - midnight black */
@@ -74,6 +74,7 @@ input, select, button {
   background-color: var(--input-bg);
   color: var(--text-color);
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+  font-size: 16px;
 }
 
 .row { display:flex; gap:8px; }
@@ -174,14 +175,20 @@ input, select, button {
   position:relative;
 }
 
-.info-icon:hover .tooltip {
+.info-icon:active .tooltip {
   display:block;
+}
+
+@media (hover: hover) {
+  .info-icon:hover .tooltip {
+    display:block;
+  }
 }
 
 .tooltip {
   display:none;
   position:absolute;
-  bottom:20px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%);
   background:var(--card-bg);
@@ -193,6 +200,7 @@ input, select, button {
   font-weight:normal;
   z-index:10;
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  pointer-events:none;
 }
 
 .connection-indicator {
@@ -238,6 +246,7 @@ input, select, button {
   position:relative;
   z-index:1;
   flex:1;
+  cursor:pointer;
 }
 
 .step-circle {
@@ -252,6 +261,10 @@ input, select, button {
   font-size:14px;
   font-weight:bold;
   transition: background-color 0.3s, border-color 0.3s;
+}
+
+.step:hover .step-circle {
+  border-color:var(--btn-primary-bg);
 }
 
 .step.active .step-circle {
@@ -348,19 +361,19 @@ input, select, button {
 
   <!-- Progress Steps -->
   <div class="progress-steps">
-    <div class="step" id="step1">
+    <div class="step" id="step1" onclick="goToStep(1)">
       <div class="step-circle">1</div>
       <div class="step-label">Name</div>
     </div>
-    <div class="step" id="step2">
+    <div class="step" id="step2" onclick="goToStep(2)">
       <div class="step-circle">2</div>
       <div class="step-label">WiFi</div>
     </div>
-    <div class="step" id="step3">
+    <div class="step" id="step3" onclick="goToStep(3)">
       <div class="step-circle">3</div>
       <div class="step-label">Pair</div>
     </div>
-    <div class="step" id="step4">
+    <div class="step" id="step4" onclick="goToStep(4)">
       <div class="step-circle">4</div>
       <div class="step-label">Done</div>
     </div>
@@ -450,7 +463,7 @@ input, select, button {
     </div>
     <div class="device-info-row">
       <span>Firmware Version:</span>
-      <span id="firmware-version">v1.2.3</span>
+      <span id="firmware-version">v0.0.1</span>
     </div>
   </div>
 </div>
@@ -481,6 +494,28 @@ function setStatus(t, status = 'idle'){
     indicator.classList.add('connected');
   } else {
     indicator.classList.add('disconnected');
+  }
+}
+
+function goToStep(stepNum) {
+  // Clear all active states
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  
+  // Hide all sections
+  document.getElementById('section-wifi').classList.remove('visible');
+  document.getElementById('section-pair').classList.remove('visible');
+  document.getElementById('section-complete').classList.remove('visible');
+  
+  // Set current step as active
+  document.getElementById('step' + stepNum).classList.add('active');
+  
+  // Show appropriate section
+  if(stepNum === 2) {
+    document.getElementById('section-wifi').classList.add('visible');
+  } else if(stepNum === 3) {
+    document.getElementById('section-pair').classList.add('visible');
+  } else if(stepNum === 4) {
+    document.getElementById('section-complete').classList.add('visible');
   }
 }
 
@@ -548,10 +583,10 @@ document.getElementById('step1').classList.add('active');
 
 // Load firmware version
 fetch('/device-info').then(r=>r.json()).then(data=>{
-  document.getElementById('firmware-version').textContent = data.firmware || 'v1.2.3';
+  document.getElementById('firmware-version').textContent = data.firmware || 'v0.0.1';
 }).catch(()=>{
   // Fallback if endpoint doesn't exist
-  document.getElementById('firmware-version').textContent = 'v1.2.3';
+  document.getElementById('firmware-version').textContent = 'v0.0.1';
 });
 
 function save(){
@@ -572,6 +607,7 @@ function save(){
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step3').classList.add('active');
     document.getElementById('section-pair').classList.add('visible');
+    document.getElementById('section-wifi').classList.remove('visible');
     setTimeout(() => {
       setStatus("connected to WiFi", 'connected');
     }, 3000);
@@ -586,6 +622,7 @@ function pair(){
     document.getElementById('step3').classList.remove('active');
     document.getElementById('step4').classList.add('active');
     document.getElementById('section-complete').classList.add('visible');
+    document.getElementById('section-pair').classList.remove('visible');
   });
 }
 
