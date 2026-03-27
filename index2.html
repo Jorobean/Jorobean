@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!-- Apple mobile web app configuration -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="theme-color" content="#e1e1e1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-title" content="Jorobean">
+  <title>Jorobean | Wear The Love - Premium 3D Printed Footwear</title>
+
+  <!-- Cookie Consent + Analytics loaded after consent -->
+  <!-- Favicons - Safari optimized order -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="mask-icon" href="/favicon.svg" color="#b71111">
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/site.webmanifest">
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: dark)">
+
+  <link rel="canonical" href="https://jorobean.com">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Wear The Love. Jorobean Trail is launching soon. Stay updated and be the first to know!">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="Jorobean | Wear The Love">
+  <meta property="og:description" content="Experience premium 3D printed footwear crafted for adventure.">
+  <meta property="og:image" content="https://jorobean.com/logo.png">
+  <meta property="og:url" content="https://jorobean.com">
+  <meta property="og:type" content="website">
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Jorobean",
+    "url": "https://jorobean.com",
+    "description": "Wear The Love. Get ready for the Jorobean launch.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://jorobean.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-color: #e1e1e1;
+      --text-color: #0b0b0b;
+      --noise-opacity: 0.08;
+      --form-bg: #e1e1e1;
+      --input-bg: #ffffff;
+      --input-border: #ccc;
+      --cancel-btn-bg: #666;
+      --cancel-btn-hover: #777;
+      --footer-text: #555;
+      --privacy-text: #666;
+      --box-shadow-color: rgba(0, 0, 0, 0.1);
+      --form-shadow-color: rgba(0, 0, 0, 0.2);
+      --signup-lead-color: #222;
+      --shoe-shadow-color: rgba(0, 0, 0, 0.25);
+      --image-shadow-color: rgba(0, 0, 0, 0.35);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ffffff;
+        --noise-opacity: 0.12;
+        --form-bg: #151515;
+        --input-bg: #2a2a2a;
+        --input-border: #404040;
+        --cancel-btn-bg: #404040;
+        --cancel-btn-hover: #505050;
+        --footer-text: #bbb;
+        --privacy-text: #999;
+        --box-shadow-color: rgba(0, 0, 0, 0.3);
+        --form-shadow-color: rgba(0, 0, 0, 0.4);
+        --signup-lead-color: #f0f0f0;
+        --shoe-shadow-color: rgba(255, 255, 255, 0.15);
+        --image-shadow-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-instagram img,
+      .instagram-footer img {
+        filter: brightness(0) invert(1);
+      }
+
+      img.trail-logo {
+        content: url('image 7.webp');
+      }
+      .wave-text-svg {
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
+      }
+      .wave-text-svg.active {
+        opacity: 1;
+      }
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+    .logo-container {
+      position: fixed;
+      top: env(safe-area-inset-top);
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 10px;
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-right: env(safe-area-inset-right);
+      padding-left: env(safe-area-inset-left);
+      pointer-events: none;
+      margin: 0;
+    }
+
+    .logo {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: all;
+    }
+
+    .logo-centered {
+      max-width: 520px;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out, visibility 0s;
+    }
+    
+    @media screen and (max-width: 600px) {
+      .logo-centered {
+        max-width: 280px;
+        transform: translateX(-50%) scale(0.85);
+      }
+      .logo-centered img {
+        width: 100%;
+        height: auto;
+      }
+    }      @media (max-width: 600px) {
+        .logo-centered {
+          max-width: 340px;
+          margin-top: -15px;
+        }
+      }    .logo-corner {
+      width: 100px;
+      left: 16px;
+      top: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+      pointer-events: all;
+    }
+
+    .nav-group > a {
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 2001;
+    }
+
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-button {
+      background: #b71111;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-instagram:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .hamburger-menu,
+    .menu-overlay {
+      display: none !important;
+    }
+
+    form.expanded ~ .logo-container .logo-centered,
+    #notifyForm.expanded ~ .logo-container .logo-centered {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    .instagram-input-group {
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .instagram-input-wrapper {
+      position: relative;
+      width: 240px;
+      max-width: calc(100% - 32px);
+      margin: 0 auto;
+    }
+
+    #instagram {
+      display: none;
+      opacity: 0;
+      padding-left: 36px;
+      width: 100%;
+    }
+    
+    /* Removed @ symbol pseudo-element */
+
+    .instagram-note {
+      font-size: 0.8rem;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin: -8px 0 4px 0;
+      text-align: center;
+    }
+
+    form.expanded ~ .logo-container .logo-corner,
+    #notifyForm.expanded ~ .logo-container .logo-corner {
+      opacity: 1 !important;
+      visibility: visible !important;
+      z-index: 2000;
+    }
+
+    form.expanded ~ .logo-container .nav-group,
+    #notifyForm.expanded ~ .logo-container .nav-group {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    body.scrolled .logo-centered {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0s 0.2s;
+    }
+
+    body.scrolled .logo-corner {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease-out 0.2s, visibility 0s 0.2s;
+    }
+
+    body:not(.scrolled) .logo-corner {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    
+    body:not(.scrolled) .logo-corner {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    .nav-group {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+      z-index: 2000;
+    }
+
+    body.scrolled .nav-group {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-button {
+      background: #b71111;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-instagram:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .content-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      width: 100vw;
+      min-height: 100vh;
+    }
+
+    @media (min-width: 601px) {
+      .content-wrapper {
+        padding: 8px 0 0 0;
+        margin-bottom: -40px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    .shoe-container {
+      width: 75%;
+      height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      overflow: visible;
+      gap: 32px;
+      padding-bottom: 80px;
+      padding-right: calc(env(safe-area-inset-right) + 16px);
+      padding-left: calc(env(safe-area-inset-left) + 16px);
+    }
+
+    /* Responsive desktop sizing */
+    @media (min-width: 1440px) {
+      .shoe-container {
+        max-width: 1400px;
+        width: 80%;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-width: 1439px) {
+      .shoe-container {
+        max-width: 1100px;
+        width: 70%;
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 1023px) {
+      .shoe-container {
+        max-width: 900px;
+        width: 60%;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .shoe-container {
+        width: calc(100% - 16px);
+        height: 45vh;
+        gap: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    .wave-shoe-img {
+      position: absolute;
+      left: 50%;
+      top: 70%;
+      transform-style: preserve-3d;
+      transform: translate3d(-50%, -50%, 0);
+      width: auto;
+      height: 65%;
+      max-width: 65%;
+      object-fit: contain;
+      opacity: 1;
+      padding: 0;
+      animation: instant-fade-in 0.1s ease forwards;
+      z-index: 2;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+      pointer-events: none;
+      will-change: transform, opacity;
+      transform-origin: center center;
+    }
+
+    @media (min-width: 601px) {
+      .shoe-container:hover .wave-shoe-img,
+      .shoe-container.hover-triggered .wave-shoe-img {
+        transform: translate3d(-50%, -50%, 120px);
+        filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.4));
+      }
+
+      .shoe-container:hover .mountain-bg,
+      .shoe-container.hover-triggered .mountain-bg {
+        transform: translate3d(0, 0, -100px) scale(0.95);
+        filter: brightness(0.7);
+      }
+    }
+    
+    /* Make video darker by default */
+    .mountain-bg {
+      filter: brightness(0.3);
+    }
+
+    /* Hide video controls and play button */
+    .mountain-bg::-webkit-media-controls-panel,
+    .mountain-bg::-webkit-media-controls-play-button,
+    .mountain-bg::-webkit-media-controls-start-playback-button,
+    .mountain-bg::-webkit-media-controls {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    
+    .mountain-bg {
+      pointer-events: none !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .wave-shoe-img {
+        filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.299));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .shoe-image-container .wave-shoe-img {
+        max-width: none !important;
+        height: 20% !important;
+        width: auto !important;
+        transform: translate(-50%, -50%) !important;
+        top: 65% !important;
+      }
+    }
+
+    @keyframes instant-fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h1 {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      margin: clamp(15px, 3vw, 25px) 0 0 0;
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(.4,0,.2,1);
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.9s;
+      font-weight: bold;
+      letter-spacing: 0.01em;
+    }
+
+    #form-container {
+      margin: 32px auto;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      opacity: 1;
+    }
+    
+    @media screen and (max-height: 600px) {
+      #form-container {
+        position: relative;
+        bottom: auto;
+        margin: 20px auto;
+      }
+    }
+
+    form.expanded {
+      z-index: 1000;
+      background: var(--form-bg);
+      position: relative;
+      box-shadow: 0 4px 24px 0 var(--form-shadow-color);
+      border-radius: 24px;
+      padding: 32px 0 48px 0;
+      margin-bottom: 12px;
+      width: 420px;
+      max-width: 92vw;
+      min-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+      /* No idle animation */
+      transform-origin: center center;
+      transition: box-shadow 0.2s;
+    }
+
+
+    /* Dynamic tilt handled by JS. Only box-shadow on hover/focus for feedback. */
+    form.expanded:hover,
+    form.expanded:focus-within {
+      box-shadow: 0 8px 32px 0 var(--form-shadow-color);
+    }
+
+
+    @media (max-width: 600px) {
+      form.expanded {
+        transform-origin: 12% 10%;
+      }
+    }
+
+    @keyframes floating-tilt {
+      0% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      12% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      24% {
+        transform: rotate(1.3deg) translateY(-3px) scale(1.01);
+      }
+      36% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      50% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      62% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      74% {
+        transform: rotate(-2.7deg) translateY(3px) scale(0.99);
+      }
+      86% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      100% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+    }
+
+    @keyframes floating-tilt-strong {
+      0% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+      12% {
+        transform: rotate(2.2deg) translateY(-7px) scale(1.025);
+      }
+      24% {
+        transform: rotate(4deg) translateY(-10px) scale(1.03);
+      }
+      36% {
+        transform: rotate(2.2deg) translateY(-7px) scale(1.025);
+      }
+      50% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+      62% {
+        transform: rotate(-5.2deg) translateY(7px) scale(0.985);
+      }
+      74% {
+        transform: rotate(-7deg) translateY(10px) scale(0.98);
+      }
+      86% {
+        transform: rotate(-5.2deg) translateY(7px) scale(0.985);
+      }
+      100% {
+        transform: rotate(-3.5deg) translateY(0px) scale(1.01);
+      }
+    }
+
+    @media (max-width: 600px) {
+      form.expanded {
+        transform-origin: 12% 10%;
+      }
+    }
+
+    @keyframes floating-tilt {
+      0% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      12% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      24% {
+        transform: rotate(1.3deg) translateY(-3px) scale(1.01);
+      }
+      36% {
+        transform: rotate(0.7deg) translateY(-2px) scale(1.01);
+      }
+      50% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+      62% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      74% {
+        transform: rotate(-2.7deg) translateY(3px) scale(0.99);
+      }
+      86% {
+        transform: rotate(-2.1deg) translateY(2px) scale(0.99);
+      }
+      100% {
+        transform: rotate(-1.2deg) translateY(0px) scale(1.00);
+      }
+    }
+
+    form.expanded::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.0) 60%, rgba(255,255,255,0.35) 70%, rgba(255,255,255,0.0) 80%);
+      transform: rotate(0deg);
+      pointer-events: none;
+      z-index: 1001;
+      animation: glint-panel 2.8s linear infinite;
+    }
+
+    @keyframes glint-panel {
+      0% {
+        transform: translate(-100%, -100%) rotate(15deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.2;
+      }
+      40% {
+        opacity: 0.7;
+      }
+      60% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translate(100%, 100%) rotate(15deg);
+        opacity: 0;
+      }
+    }
+
+    .signup-lead {
+      font-size: 1em;
+      color: var(--signup-lead-color);
+      margin-bottom: 18px;
+      margin-top: 0;
+      transform-origin: center center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: 9999px;
+      width: 280px;
+      max-width: calc(100% - 48px);
+      margin: 0 auto;
+      box-shadow: 0 4px 10px var(--box-shadow-color);
+      text-align: left;
+      transition: all 0.3s ease;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+
+    #name,
+    #email {
+      display: none;
+      opacity: 0;
+    }
+
+    @keyframes shine-reverse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .stay-updated-btn {
+      background: linear-gradient(
+        120deg,
+        #b71111 40%,
+        #d32f2f 50%,
+        #b71111 60%
+      );
+      background-size: 200% 100%;
+      animation: shine-reverse 10s cubic-bezier(.4,0,.2,1) infinite;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 9999px;
+      font-size: 1rem;
+      width: 260px;
+      max-width: 90vw;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .stay-updated-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .stay-updated-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-expanded-content {
+      display: none;
+      width: 100%;
+    }
+
+    form.expanded .form-expanded-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    form.expanded .stay-updated-btn {
+      display: none;
+    }
+
+    form.expanded #name,
+    form.expanded #email,
+    form.expanded #instagram {
+      display: block;
+      opacity: 1;
+    }
+
+    #instagram {
+      display: none;
+      opacity: 0;
+    }
+
+    .instagram-note {
+      font-size: 0.8rem;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin: -8px 0 4px 0;
+      text-align: center;
+    }
+
+    .button-group {
+      display: none;
+      width: 100%;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    form.expanded .button-group {
+      display: flex;
+    }
+
+    button {
+      background: #b71111;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      max-width: 110px;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .cancel-btn {
+      background: var(--cancel-btn-bg);
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background: var(--cancel-btn-hover);
+    }
+
+    #submitBtn {
+      background: #b71111;
+    }
+
+    #submitBtn:hover {
+      background: #d32f2f;
+    }
+
+    .spinner {
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .instagram-footer {
+      position: static !important;
+      margin: 0 auto 18px auto !important;
+      z-index: 1;
+      display: none;
+    }
+
+    body.scrolled .instagram-footer {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .instagram-footer {
+        display: none !important;
+      }
+    }
+
+    .nav-group {
+      pointer-events: all;
+    }
+
+    .nav-group a {
+      cursor: pointer;
+    }
+
+    footer {
+      flex-shrink: 0;
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--footer-text);
+      text-align: center;
+      user-select: none;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      min-height: 180px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    #privacyNote {
+      font-size: 0.8rem;
+      color: var(--privacy-text);
+      margin-top: 12px;
+      max-width: 280px;
+    }
+
+    @media (max-width: 600px) {
+      #notifyForm .nav-instagram {
+        display: block !important;
+        margin-bottom: 12px;
+      }
+      #form-container {
+        position: static;
+        margin: 0 auto;
+        padding-bottom: 8px;
+      }
+      .signup-lead {
+        font-size: 0.9em;
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+      
+      @media (max-height: 500px) {
+        body {
+          padding: 0;
+        }
+        #form-container {
+          margin: 10px auto;
+        }
+      }
+
+      .logo-container {
+        padding: 8px;
+      }
+      .logo-centered {
+        max-width: 420px;
+      }
+      .logo-corner {
+        width: 70px;
+        left: 8px;
+        top: 8px;
+        z-index: 2000;
+      }
+      .nav-group {
+        top: 12px;
+        right: 12px;
+        gap: 12px;
+      }
+      .nav-button {
+        display: none;
+      }
+      .nav-instagram {
+        width: 32px;
+        height: 32px;
+      }
+      .nav-instagram img {
+        width: 24px;
+        height: 24px;
+      }
+      body {
+        padding: 0;
+      }
+      .content-wrapper {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin: 0 !important;
+        padding: 0;
+        min-height: 100vh;
+      }
+      .silhouette-container {
+        width: 92vw;
+        height: clamp(120px, 20vw, 220px);
+        margin: 0 auto;
+      }
+      .silhouette-img,
+      .wave-shoe-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      h1 {
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        margin: clamp(15px, 3vw, 25px) 0 0.3em 0;
+      }
+      .instagram {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+      }
+      form.expanded {
+        padding: 24px 0 32px 0;
+        width: 92vw;
+        max-width: 92vw;
+        min-width: 280px;
+        margin: 0 auto;
+      }
+      footer {
+      padding: 8px 0 32px 0;
+      font-size: 0.7rem;
+      min-height: 100px;
+    }
+    #privacyNote {
+      font-size: 0.65rem;
+      margin-top: 0;
+    }
+    }
+
+    /* Instagram styling */
+    .nav-instagram {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 16px;
+      display: block !important;
+    }
+    .nav-instagram img {
+      width: 24px;
+      height: 24px;
+    }
+    .instagram-footer {
+      display: none !important;
+    }
+
+
+    /* Wave Text Container Styles */
+    .shoe-container {
+      width: 100vw;
+      margin: 0 -32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 0;
+      position: relative;
+    }
+
+    @media (min-width: 601px) {
+      .shoe-container {
+        gap: 16px;
+        padding-bottom: 16px;
+      }
+    }
+
+    .shoe-image-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      z-index: 1;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      transform-style: preserve-3d;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .shoe-image-container .mountain-bg {
+      border-radius: 30px;
+    }
+
+    @media (min-width: 601px) and (hover: hover) {
+      .shoe-container:hover .shoe-image-container {
+        transform: translateZ(-90px);
+        box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
+                  inset 0 -8px 20px rgba(0, 0, 0, 0.2),
+                  0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .shoe-container:hover .wave-shoe-img {
+        transform: translate3d(-50%, -50%, 40px);
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
+      }
+
+      .shoe-container:hover .mountain-bg {
+        transform: scale(0.99);
+        filter: brightness(0.5);
+      }
+    }
+
+    .shoe-container {
+      cursor: pointer;
+      perspective: 2000px;
+      transform-style: preserve-3d;
+    }
+    
+    @media (max-width: 600px) {
+      .shoe-container {
+        margin-bottom: 80px;
+      }
+      .product-info-sections {
+        margin-top: 0;
+      }
+    }
+
+    .shoe-container:hover .shoe-image-container {
+      box-shadow: inset 0 12px 40px rgba(0, 0, 0, 0.3),
+                  inset 0 -12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .mountain-bg {
+      transform-style: preserve-3d;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      filter: brightness(0.2);
+    }
+
+    .shoe-image-container .mountain-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      transform: scale(1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+      -webkit-transform: scale(1.1) translateZ(0);
+      transform: scale(1.1) translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-perspective: 1000;
+      perspective: 1000;
+      filter: brightness(0.8);
+    }
+
+    @media (min-width: 601px) {
+      .shoe-container:hover .shoe-image-container {
+        transform: translateZ(-40px);
+        box-shadow: inset 0 12px 40px rgba(0, 0, 0, 0.3),
+                    inset 0 -12px 40px rgba(0, 0, 0, 0.3),
+                    0 2px 20px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .shoe-image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 24px;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0) 20%,
+        rgba(0, 0, 0, 0) 80%,
+        rgba(0, 0, 0, 0.15) 100%
+      );
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    @media (min-width: 601px) {
+      .shoe-container:hover .shoe-image-container::before {
+        opacity: 0.8;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .shoe-image-container {
+        box-shadow: inset 0 8px 30px rgba(0, 0, 0, 0.4),
+                    inset 0 -8px 30px rgba(0, 0, 0, 0.4),
+                    0 2px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+      @media (max-width: 600px) {
+        body {
+          padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+          margin: 0;
+          min-height: 100vh;
+        }
+        
+        .content-wrapper {
+          padding: 0 8px;
+          margin: 0;
+          min-height: 100vh;
+          position: relative;
+          overflow: visible;
+        }
+        
+        .shoe-container {
+          width: calc(100vw - 16px);
+          margin: 0 auto;
+          min-height: 70vh;
+          height: 70vh;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding-bottom: 40px;
+        }
+
+        .shoe-image-container {
+          width: 100%;
+          height: 70vh;
+          padding: 0;
+          margin: 0;
+          background-position: center bottom;
+          background-size: cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 0;
+          border-radius: 15px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wave-shoe-img {
+          height: 45%;
+          max-width: 45%;
+          transform: translate(-50%, -50%);
+          z-index: 2;
+          position: absolute;
+          top: 70%;
+        }
+
+        .logo-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
+          padding: 10px;
+        }
+      }    .color-picker {
+      position: relative;
+      display: flex;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 16px;
+      background: var(--form-bg);
+      box-shadow: 0 2px 10px var(--box-shadow-color);
+      margin: 20px auto 30px;
+    }
+
+    @media (max-width: 600px) {
+      .color-picker {
+        background: #040404;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      .wave-text-container {
+        position: absolute;
+        bottom: 90px;
+        left: 0;
+        width: 100%;
+        z-index: 5;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .color-picker {
+        margin: 20px auto 100px;
+      }
+    }
+
+    .color-option {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-color);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+    
+    @media (max-width: 600px) {
+      .color-option {
+        border-color: #333;
+      }
+      .color-option.active {
+        border-color: #fff;
+      }
+    }
+
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+
+    .color-option.active {
+      border-color: var(--text-color);
+      transform: scale(1.1);
+    }
+
+    /* Tooltip for desktop hover */
+    @media (hover: hover) {
+      .color-option:hover::after {
+        content: attr(data-name);
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-color);
+        color: var(--bg-color);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        animation: fadeIn 0.2s ease forwards;
+        z-index: 1000;
+      }
+    }
+
+    /* Tooltip for mobile - shown briefly on tap */
+    @media (hover: none) {
+      .color-option:active::after {
+        content: attr(data-name);
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-color);
+        color: var(--bg-color);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        animation: fadeInOut 1.5s ease forwards;
+        z-index: 1000;
+      }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .wave-text-container {
+      position: relative;
+      width: 100%;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(clamp(0.8, 1vw, 1));
+    }
+
+    @media (max-width: 600px) {
+      .wave-text-container {
+        position: absolute;
+        bottom: 25%;
+        z-index: 5;
+      }
+      .wave-text-svg text {
+        fill: white !important;
+      }
+      .trail-logo {
+        content: url('image 7.webp') !important;
+      }
+      img[src*="image 7alt.webp"] {
+        content: url('image 7.webp');
+      }
+    }
+
+    .wave-text-svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      max-width: 900px;
+      width: 100%;
+      height: 64px;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+      visibility: hidden;
+    }
+    
+    .wave-text-svg.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .wave-text-svg.active {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    @media (max-width: 600px) {
+      .wave-text-container {
+        height: 40px;
+        transform: scale(0.8);
+        margin: 0;
+        position: absolute;
+        top: 15%;
+        left: 0;
+        width: 100%;
+        z-index: 3;
+      }
+      .wave-text-svg {
+        height: 40px;
+      }
+      .shoe-image-container {
+        width: 100%;
+        height: 75%;
+        padding: 0;
+      }
+      .color-picker {
+        position: absolute;
+        bottom: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        margin: 0;
+      }
+      .shoe-image-container::before {
+        background-size: 220% 100%;
+        background-position: center center;
+      }
+      .color-picker {
+        margin: 0;
+        padding: 4px;
+      }
+      .color-picker .color-option {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    /* Product Info Sections */
+    .product-info-sections {
+      max-width: 1400px;
+      margin: 60px auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 600px) {
+      .product-info-sections {
+        margin: -40px auto 20px;
+        padding: 0 16px;
+        position: relative;
+        z-index: 10;
+        background: var(--bg-color);
+      }
+      .shoe-container + .product-info-sections {
+        margin-top: -40px;
+      }
+      .color-picker {
+        margin-bottom: 60px;
+      }
+      }
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (min-width: 768px) {
+      .product-info-sections .info-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(220px, 1fr)) !important;
+        gap: 16px !important;
+        align-items: start !important;
+      }
+    }
+
+    .info-image {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      filter: drop-shadow(0 6px 12px var(--image-shadow-color));
+      transition: transform 0.3s ease;
+    }
+
+    /* Image pair layout */
+    .first-image,
+    .second-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (min-width: 768px) {
+      .first-image .info-image,
+      .second-image .info-image {
+        max-width: 220px;
+      }
+    }
+
+    /* Mobile tweaks: smaller images and tighter tiles when collapsed */
+    @media (max-width: 600px) {
+      .first-image .info-image,
+      .second-image .info-image {
+        max-width: 42vw;
+      }
+      .info-grid {
+        gap: 4px;
+      }
+      .info-collapsible {
+        min-height: 100px;
+      }
+      .info-collapsible summary {
+        padding: 8px 12px 6px 12px;
+        gap: 6px;
+        letter-spacing: 0.08em;
+      }
+      .info-collapsible .info-icon {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+      }
+    }
+
+    /* Mobile-first ordering: four tiles first, images after */
+    .section-3d { order: 1; }
+    .section-materials { order: 2; }
+    .section-fit { order: 3; }
+    .section-sustainability { order: 4; }
+    .first-image { order: 5; }
+    .second-image { order: 6; }
+    
+    .info-section {
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @media (min-width: 768px) {
+      .info-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+
+      /* Place four tiles in a row */
+      .section-3d { grid-column: 1; animation-delay: 0.1s; }
+      .section-materials { grid-column: 2; animation-delay: 0.2s; }
+      .section-fit { grid-column: 3; animation-delay: 0.3s; }
+      .section-sustainability { grid-column: 4; animation-delay: 0.4s; }
+
+      /* Images below tiles */
+      .first-image {
+        grid-column: 1 / span 2;
+        grid-row: 2;
+        margin: 0;
+      }
+      .second-image {
+        grid-column: 3 / span 2;
+        grid-row: 2;
+        margin: 0;
+      }
+
+      .info-image:hover {
+        transform: translateY(-10px);
+      }
+
+      .info-image {
+        max-width: 100%;
+        transition: transform 0.3s ease;
+      }
+
+      .info-image:hover {
+        transform: translateY(-10px);
+      }
+      
+      .info-section {
+        padding: 20px;
+        opacity: 0;
+        animation: fadeIn 0.6s ease forwards;
+      }
+      
+      .section-3d { animation-delay: 0.1s; }
+      .section-materials { animation-delay: 0.2s; }
+      .section-fit { animation-delay: 0.3s; }
+      .section-sustainability { animation-delay: 0.4s; }
+      
+      .info-section h2 {
+        margin-bottom: 1.8rem;
+      }
+      
+      .info-section p {
+        font-size: clamp(1rem, 1.2vw, 1.15rem);
+        line-height: 1.7;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    .info-section {
+      text-align: left;
+      margin: 0;
+      width: 100%;
+    }
+    
+    @media (max-width: 600px) {
+      .content-wrapper {
+        min-height: auto !important;
+      }
+      .shoe-container {
+        margin-bottom: -100px;
+      }
+      .info-grid {
+        position: relative;
+        z-index: 3;
+        background: var(--bg-color);
+        padding-top: 20px;
+      }
+    }
+
+    .info-section h2 {
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.15em;
+      color: var(--text-color);
+      position: relative;
+      padding-bottom: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .info-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: #b71111;
+      background-image: linear-gradient(to right, #b71111, #b71111 50%, transparent 50%, transparent 100%);
+      background-size: 8px 2px;
+    }
+
+    /* Collapsible tiles styling */
+    .info-collapsible {
+      border: none;
+      background: var(--bg-color);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px var(--box-shadow-color);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      align-self: stretch;
+    }
+    .info-collapsible:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px var(--box-shadow-color);
+    }
+    .info-collapsible summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: clamp(1rem, 1.6vw, 1.1rem);
+      margin: 0;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      color: var(--text-color);
+      position: relative;
+      padding: 16px 16px 14px 16px;
+      text-transform: uppercase;
+      outline: none;
+      background: var(--bg-color);
+    }
+    .info-collapsible summary::-webkit-details-marker { display: none; }
+    .info-collapsible .info-icon {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #b71111;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(183, 17, 17, 0.25);
+    }
+
+    /* Force solid section backgrounds in light mode */
+    @media (prefers-color-scheme: light) {
+      .info-collapsible,
+      .info-collapsible summary,
+      .info-collapsible .info-content {
+        background: var(--bg-color);
+      }
+    }
+    .info-collapsible .info-title { flex: 1; }
+    .info-collapsible .chevron {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      opacity: 0.8;
+    }
+    .info-collapsible[open] .chevron { transform: rotate(225deg); }
+    .info-collapsible .info-content {
+      padding: 0 16px 16px 16px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      width: 100%;
+    }
+    .info-collapsible[open] .info-content {
+      max-height: 320px; /* keep inside tile square */
+      opacity: 1;
+    }
+
+    .info-section p {
+      font-size: clamp(1rem, 1.2vw, 1.1rem);
+      line-height: 1.6;
+      color: var(--text-color);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+      .product-info-sections {
+        margin: 10px auto;
+        padding: 0 16px;
+        gap: 12px;
+      }
+      /* Mobile: use flex so images can reliably sit side-by-side */
+      .info-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      /* Tiles span two columns (50% each) */
+      .info-collapsible {
+        flex: 0 0 calc(50% - 4px);
+        min-height: 100px;
+        width: auto;
+      }
+      .info-collapsible:hover { transform: none; }
+      .info-collapsible summary { width: 100%; }
+      .info-collapsible:not([open]) { min-height: 88px; box-shadow: 0 1px 4px var(--box-shadow-color); }
+      .info-collapsible:not([open]) summary { padding: 6px 10px; gap: 6px; }
+      .info-collapsible summary { padding: 8px 12px 6px 12px; gap: 6px; }
+      .info-collapsible .info-icon { width: 24px; height: 24px; min-width: 24px; }
+      /* Images each take one column so they appear next to each other */
+      .first-image, .second-image { flex: 0 0 calc(50% - 4px); display: flex; justify-content: center; }
+      .first-image .info-image,
+      .second-image .info-image { max-width: 90%; width: 100%; height: auto; display: block; }
+    }
+
+    /* Floating Promo Button */
+    .floating-promo-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #b71111;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(183, 17, 17, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      user-select: none;
+      border: none;
+      outline: none;
+    }
+    .floating-promo-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(183, 17, 17, 0.4);
+      background: #d32f2f;
+    }
+    .floating-promo-button:active {
+      transform: translateY(0);
+    }
+    .floating-promo-text {
+      white-space: nowrap;
+    }
+    
+    /* Styles for form placeholder */
+    #form-placeholder {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    @media (max-width: 600px) {
+      .floating-promo-button {
+        bottom: 5px;
+        right: 16px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        transform: scale(0.95);
+        transform-origin: bottom right;
+      }
+      .floating-promo-button:hover {
+        transform: scale(0.95) translateY(-2px);
+      }
+      body {
+        padding-top: 0 !important;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      .floating-promo-button {
+        background: #b71111;
+        color: white;
+        box-shadow: 0 4px 12px rgba(183, 17, 17, 0.4);
+      }
+      .floating-promo-button:hover {
+        background: #d32f2f;
+        box-shadow: 0 6px 16px rgba(183, 17, 17, 0.5);
+      }
+    }
+    /* Promo Details Section styles are now in promo-section.css */
+  </style>
+  
+
+  
+  <!-- Preload critical assets -->
+  <link rel="preload" href="jorobean_logo.webp" as="image" type="image/webp">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap" as="style">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin+Condensed&display=swap">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/promo-section.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/safe-area.css">
+  <link rel="stylesheet" href="css/ios-webapp.css">
+  <link rel="stylesheet" href="css/product-sections.css">
+  <script src="js/scrollBehavior.js"></script>
+  <link rel="stylesheet" href="css/hamburger-menu.css">
+  <script defer src="js/hamburger-menu.js"></script>
+  
+  <!-- Video controls hiding -->
+  <style>
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-overlay-play-button,
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-timeline,
+    video::-webkit-media-controls-current-time-display,
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-mute-button,
+    video::-webkit-media-controls-toggle-closed-captions-button,
+    video::-webkit-media-controls-volume-slider,
+    video::-webkit-media-controls-panel,
+    video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    
+    video.mountain-bg {
+      pointer-events: none !important;
+    }
+  </style>
+
+  <!-- Fallback font loading -->
+  <style>
+    @font-face {
+      font-family: 'Cabin Condensed';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: local('Cabin Condensed Regular'), local('CabinCondensed-Regular'),
+           url(https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwqZ-LYxnV18A.woff2) format('woff2');
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-container" role="progressbar" aria-label="Loading page content">
+    <div class="loading-icon">
+      <img src="LOVE2.webp" alt="Loading indicator - Love symbol" class="loading-img active" loading="lazy" />
+      <img src="logo2.webp" alt="Loading indicator - Jorobean logo" class="loading-img" loading="lazy" />
+      <div class="loading-circle" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="logo-container" role="banner">
+    <a href="/" class="logo logo-centered" aria-label="Jorobean Home">
+      <img src="jorobean_logoalt.webp" 
+           alt="Jorobean - Official brand logo" 
+           width="520" height="120"
+           style="width: 100%; height: auto;" 
+           class="logo-img"
+           fetchpriority="high" />
+    </a>
+    <a href="/" class="logo logo-corner" aria-label="Return to Jorobean Home">
+      <img src="logo2.webp" 
+           alt="Jorobean compact logo" 
+           width="100" height="100"
+           style="width: 100%; height: auto;"
+           loading="eager" />
+    </a>
+    <nav class="nav-group" role="navigation" aria-label="Main navigation"></nav>
+    
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" role="button" aria-label="Open menu" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay">
+      <div class="menu-header">
+        <h2>Menu</h2>
+        <img src="jorobean_logo.webp" alt="Jorobean" class="menu-logo light" width="120" height="32">
+        <img src="jorobean_logoalt.webp" alt="Jorobean" class="menu-logo dark" width="120" height="32">
+        <div class="hamburger-menu close-button" role="button" aria-label="Close menu" tabindex="0">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="menu-section">
+        <ul class="menu-list">
+          <li><a href="/store.html">Shop</a></li>
+          <li><a href="/contest.html">Contest</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/terms.html">Terms</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <!-- Help & Services Section -->
+      <div class="menu-section help-services">
+        <h3>Help & Services</h3>
+        
+        <div class="accordion-item">
+          <button class="accordion-header">
+            Contact Us
+          </button>
+          <div class="accordion-content">
+            <a href="mailto:contact@jorobean.com" class="contact-button">
+              Email Us
+            </a>
+            <a href="https://instagram.com/jorobean" class="contact-button" target="_blank" rel="noopener noreferrer">
+              Follow on Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content-wrapper">
+    <div class="shoe-container">
+      <div class="shoe-image-container">
+        <video class="mountain-bg" 
+          playsinline
+          autoplay
+          muted
+          preload="auto"
+          width="1200" height="800"
+          id="mountainVideo"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          controlslist="nodownload nofullscreen noremoteplayback"
+          disablepictureinpicture>
+          <source src="mount.webm" type="video/webm">
+          <source src="mount.mp4" type="video/mp4">
+        </video>
+        <img class="wave-shoe-img" src="trail.webp" 
+         alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
+         width="600" height="400"
+         loading="eager" 
+         fetchpriority="high" 
+         decoding="sync"
+         srcset="trail.webp 600w, trail.webp 1200w"
+         sizes="(max-width: 600px) 90vw, 600px" />
+      </div>
+      <div class="wave-text-container" aria-label="Logo reveal">
+        <!-- Trail Logo -->
+        <img src="image 7alt.webp" 
+             alt="Jorobean Trail - Premium shoe" 
+             width="240" height="64"
+             class="wave-text-svg wave-effect trail-logo" 
+             loading="eager"
+             style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
+      </div>
+      <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
+        <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.webp" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
+        <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
+        <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.webp" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
+      </div>
+
+      <!-- Set initial active state for Oak White -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Find the Oak White option (third button) and set it as active
+          const oakWhiteOption = document.querySelectorAll('.color-option')[2];
+          oakWhiteOption.classList.add('active');
+          // Set initial image
+          const shoeImage = document.querySelector('.wave-shoe-img');
+          shoeImage.src = oakWhiteOption.dataset.image;
+        });
+      </script>
+    </div>
+  </div>
+
+  <div class="product-info-sections">
+    <div class="info-grid">
+    </div>
+  </div>
+
+  <!-- Promo Details Section -->
+  <section class="promo-details-section" aria-label="Promotion Details">
+    <img src="LOVE4.webp" 
+         alt="Jorobean contest text representing our brand values and community" 
+         width="450" height="450"
+         loading="lazy"
+         style="width: 100%; max-width: 450px; height: auto; margin: 0 auto 40px auto; display: block; animation: pulse 2s infinite ease-in-out;">
+    <h2 class="promo-title">SNEAKERCON EXCLUSIVE</h2>
+    <p class="promo-description">We're at SneakerCon! Drop your info to enter our exclusive drawing for limited-edition pairs. One lucky person will win — no purchase necessary.</p>
+    
+    <div id="form-container">
+      <div id="form-placeholder"></div>
+    </div>
+    <p class="promo-legal-text">We respect your privacy. No spam, ever. Drawing open to individuals 18 or older. No purchase necessary. Void where prohibited. One winner will be randomly selected from all entries. Odds depend on number of entries.</p>
+  </section>
+
+  <footer id="footer" aria-label="Site copyright">
+    <div id="copyright">© 2025 Jorobean — All rights reserved.</div>
+    <nav class="footer-nav">
+      <a href="https://www.jorobean.com/privacy">PRIVACY POLICY</a>
+      <span class="footer-separator"> | </span>
+      <a href="https://www.jorobean.com/terms">TERMS</a>
+      <span class="footer-separator"> | </span>
+      <a href="https://www.jorobean.com/about">ABOUT</a>
+    </nav>
+  </footer>
+  <div class="footer-logo-section">
+    <div class="footer-logo-wrapper">
+      <img src="jorobean_logo.webp" alt="Jorobean Logo" loading="lazy" />
+    </div>
+  </div>
+  <!-- Only one Instagram icon above for better mobile layout -->
+  <script src="js/loading.js"></script>
+  <script src="js/colorTransition.js"></script>
+  <script>
+    // Color picker initialization
+    const colorOptions = document.querySelectorAll('.color-option');
+    
+    document.getElementById("copyright").textContent =
+      `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
+
+    // Remove duplicate form from footer
+    const footerForm = document.querySelector('footer form');
+    if (footerForm) {
+      footerForm.remove();
+    }
+    const footerSignupLead = document.querySelector('footer .signup-lead');
+    if (footerSignupLead) {
+      footerSignupLead.remove();
+    }
+
+    // Analytics Event Tracking
+    function trackEvent(eventName, eventParams = {}) {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, eventParams);
+      }
+    }
+
+    // Form handling - only allow closing through cancel button
+    const form = document.getElementById('notifyForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // No counter functionality - removed
+
+    // Track form submission
+    form.addEventListener('submit', function(e) {
+      trackEvent('newsletter_signup', {
+        'event_category': 'engagement',
+        'event_label': 'newsletter'
+      });
+      
+      // Show simple success message
+      setTimeout(() => {
+        alert('Thank you for signing up!');
+      }, 1000); // Small delay to simulate form processing
+    });
+
+    // Track Stay Updated button click
+    document.getElementById('starterInput').addEventListener('click', function() {
+      trackEvent('stay_updated_click', {
+        'event_category': 'engagement',
+        'event_label': 'stay_updated_button'
+      });
+    });
+
+    function restoreAfterClose() {
+      // Switch back to centered logo only if we're at the top of the page
+      if (window.scrollY <= 25) {
+        document.body.classList.remove('scrolled');
+      }
+    }
+    
+    if (form && cancelBtn) {
+      // Handle cancel button click
+      cancelBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        form.classList.remove('expanded');
+        restoreAfterClose();
+      });
+      
+      // Prevent form from closing when clicking outside
+      document.addEventListener('click', function(e) {
+        if (form.classList.contains('expanded')) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    }
+
+    // No hover/tap effects needed since the wave shoe is always visible
+  </script>
+
+  <!-- Load all necessary scripts -->
+  
+  <!-- Load header.js -->
+  <script src="js/header.js"></script>
+
+  <!-- Load form handler -->
+  <script type="module">
+    import { initFormHandler } from './js/formHandler.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      initFormHandler();
+    });
+  </script>
+
+  <!-- Info tiles independent behavior + hover-to-expand (desktop only) -->
+  <script>
+    // Info tiles script removed - tiles no longer present
+  </script>
+
+  <!-- COOKIE CONSENT BANNER -->
+  <style>
+    #cookieConsent {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      border-top: 1px solid #ccc;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-family: sans-serif;
+      animation: slideUp 0.4s ease forwards;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #cookieConsent {
+        background: #151515;
+        border-top: 1px solid #404040;
+        box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+      }
+      #cookieConsent p {
+        color: #f0f0f0 !important;
+      }
+      #cookieConsent #declineCookies {
+        background: #404040 !important;
+        color: #ffffff !important;
+      }
+      #cookieConsent #declineCookies:hover {
+        background: #505050 !important;
+      }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    #cookieConsent.show {
+      display: flex;
+    }
+  </style>
+
+  <div id="cookieConsent">
+    <p style="max-width:500px;font-size:14px;color:#333;margin-bottom:12px;">
+      We use cookies to improve your experience, analyze traffic, and show relevant content. 
+      See our <a href="https://www.jorobean.com/privacy" style="color:#b71111;text-decoration:underline;">Privacy Policy</a>.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button id="acceptCookies" style="background:#b71111;color:#fff;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:14px;">Accept</button>
+      <button id="declineCookies" style="background:#e1e1e1;color:#333;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:14px;">Decline</button>
+    </div>
+  </div>
+
+  <!-- Video Playback Control -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.getElementById('mountainVideo');
+      if (video) {
+        // Set playback rate to 0.5 (half speed)
+        video.playbackRate = 0.75;
+        
+        // Ensure continuous looping
+        video.addEventListener('ended', function() {
+          video.play();
+        });
+      }
+    });
+  </script>
+
+  <!-- COOKIE + GA LOGIC -->
+  <script>
+    const cookieConsent = document.getElementById('cookieConsent');
+
+    if (!localStorage.getItem('ga_consent')) {
+      cookieConsent.classList.add('show');
+    }
+
+    document.getElementById('acceptCookies').onclick = () => {
+      localStorage.setItem('ga_consent', 'accepted');
+      cookieConsent.remove();
+      loadGA();
+    };
+
+    document.getElementById('declineCookies').onclick = () => {
+      localStorage.setItem('ga_consent', 'declined');
+      cookieConsent.remove();
+    };
+
+    if (localStorage.getItem('ga_consent') === 'accepted') loadGA();
+
+    function loadGA() {
+      const gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-389249CNNF';
+      document.head.appendChild(gaScript);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = gtag;
+
+      gtag('js', new Date());
+      gtag('config', 'G-389249CNNF', {
+        'custom_map': {
+          'dimension1': 'device_type',
+          'dimension2': 'user_language',
+          'dimension3': 'visitor_type',
+          'dimension4': 'traffic_source'
+        }
+      });
+
+      gtag('event', 'page_view', {
+        'device_type': /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        'user_language': navigator.language || navigator.userLanguage,
+        'visitor_type': localStorage.getItem('returning_visitor') ? 'returning' : 'new',
+        'traffic_source': document.referrer || 'direct'
+      });
+
+      localStorage.setItem('returning_visitor', 'true');
+    }
+  </script>
+
+  <!-- Floating Promo Button Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const floatingPromoBtn = document.getElementById('floatingPromoBtn');
+      const notifyForm = document.getElementById('notifyForm');
+      if (floatingPromoBtn && notifyForm) {
+        floatingPromoBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Expand the form and scroll immediately
+          notifyForm.classList.add('expanded');
+          notifyForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Focus after a brief moment to ensure form is visible
+          setTimeout(() => {
+            const nameInput = document.getElementById('name');
+            if (nameInput) nameInput.focus();
+          }, 300);
+        });
+        
+        // Also make it keyboard accessible
+        floatingPromoBtn.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            // Expand the form and scroll immediately
+            notifyForm.classList.add('expanded');
+            notifyForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Focus after a brief moment to ensure form is visible
+            setTimeout(() => {
+              const nameInput = document.getElementById('name');
+              if (nameInput) nameInput.focus();
+            }, 300);
+          }
+        });
+      }
+    });
+  </script>
+
+
+</body>
+</html>
