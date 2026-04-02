@@ -92,6 +92,27 @@
         --footer-text: #bbb;
         --privacy-text: #999;
         --box-shadow-color: rgba(0, 0, 0, 0.3);
+      }
+      .logo-subimages .logo-light {
+        display: none !important;
+      }
+      .logo-subimages .logo-dark {
+        display: inline-block !important;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      .logo-subimages .logo-light {
+        display: inline-block !important;
+      }
+      .logo-subimages .logo-dark {
+        display: none !important;
+      }
+    }
+
+    .logo-subimages .theme-logo {
+      display: none;
+    }
         --form-shadow-color: rgba(0, 0, 0, 0.4);
         --signup-lead-color: #f0f0f0;
         --shoe-shadow-color: rgba(255, 255, 255, 0.15);
@@ -104,14 +125,15 @@
       }
 
       img.trail-logo {
-        content: url('image 7.webp');
+        content: none !important;
+        display: none !important;
       }
       .wave-text-svg {
         opacity: 0;
         transition: opacity 0.4s ease-in-out;
       }
       .wave-text-svg.active {
-        opacity: 1;
+        opacity: 0;
       }
     }
 
@@ -2033,6 +2055,10 @@
   <div class="content-wrapper">
     <div class="shoe-container">
       <div class="shoe-image-container">
+        <div class="logo-subimages" style="display:flex; justify-content:center; gap:16px; margin-bottom:16px; width:100%; position:absolute; top:120px; left:0; right:0;">
+          <img src="image 7alt.webp" class="theme-logo logo-light" alt="Jorobean Trail icon (light mode)" width="240" height="64" style="width:240px; height:auto;" />
+          <img src="image 7.webp" class="theme-logo logo-dark" alt="Jorobean Trail icon (dark mode)" width="240" height="64" style="width:240px; height:auto;" />
+        </div>
         <video class="mountain-bg" 
           playsinline
           autoplay
@@ -2045,7 +2071,6 @@
           controlslist="nodownload nofullscreen noremoteplayback"
           disablepictureinpicture>
           <source src="mount.webm" type="video/webm">
-          <source src="mount.mp4" type="video/mp4">
         </video>
         <img class="wave-shoe-img" src="trail.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
@@ -2056,14 +2081,8 @@
          srcset="trail.webp 600w, trail.webp 1200w"
          sizes="(max-width: 600px) 90vw, 600px" />
       </div>
-      <div class="wave-text-container" aria-label="Logo reveal">
-        <!-- Trail Logo -->
-        <img src="image 7alt.webp" 
-             alt="Jorobean Trail - Premium shoe" 
-             width="240" height="64"
-             class="wave-text-svg wave-effect trail-logo" 
-             loading="eager"
-             style="width: auto; height: 64px; position: absolute; left: 50%; transform: translateX(-50%); top: 50%; margin-top: -32px;">
+      <div class="wave-text-container" aria-label="Logo reveal" style="display: none;">
+        <!-- Trail Logo removed from wave view because it is now shown below jorobean_logoalt -->
       </div>
       <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
         <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
