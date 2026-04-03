@@ -518,6 +518,7 @@
     /* Hide video controls and play button */
     .mountain-bg::-webkit-media-controls-panel,
     .mountain-bg::-webkit-media-controls-play-button,
+    .mountain-bg::-webkit-media-controls-overlay-play-button,
     .mountain-bg::-webkit-media-controls-start-playback-button,
     .mountain-bg::-webkit-media-controls {
       display: none !important;
@@ -526,6 +527,15 @@
     }
     
     .mountain-bg {
+      pointer-events: none !important;
+    }
+    
+    /* Additional Safari play button overlay hiding */
+    .shoe-image-container .mountain-bg {
+      pointer-events: none !important;
+    }
+    
+    .shoe-image-container {
       pointer-events: none !important;
     }
 
@@ -537,12 +547,13 @@
 
     @media (max-width: 600px) {
       .shoe-image-container .wave-shoe-img {
-        max-width: none !important;
+        max-width: 85% !important;
         height: 20% !important;
         width: auto !important;
         transform: translate(-50%, -50%) !important;
         top: 65% !important;
       }
+    }
     }
 
     @keyframes instant-fade-in {
@@ -1138,7 +1149,7 @@
 
     .shoe-image-container {
       width: 100%;
-      height: 70vh;
+      height: 75vh;
       position: relative;
       margin: 0;
       display: flex;
@@ -1156,13 +1167,13 @@
 
     @media (max-width: 1023px) {
       .shoe-image-container {
-        height: 57vh;
+        height: 60vh;
       }
     }
 
     @media (max-width: 600px) {
       .shoe-image-container {
-        height: 45vh;
+        height: 50vh;
         border-radius: 16px;
       }
     }
@@ -1412,19 +1423,20 @@
       .color-option:hover::after {
         content: attr(data-name);
         position: absolute;
-        top: 30px;
+        top: -40px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--text-color);
         color: var(--bg-color);
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 0.8rem;
         white-space: nowrap;
         pointer-events: none;
         opacity: 0;
         animation: fadeIn 0.2s ease forwards;
         z-index: 1000;
+        margin-top: -10px;
       }
     }
 
@@ -1433,19 +1445,20 @@
       .color-option:active::after {
         content: attr(data-name);
         position: absolute;
-        top: 30px;
+        top: -40px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--text-color);
         color: var(--bg-color);
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 0.8rem;
         white-space: nowrap;
         pointer-events: none;
         opacity: 0;
         animation: fadeInOut 1.5s ease forwards;
         z-index: 1000;
+        margin-top: -10px;
       }
     }
 
@@ -1946,12 +1959,12 @@
   
   <!-- Video controls hiding -->
   <style>
+    video,
     video::-webkit-media-controls,
     video::-webkit-media-controls-overlay-play-button,
     video::-webkit-media-controls-play-button,
     video::-webkit-media-controls-timeline,
     video::-webkit-media-controls-current-time-display,
-    video::-webkit-media-controls-time-remaining-display,
     video::-webkit-media-controls-time-remaining-display,
     video::-webkit-media-controls-mute-button,
     video::-webkit-media-controls-toggle-closed-captions-button,
@@ -1965,6 +1978,11 @@
     
     video.mountain-bg {
       pointer-events: none !important;
+    }
+    
+    /* Safari play button overlay specific */
+    .mountain-bg::-webkit-media-controls-overlay-play-button {
+      display: none !important;
     }
   </style>
 
@@ -2072,8 +2090,9 @@
           id="mountainVideo"
           x5-video-player-type="h5"
           x5-video-player-fullscreen="true"
-          controlslist="nodownload nofullscreen noremoteplayback"
-          disablepictureinpicture>
+          controlslist="nofullscreen noremoteplayback nodownload"
+          disablepictureinpicture
+          style="pointer-events: none;">
           <source src="mount.webm" type="video/webm">
         </video>
         <img class="wave-shoe-img" src="trail.webp" 
@@ -2086,9 +2105,9 @@
          sizes="(max-width: 600px) 90vw, 600px" />
         <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
           <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
-          <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.webp" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
           <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
-          <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.webp" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
+          <button class="color-option" data-color="#fadf1c" data-name="Citrine Trail" data-image="trail-yellow.webp" style="background-color: #fadf1c" aria-label="Citrine Trail color option" role="radio" aria-checked="false"></button>
+          <button class="color-option" data-color="#b58bbd" data-name="Amethyst Trail" data-image="trail-lilac.webp" style="background-color: #b58bbd" aria-label="Amethyst Trail color option" role="radio" aria-checked="false"></button>
         </div>
       </div>
       <div class="wave-text-container" aria-label="Logo reveal" style="display: none;">
@@ -2098,8 +2117,8 @@
       <!-- Set initial active state for Oak White -->
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          // Find the Oak White option (third button) and set it as active
-          const oakWhiteOption = document.querySelectorAll('.color-option')[2];
+          // Find the Oak White option (second button) and set it as active
+          const oakWhiteOption = document.querySelectorAll('.color-option')[1];
           oakWhiteOption.classList.add('active');
           // Set initial image
           const shoeImage = document.querySelector('.wave-shoe-img');
