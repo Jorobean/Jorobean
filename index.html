@@ -407,18 +407,18 @@
       align-items: center;
       justify-content: flex-start;
       padding: 0;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
       z-index: 1;
       margin: 0;
-      width: 100vw;
-      min-height: 100vh;
+      width: 100%;
+      min-height: auto;
     }
 
     @media (min-width: 601px) {
       .content-wrapper {
         padding: 8px 0 0 0;
-        margin-bottom: -40px;
+        margin-bottom: 0;
         display: flex;
         justify-content: center;
         width: 100%;
@@ -427,16 +427,17 @@
 
     .shoe-container {
       width: 75%;
-      height: 100vh;
+      min-height: 100vh;
+      height: auto;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       position: relative;
       overflow: visible;
-      gap: 32px;
-      padding-bottom: 80px;
+      gap: 16px;
+      padding-bottom: 32px;
       padding-right: calc(env(safe-area-inset-right) + 16px);
       padding-left: calc(env(safe-area-inset-left) + 16px);
     }
@@ -466,10 +467,11 @@
     @media (max-width: 600px) {
       .shoe-container {
         width: calc(100% - 16px);
-        height: 45vh;
-        gap: 0;
+        min-height: auto;
+        height: auto;
+        gap: 16px;
         margin-bottom: 0;
-        padding-bottom: 0;
+        padding-bottom: 16px;
       }
     }
 
@@ -1136,10 +1138,8 @@
 
     .shoe-image-container {
       width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
+      height: 70vh;
+      position: relative;
       margin: 0;
       display: flex;
       align-items: center;
@@ -1150,8 +1150,21 @@
       border-radius: 24px;
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
       transform-style: preserve-3d;
-      position: relative;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1023px) {
+      .shoe-image-container {
+        height: 57vh;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .shoe-image-container {
+        height: 45vh;
+        border-radius: 16px;
+      }
     }
 
     .shoe-image-container .mountain-bg {
@@ -1234,6 +1247,9 @@
         box-shadow: inset 0 12px 40px rgba(0, 0, 0, 0.3),
                     inset 0 -12px 40px rgba(0, 0, 0, 0.3),
                     0 2px 20px rgba(0, 0, 0, 0.15);
+      }
+      .shoe-container:hover .shoe-image-container::before {
+        transform: translateZ(40px);
       }
     }
 
@@ -1333,20 +1349,25 @@
           padding: 10px;
         }
       }    .color-picker {
-      position: relative;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       gap: 8px;
       padding: 6px;
       border-radius: 16px;
       background: var(--form-bg);
       box-shadow: 0 2px 10px var(--box-shadow-color);
-      margin: 0px auto 30px;
+      z-index: 20;
+      flex-shrink: 0;
     }
 
     @media (max-width: 600px) {
       .color-picker {
         background: #040404;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        bottom: 16px;
       }
       .wave-text-container {
         position: absolute;
@@ -1354,12 +1375,6 @@
         left: 0;
         width: 100%;
         z-index: 5;
-      }
-    }
-    
-    @media (max-width: 600px) {
-      .color-picker {
-        margin: 20px auto 100px;
       }
     }
 
@@ -1507,18 +1522,11 @@
         padding: 0;
       }
       .color-picker {
-        position: relative;
-        bottom: auto;
-        left: auto;
-        transform: none;
-        z-index: 3;
-        margin: 20px auto;
-      }
-      .shoe-image-container::before {
-        background-size: 220% 100%;
-        background-position: center center;
-      }
-      .color-picker {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
         margin: 0;
         padding: 4px;
       }
@@ -1539,18 +1547,14 @@
 
     @media (max-width: 600px) {
       .product-info-sections {
-        margin: -40px auto 20px;
+        margin: 0 auto;
         padding: 0 16px;
         position: relative;
         z-index: 10;
         background: var(--bg-color);
       }
       .shoe-container + .product-info-sections {
-        margin-top: -40px;
-      }
-      .color-picker {
-        margin-bottom: 60px;
-      }
+        margin-top: 0;
       }
     }
 
@@ -2080,15 +2084,15 @@
          decoding="sync"
          srcset="trail.webp 600w, trail.webp 1200w"
          sizes="(max-width: 600px) 90vw, 600px" />
+        <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
+          <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
+          <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.webp" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
+          <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
+          <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.webp" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
+        </div>
       </div>
       <div class="wave-text-container" aria-label="Logo reveal" style="display: none;">
         <!-- Trail Logo removed from wave view because it is now shown below jorobean_logoalt -->
-      </div>
-      <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
-        <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
-        <button class="color-option" data-color="#2f76ca" data-name="Alpine Blue" data-image="trail-blue.webp" style="background-color: #2f76ca" aria-label="Alpine Blue color option" role="radio" aria-checked="false"></button>
-        <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
-        <button class="color-option" data-color="#b71111" data-name="Jorobean Red" data-image="trail-red.webp" style="background-color: #b71111" aria-label="Jorobean Red color option" role="radio" aria-checked="false"></button>
       </div>
 
       <!-- Set initial active state for Oak White -->
