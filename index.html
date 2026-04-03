@@ -113,6 +113,9 @@
     .logo-subimages .theme-logo {
       display: none;
     }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
         --form-shadow-color: rgba(0, 0, 0, 0.4);
         --signup-lead-color: #f0f0f0;
         --shoe-shadow-color: rgba(255, 255, 255, 0.15);
@@ -128,10 +131,12 @@
         content: none !important;
         display: none !important;
       }
+
       .wave-text-svg {
         opacity: 0;
         transition: opacity 0.4s ease-in-out;
       }
+
       .wave-text-svg.active {
         opacity: 0;
       }
@@ -553,7 +558,6 @@
         transform: translate(-50%, -50%) !important;
         top: 65% !important;
       }
-    }
     }
 
     @keyframes instant-fade-in {
@@ -1155,7 +1159,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: visible;
       padding: 0;
       z-index: 1;
       border-radius: 24px;
@@ -1374,6 +1378,7 @@
       box-shadow: 0 2px 10px var(--box-shadow-color);
       z-index: 20;
       flex-shrink: 0;
+      pointer-events: auto !important;
     }
 
     @media (max-width: 600px) {
@@ -1400,6 +1405,8 @@
       padding: 0;
       transition: transform 0.2s ease, border-color 0.2s ease;
       position: relative;
+      pointer-events: auto !important;
+    }
     }
     
     @media (max-width: 600px) {
@@ -2095,7 +2102,8 @@
           controlslist="nofullscreen noremoteplayback nodownload"
           disablepictureinpicture
           style="pointer-events: none;">
-          <source src="/mount.webm" type="video/webm">
+          <source src="mount.mp4" type="video/mp4">
+          <source src="mount.webm" type="video/webm">
         </video>
         <img class="wave-shoe-img" src="trail.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
@@ -2106,8 +2114,8 @@
          srcset="trail.webp 600w, trail.webp 1200w"
          sizes="(max-width: 600px) 90vw, 600px" />
         <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
-          <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="false"></button>
-          <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="true"></button>
+          <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="true"></button>
+          <button class="color-option" data-color="#b09980" data-name="Oak White" data-image="trail.webp" style="background-color: #b09980" aria-label="Oak White color option" role="radio" aria-checked="false"></button>
           <button class="color-option" data-color="#fadf1c" data-name="Citrine Trail" data-image="trail-yellow.webp" style="background-color: #fadf1c" aria-label="Citrine Trail color option" role="radio" aria-checked="false"></button>
           <button class="color-option" data-color="#b58bbd" data-name="Amethyst Trail" data-image="trail-lilac.webp" style="background-color: #b58bbd" aria-label="Amethyst Trail color option" role="radio" aria-checked="false"></button>
         </div>
@@ -2116,15 +2124,32 @@
         <!-- Trail Logo removed from wave view because it is now shown below jorobean_logoalt -->
       </div>
 
-      <!-- Set initial active state for Oak White -->
+      <!-- Set initial active state for Dark Ridge Black -->
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          // Find the Oak White option (second button) and set it as active
-          const oakWhiteOption = document.querySelectorAll('.color-option')[1];
-          oakWhiteOption.classList.add('active');
-          // Set initial image
+          // Find the Dark Ridge Black option (first button) and set it as active
+          const blackOption = document.querySelectorAll('.color-option')[0];
+          
+          // Ensure the initial image is set
           const shoeImage = document.querySelector('.wave-shoe-img');
-          shoeImage.src = oakWhiteOption.dataset.image;
+          const blackImageSrc = blackOption.dataset.image;
+          
+          // Set the image directly
+          shoeImage.src = blackImageSrc;
+          shoeImage.style.opacity = '1';
+          shoeImage.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
+          
+          // Mark as active
+          blackOption.classList.add('active');
+          blackOption.setAttribute('aria-checked', 'true');
+          
+          // Ensure other options are not active
+          document.querySelectorAll('.color-option').forEach((opt, idx) => {
+            if (idx !== 0) {
+              opt.classList.remove('active');
+              opt.setAttribute('aria-checked', 'false');
+            }
+          });
         });
       </script>
     </div>
