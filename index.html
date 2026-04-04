@@ -541,7 +541,7 @@
     }
     
     .shoe-image-container {
-      pointer-events: none !important;
+      pointer-events: auto;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -1154,6 +1154,7 @@
     .shoe-image-container {
       width: 100%;
       height: 75vh;
+      min-height: 600px;
       position: relative;
       margin: 0;
       display: flex;
@@ -1172,12 +1173,14 @@
     @media (max-width: 1023px) {
       .shoe-image-container {
         height: 60vh;
+        min-height: 500px;
       }
     }
 
     @media (max-width: 600px) {
       .shoe-image-container {
         height: 50vh;
+        min-height: 450px;
         border-radius: 16px;
       }
     }
@@ -1406,7 +1409,6 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
       position: relative;
       pointer-events: auto !important;
-    }
     }
     
     @media (max-width: 600px) {
@@ -2094,7 +2096,9 @@
           playsinline
           autoplay
           muted
+          loop
           preload="auto"
+          poster="mount-poster.jpg"
           width="1200" height="800"
           id="mountainVideo"
           x5-video-player-type="h5"
@@ -2127,29 +2131,13 @@
       <!-- Set initial active state for Dark Ridge Black -->
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          // Find the Dark Ridge Black option (first button) and set it as active
-          const blackOption = document.querySelectorAll('.color-option')[0];
-          
-          // Ensure the initial image is set
-          const shoeImage = document.querySelector('.wave-shoe-img');
-          const blackImageSrc = blackOption.dataset.image;
-          
-          // Set the image directly
-          shoeImage.src = blackImageSrc;
-          shoeImage.style.opacity = '1';
-          shoeImage.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
-          
-          // Mark as active
-          blackOption.classList.add('active');
-          blackOption.setAttribute('aria-checked', 'true');
-          
-          // Ensure other options are not active
-          document.querySelectorAll('.color-option').forEach((opt, idx) => {
-            if (idx !== 0) {
-              opt.classList.remove('active');
-              opt.setAttribute('aria-checked', 'false');
-            }
-          });
+          // Run after a tick to allow colorTransition.js to initialize first
+          setTimeout(() => {
+            const blackOption = document.querySelectorAll('.color-option')[0];
+            
+            // Explicitly trigger a click to sync colorTransition.js with our selection
+            blackOption.click();
+          }, 0);
         });
       </script>
     </div>

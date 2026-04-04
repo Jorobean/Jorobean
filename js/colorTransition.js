@@ -1,8 +1,9 @@
 // Color transition functionality
 let isAutoTransitioning = true;
 const transitionInterval = 4500; // Change color every 3 seconds
+let colorTransitionIntervalId = null; // Make this accessible across functions
 
-// Define the color sequence (0: Black, 1: Blue, 2: Oak, 3: Red)
+// Define the color sequence (0: Black, 1: Oak White, 2: Citrine Trail, 3: Amethyst Trail)
 const colorSequence = [0, 1, 2, 3];
 let currentIndex = 0;
 
@@ -54,13 +55,13 @@ function autoTransitionColors() {
     }
 
     // Start the interval
-    const intervalId = setInterval(transitionToNextColor, transitionInterval);
+    colorTransitionIntervalId = setInterval(transitionToNextColor, transitionInterval);
 
     // Handle user interactions
     function handleUserInteraction(e) {
         if (e.isTrusted) { // Only for real user interactions
             isAutoTransitioning = false;
-            clearInterval(intervalId);
+            clearInterval(colorTransitionIntervalId);
             
             const option = e.currentTarget;
             const selectedIndex = Array.from(colorOptions).indexOf(option);
@@ -175,6 +176,38 @@ document.addEventListener('DOMContentLoaded', () => {
     let isUserHovering = false;
     let restartTimeout;
 
+    // Log video element info for debugging
+    console.log('Video element found:', !!mountainVideo);
+    console.log('Video readyState:', mountainVideo?.readyState);
+    console.log('Video networkState:', mountainVideo?.networkState);
+    
+    // Check if video source loaded
+    if (mountainVideo) {
+      mountainVideo.addEventListener('loadstart', () => {
+        console.log('Video loadstart event triggered');
+      });
+      
+      mountainVideo.addEventListener('durationchange', () => {
+        console.log('Video duration loaded:', mountainVideo.duration);
+      });
+      
+      mountainVideo.addEventListener('error', (e) => {
+        console.error('Video load error:', e);
+        const error = mountainVideo.error;
+        if (error) {
+          if (error.code === error.MEDIA_ERR_ABORTED) {
+            console.error('Video playback aborted');
+          } else if (error.code === error.MEDIA_ERR_NETWORK) {
+            console.error('Network error loading video');
+          } else if (error.code === error.MEDIA_ERR_DECODE) {
+            console.error('Video decode error');
+          } else if (error.code === error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+            console.error('Video source not supported or file not found');
+          }
+        }
+      });
+    }
+
     // Configure video for mobile
     mountainVideo.playsInline = true;
     mountainVideo.setAttribute('playsinline', '');
@@ -183,8 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
     mountainVideo.muted = true;
     mountainVideo.setAttribute('muted', '');
     mountainVideo.defaultMuted = true;
-    mountainVideo.loop = false;
-    mountainVideo.removeAttribute('loop');
+    // Keep loop attribute for reliable cross-browser looping
+    mountainVideo.loop = true;
+    mountainVideo.setAttribute('loop', '');
     
     // Force autoplay
     function forcePlay() {

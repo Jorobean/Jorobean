@@ -24,7 +24,7 @@ export function initFormHandler() {
   const formHTML = `
     <form id="notifyForm" novalidate style="display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px;margin:20px auto 0;" aria-labelledby="formTitle">
       <h2 id="formTitle" class="visually-hidden">Newsletter Signup</h2>
-      <button type="button" id="starterInput" class="stay-updated-btn" aria-expanded="false">Enter Contest</button>
+      <button type="button" id="starterInput" class="stay-updated-btn" aria-expanded="false">Enter Now</button>
       <div class="form-expanded-content" role="region" aria-labelledby="formTitle">
         <div class="input-group">
           <label for="name" class="visually-hidden">Name</label>
@@ -79,7 +79,7 @@ export function initFormHandler() {
     });
   });
 
-  const phrase = "Stay Updated";
+  const phrase = "Enter Now";
   let charIndex = 0, isDeleting = false;
   let typingInterval;
 
