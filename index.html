@@ -515,11 +515,6 @@
       }
     }
     
-    /* Make video darker by default */
-    .mountain-bg {
-      filter: brightness(0.3);
-    }
-
     /* Hide video controls and play button */
     .mountain-bg::-webkit-media-controls-panel,
     .mountain-bg::-webkit-media-controls-play-button,
@@ -1160,7 +1155,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
+      overflow: hidden;
       padding: 0;
       z-index: 1;
       border-radius: 24px;
@@ -1236,7 +1231,6 @@
       backface-visibility: hidden;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
-      filter: brightness(0.2);
     }
 
     .shoe-image-container .mountain-bg {
@@ -1247,18 +1241,17 @@
       height: 100%;
       object-fit: cover;
       object-position: center center;
-      transform: scale(1);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 0;
       -webkit-transform: scale(1.1) translateZ(0);
       transform: scale(1.1) translateZ(0);
+      filter: brightness(0.6);
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       -webkit-perspective: 1000;
       display: block;
       background: #000;
       perspective: 1000;
-      filter: brightness(0.8);
     }
 
     @media (min-width: 601px) {
@@ -2109,13 +2102,13 @@
           <source src="mount.mp4" type="video/mp4">
           <source src="mount.webm" type="video/webm">
         </video>
-        <img class="wave-shoe-img" src="trail.webp" 
+        <img class="wave-shoe-img" src="trail-black.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
          width="600" height="400"
          loading="eager" 
          fetchpriority="high" 
          decoding="sync"
-         srcset="trail.webp 600w, trail.webp 1200w"
+         srcset="trail-black.webp 600w, trail-black.webp 1200w"
          sizes="(max-width: 600px) 90vw, 600px" />
         <div class="color-picker" role="radiogroup" aria-label="Choose shoe color">
           <button class="color-option" data-color="#323232" data-name="Dark Ridge Black" data-image="trail-black.webp" style="background-color: #323232" aria-label="Dark Ridge Black color option" role="radio" aria-checked="true"></button>
@@ -2128,19 +2121,7 @@
         <!-- Trail Logo removed from wave view because it is now shown below jorobean_logoalt -->
       </div>
 
-      <!-- Set initial active state for Dark Ridge Black -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          // Run after a tick to allow colorTransition.js to initialize first
-          setTimeout(() => {
-            const blackOption = document.querySelectorAll('.color-option')[0];
-            
-            // Explicitly trigger a click to sync colorTransition.js with our selection
-            blackOption.click();
-          }, 0);
-        });
-      </script>
-    </div>
+      </div>
   </div>
 
   <div class="product-info-sections">
@@ -2149,8 +2130,8 @@
   </div>
 
   <!-- Promo Details Section -->
-  <section class="promo-details-section" style="background-image: url('Slide.jpg'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden;" aria-label="Promotion Details">
-    <img src="Slide1.jpg" alt="Slide 1" style="width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; margin-bottom: 20px; display: block;" class="slide-edge-to-edge">
+  <section class="promo-details-section" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0;" aria-label="Promotion Details">
+    <img src="Slide1.webp" alt="Slide 1" style="width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; margin-bottom: 20px; margin-top: 0; display: block;" class="slide-edge-to-edge">
     <h2 class="promo-title" style="font-size: 2.5rem; margin-bottom: 30px;">SNEAKERCON EXCLUSIVE</h2>
     <p class="promo-description" style="color: white;">We're at SneakerCon! Drop your info to enter our exclusive drawing for limited-edition pairs. One lucky person will win — no purchase necessary.</p>
     
