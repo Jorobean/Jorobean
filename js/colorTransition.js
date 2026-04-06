@@ -54,78 +54,87 @@ function autoTransitionColors() {
         currentIndex = (currentIndex + 1) % colorSequence.length;
     }
 
-    // Start the interval
+    // Display the initial image (trail-black.webp) immediately
+    const initialOption = colorOptions[colorSequence[0]];
+    if (initialOption) {
+        shoeImage.src = initialOption.dataset.image;
+        shoeImage.srcset = `${initialOption.dataset.image} 600w, ${initialOption.dataset.image} 1200w`;
+        shoeImage.alt = `Jorobean Trail hiking shoe in ${initialOption.dataset.name} featuring 3D printed design`;
+        initialOption.classList.add('active');
+        initialOption.setAttribute('aria-checked', 'true');
+    }
+
+    // Start interval at next color (Oak White) instead of re-showing Black
+    currentIndex = 1;
     colorTransitionIntervalId = setInterval(transitionToNextColor, transitionInterval);
 
     // Handle user interactions
     function handleUserInteraction(e) {
-        if (e.isTrusted) { // Only for real user interactions
-            isAutoTransitioning = false;
-            clearInterval(colorTransitionIntervalId);
+        isAutoTransitioning = false;
+        clearInterval(colorTransitionIntervalId);
+        
+        const option = e.currentTarget;
+        const selectedIndex = Array.from(colorOptions).indexOf(option);
+        
+        // Update color picker state
+        colorOptions.forEach(opt => {
+            opt.classList.remove('active');
+            opt.setAttribute('aria-checked', 'false');
+        });
+        
+        option.classList.add('active');
+        option.setAttribute('aria-checked', 'true');
+        
+        // Update shoe image with transition
+        updateShoeImage(option.dataset.image, option.dataset.name);
+        
+        // Update sequence index to match selected color
+        currentIndex = colorSequence.indexOf(selectedIndex);
+        if (currentIndex === -1) currentIndex = 0;
+        
+        // Handle mobile tooltip (show color name on tap)
+        if (e.type === 'touchstart') {
+            // Create and show tooltip
+            const tooltip = document.createElement('div');
+            tooltip.style.cssText = `
+                position: absolute;
+                background: var(--text-color);
+                color: var(--bg-color);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                pointer-events: none;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            `;
+            tooltip.textContent = option.dataset.name;
+            document.body.appendChild(tooltip);
             
-            const option = e.currentTarget;
-            const selectedIndex = Array.from(colorOptions).indexOf(option);
+            // Position the tooltip
+            const rect = option.getBoundingClientRect();
+            tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = rect.bottom + 10 + 'px';
             
-            // Update color picker state
-            colorOptions.forEach(opt => {
-                opt.classList.remove('active');
-                opt.setAttribute('aria-checked', 'false');
-            });
-            
-            option.classList.add('active');
-            option.setAttribute('aria-checked', 'true');
-            
-            // Update shoe image with transition
-            updateShoeImage(option.dataset.image, option.dataset.name);
-            
-            // Update sequence index to match selected color
-            currentIndex = colorSequence.indexOf(selectedIndex);
-            if (currentIndex === -1) currentIndex = 0;
-            
-            // Handle mobile tooltip (show color name on tap)
-            if (e.type === 'touchstart') {
-                // Create and show tooltip
-                const tooltip = document.createElement('div');
-                tooltip.style.cssText = `
-                    position: absolute;
-                    background: var(--text-color);
-                    color: var(--bg-color);
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 0.8rem;
-                    white-space: nowrap;
-                    pointer-events: none;
-                    z-index: 1000;
-                    opacity: 0;
-                    transition: opacity 0.2s ease;
-                `;
-                tooltip.textContent = option.dataset.name;
-                document.body.appendChild(tooltip);
+            // Show tooltip
+            requestAnimationFrame(() => {
+                tooltip.style.opacity = '1';
                 
-                // Position the tooltip
-                const rect = option.getBoundingClientRect();
-                tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
-                tooltip.style.top = rect.bottom + 10 + 'px';
-                
-                // Show tooltip
-                requestAnimationFrame(() => {
-                    tooltip.style.opacity = '1';
-                    
-                    // Remove tooltip after animation
+                // Remove tooltip after animation
+                setTimeout(() => {
+                    tooltip.style.opacity = '0';
                     setTimeout(() => {
-                        tooltip.style.opacity = '0';
-                        setTimeout(() => {
-                            document.body.removeChild(tooltip);
-                        }, 200);
-                    }, 1500);
-                });
-            }
+                        document.body.removeChild(tooltip);
+                    }, 200);
+                }, 1500);
+            });
         }
     }
 
     // Add event listeners for user interactions
     colorOptions.forEach(option => {
-        option.addEventListener('mousedown', handleUserInteraction);
+        option.addEventListener('click', handleUserInteraction);
         option.addEventListener('touchstart', handleUserInteraction);
     });
 }
@@ -307,6 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         forcePlay();
     }
     
-    // Start auto-transition after a delay
-    setTimeout(autoTransitionColors, 1000);
+    // Start auto-transition immediately
+    autoTransitionColors();
 });

@@ -2099,8 +2099,8 @@
           controlslist="nofullscreen noremoteplayback nodownload"
           disablepictureinpicture
           style="pointer-events: none;">
-          <source src="mount.mp4" type="video/mp4">
           <source src="mount.webm" type="video/webm">
+          <source src="mount.mp4" type="video/mp4">
         </video>
         <img class="wave-shoe-img" src="trail-black.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
@@ -2227,7 +2227,7 @@
       
       // Prevent form from closing when clicking outside
       document.addEventListener('click', function(e) {
-        if (form.classList.contains('expanded')) {
+        if (form.classList.contains('expanded') && !form.contains(e.target)) {
           e.preventDefault();
           e.stopPropagation();
         }
