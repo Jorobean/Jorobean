@@ -84,12 +84,12 @@
         --bg-color: #0a0a0a;
         --text-color: #ffffff;
         --noise-opacity: 0.12;
-        --form-bg: #151515;
+        --form-bg: #1a1a1a;
         --input-bg: #2a2a2a;
-        --input-border: #404040;
-        --cancel-btn-bg: #404040;
-        --cancel-btn-hover: #505050;
-        --footer-text: #bbb;
+        --input-border: #444;
+        --cancel-btn-bg: #333;
+        --cancel-btn-hover: #444;
+        --footer-text: #aaa;
         --privacy-text: #999;
         --box-shadow-color: rgba(0, 0, 0, 0.3);
       }
@@ -432,7 +432,7 @@
 
     .shoe-container {
       width: 75%;
-      min-height: 100vh;
+      min-height: auto;
       height: auto;
       margin: 0 auto;
       display: flex;
@@ -442,7 +442,7 @@
       position: relative;
       overflow: visible;
       gap: 16px;
-      padding-bottom: 32px;
+      padding-bottom: 20px;
       padding-right: calc(env(safe-area-inset-right) + 16px);
       padding-left: calc(env(safe-area-inset-left) + 16px);
     }
@@ -476,7 +476,7 @@
         height: auto;
         gap: 16px;
         margin-bottom: 0;
-        padding-bottom: 16px;
+        padding-bottom: 8px;
       }
     }
 
@@ -499,17 +499,6 @@
       pointer-events: none;
       will-change: transform, opacity;
       transform-origin: center center;
-    }
-
-    @media (min-width: 601px) {
-      .shoe-container:hover .wave-shoe-img {
-        transform: translate3d(-50%, -50%, 0) scale(1.05);
-        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3));
-      }
-
-      .shoe-container:hover .mountain-bg {
-        filter: brightness(0.65);
-      }
     }
     
     /* Hide video controls and play button */
@@ -1178,25 +1167,6 @@
       border-radius: 30px;
     }
 
-    @media (min-width: 601px) and (hover: hover) {
-      .shoe-container:hover .shoe-image-container {
-        transform: translateZ(-90px);
-        box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.2),
-                  inset 0 -8px 20px rgba(0, 0, 0, 0.2),
-                  0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .shoe-container:hover .wave-shoe-img {
-        transform: translate3d(-50%, -50%, 40px);
-        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
-      }
-
-      .shoe-container:hover .mountain-bg {
-        transform: scale(0.99);
-        filter: brightness(0.5);
-      }
-    }
-
     .shoe-container {
       cursor: pointer;
       perspective: 2000px;
@@ -1210,11 +1180,6 @@
       .product-info-sections {
         margin-top: 0;
       }
-    }
-
-    .shoe-container:hover .shoe-image-container {
-      box-shadow: inset 0 12px 40px rgba(0, 0, 0, 0.3),
-                  inset 0 -12px 40px rgba(0, 0, 0, 0.3);
     }
 
     .mountain-bg {
@@ -1236,23 +1201,10 @@
       object-fit: cover;
       object-position: center center;
       z-index: 0;
-      filter: brightness(0.5);
+      filter: brightness(1.2);
       pointer-events: none;
       display: block;
-      background: #000;
       perspective: 1000;
-    }
-
-    @media (min-width: 601px) {
-      .shoe-container:hover .shoe-image-container {
-        transform: translateZ(-40px);
-        box-shadow: inset 0 12px 40px rgba(0, 0, 0, 0.3),
-                    inset 0 -12px 40px rgba(0, 0, 0, 0.3),
-                    0 2px 20px rgba(0, 0, 0, 0.15);
-      }
-      .shoe-container:hover .shoe-image-container::before {
-        transform: translateZ(40px);
-      }
     }
 
     .shoe-image-container::before {
@@ -1275,11 +1227,6 @@
     }
 
     @media (min-width: 601px) {
-      .shoe-container:hover .shoe-image-container::before {
-        opacity: 0.8;
-      }
-    }
-
     @media (prefers-color-scheme: dark) {
       .shoe-image-container {
         box-shadow: inset 0 8px 30px rgba(0, 0, 0, 0.4),
@@ -1361,7 +1308,7 @@
       border-radius: 16px;
       background: var(--form-bg);
       box-shadow: 0 2px 10px var(--box-shadow-color);
-      z-index: 20;
+      z-index: 1000;
       flex-shrink: 0;
       pointer-events: auto !important;
     }
@@ -1553,11 +1500,7 @@
 
     @media (max-width: 600px) {
       .product-info-sections {
-        margin: 0 auto;
-        padding: 0 16px;
-        position: relative;
-        z-index: 10;
-        background: var(--bg-color);
+        display: none;
       }
       .shoe-container + .product-info-sections {
         margin-top: 0;
@@ -1952,7 +1895,6 @@
   
   <!-- Video controls hiding -->
   <style>
-    video,
     video::-webkit-media-controls,
     video::-webkit-media-controls-overlay-play-button,
     video::-webkit-media-controls-play-button,
@@ -2075,6 +2017,7 @@
           <img src="image 7.webp" class="theme-logo logo-dark" alt="Jorobean Trail icon (dark mode)" width="240" height="64" style="width:240px; height:auto;" />
         </div>
         <video
+          id="mountainVideo"
           class="mountain-bg"
           playsinline
           autoplay
@@ -2114,7 +2057,7 @@
   </div>
 
   <!-- Promo Details Section -->
-  <section class="promo-details-section" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0;" aria-label="Promotion Details">
+  <section class="promo-details-section" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0; margin-top: 0;" aria-label="Promotion Details">
     <img src="Slide1.webp" alt="Slide 1" style="width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; margin-bottom: 20px; margin-top: 0; display: block;" class="slide-edge-to-edge">
     <h2 class="promo-title" style="font-size: 2.5rem; margin-bottom: 30px;">SNEAKERCON EXCLUSIVE</h2>
     <p class="promo-description" style="color: white;">We're at SneakerCon! Drop your info to enter our exclusive drawing for limited-edition pairs. One lucky person will win — no purchase necessary.</p>
@@ -2195,28 +2138,31 @@
     const form = document.getElementById('notifyForm');
     const cancelBtn = document.getElementById('cancelBtn');
 
-    // No counter functionality - removed
+    // Only proceed if form exists
+    if (form && cancelBtn) {
+      // No counter functionality - removed
 
-    // Track form submission
-    form.addEventListener('submit', function(e) {
-      trackEvent('newsletter_signup', {
-        'event_category': 'engagement',
-        'event_label': 'newsletter'
+      // Track form submission
+      form.addEventListener('submit', function(e) {
+        trackEvent('newsletter_signup', {
+          'event_category': 'engagement',
+          'event_label': 'newsletter'
+        });
+        
+        // Show simple success message
+        setTimeout(() => {
+          alert('Thank you for signing up!');
+        }, 1000); // Small delay to simulate form processing
       });
-      
-      // Show simple success message
-      setTimeout(() => {
-        alert('Thank you for signing up!');
-      }, 1000); // Small delay to simulate form processing
-    });
 
-    // Track Stay Updated button click
-    document.getElementById('starterInput').addEventListener('click', function() {
-      trackEvent('stay_updated_click', {
-        'event_category': 'engagement',
-        'event_label': 'stay_updated_button'
+      // Track Stay Updated button click
+      document.getElementById('starterInput').addEventListener('click', function() {
+        trackEvent('stay_updated_click', {
+          'event_category': 'engagement',
+          'event_label': 'stay_updated_button'
+        });
       });
-    });
+    }
 
     function restoreAfterClose() {
       // Switch back to centered logo only if we're at the top of the page
@@ -2326,15 +2272,52 @@
   <!-- Video Playback Control -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Main video
       const video = document.getElementById('mountainVideo');
+      console.log('Main Video element:', video);
+      console.log('Main Video src:', video?.src);
+      console.log('Main Video sources:', video?.querySelectorAll('source'));
+      
       if (video) {
-        // Set playback rate to 0.5 (half speed)
         video.playbackRate = 0.75;
-        
-        // Ensure continuous looping
-        video.addEventListener('ended', function() {
-          video.play();
+        video.addEventListener('loadstart', () => console.log('Main Video loadstart'));
+        video.addEventListener('canplay', () => console.log('Main Video canplay - attempting play'));
+        video.addEventListener('error', (e) => {
+          console.error('Main Video error:', e);
+          console.error('Main Video error code:', video.error?.code);
         });
+        video.addEventListener('ended', function() {
+          console.log('Main Video ended, restarting');
+          video.currentTime = 0;
+          video.play().catch(err => console.error('Play failed:', err));
+        });
+        video.play().catch(err => console.error('Main Autoplay failed:', err));
+      } else {
+        console.error('Main Video element not found!');
+      }
+      
+      // Promo video
+      const promoVideo = document.getElementById('promoVideo');
+      console.log('Promo Video element:', promoVideo);
+      console.log('Promo Video src:', promoVideo?.src);
+      console.log('Promo Video sources:', promoVideo?.querySelectorAll('source'));
+      
+      if (promoVideo) {
+        promoVideo.playbackRate = 0.75;
+        promoVideo.addEventListener('loadstart', () => console.log('Promo Video loadstart'));
+        promoVideo.addEventListener('canplay', () => console.log('Promo Video canplay - attempting play'));
+        promoVideo.addEventListener('error', (e) => {
+          console.error('Promo Video error:', e);
+          console.error('Promo Video error code:', promoVideo.error?.code);
+        });
+        promoVideo.addEventListener('ended', function() {
+          console.log('Promo Video ended, restarting');
+          promoVideo.currentTime = 0;
+          promoVideo.play().catch(err => console.error('Play failed:', err));
+        });
+        promoVideo.play().catch(err => console.error('Promo Autoplay failed:', err));
+      } else {
+        console.error('Promo Video element not found!');
       }
     });
   </script>
