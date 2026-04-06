@@ -2124,6 +2124,39 @@
       });
     });
     
+    // Auto-cycle through colors
+    let currentColorIndex = 0;
+    const colorCycleInterval = setInterval(() => {
+      currentColorIndex = (currentColorIndex + 1) % colorOptions.length;
+      const nextOption = colorOptions[currentColorIndex];
+      
+      // Update active state
+      colorOptions.forEach(opt => {
+        opt.classList.remove('active');
+        opt.setAttribute('aria-checked', 'false');
+      });
+      
+      nextOption.classList.add('active');
+      nextOption.setAttribute('aria-checked', 'true');
+      
+      // Fade out, update image, fade in
+      shoeImage.style.opacity = '0';
+      setTimeout(() => {
+        shoeImage.src = nextOption.dataset.image;
+        shoeImage.srcset = `${nextOption.dataset.image} 600w, ${nextOption.dataset.image} 1200w`;
+        shoeImage.alt = `Jorobean Trail hiking shoe in ${nextOption.dataset.name} featuring 3D printed design`;
+        shoeImage.style.opacity = '1';
+      }, 300);
+    }, 4000); // Change color every 4 seconds
+    
+    // Reset cycle when user manually selects a color
+    colorOptions.forEach(option => {
+      const originalClick = option.onclick;
+      option.addEventListener('click', () => {
+        clearInterval(colorCycleInterval);
+      });
+    });
+    
     document.getElementById("copyright").textContent =
       `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
 
@@ -2290,8 +2323,27 @@
       
       if (video) {
         video.playbackRate = 0.75;
+        
+        const attemptPlay = () => {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => console.log('Main Video playing successfully'))
+              .catch(err => {
+                console.error('Main Video play failed:', err);
+              });
+          }
+        };
+        
         video.addEventListener('loadstart', () => console.log('Main Video loadstart'));
-        video.addEventListener('canplay', () => console.log('Main Video canplay - attempting play'));
+        video.addEventListener('loadedmetadata', () => {
+          console.log('Main Video loadedmetadata - attempting play');
+          attemptPlay();
+        });
+        video.addEventListener('canplay', () => {
+          console.log('Main Video canplay - attempting play');
+          attemptPlay();
+        });
         video.addEventListener('error', (e) => {
           console.error('Main Video error:', e);
           console.error('Main Video error code:', video.error?.code);
@@ -2299,9 +2351,11 @@
         video.addEventListener('ended', function() {
           console.log('Main Video ended, restarting');
           video.currentTime = 0;
-          video.play().catch(err => console.error('Play failed:', err));
+          attemptPlay();
         });
-        video.play().catch(err => console.error('Main Autoplay failed:', err));
+        
+        // Initial play attempt
+        attemptPlay();
       } else {
         console.error('Main Video element not found!');
       }
@@ -2314,8 +2368,27 @@
       
       if (promoVideo) {
         promoVideo.playbackRate = 0.75;
+        
+        const attemptPromoPlay = () => {
+          const playPromise = promoVideo.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => console.log('Promo Video playing successfully'))
+              .catch(err => {
+                console.error('Promo Video play failed:', err);
+              });
+          }
+        };
+        
         promoVideo.addEventListener('loadstart', () => console.log('Promo Video loadstart'));
-        promoVideo.addEventListener('canplay', () => console.log('Promo Video canplay - attempting play'));
+        promoVideo.addEventListener('loadedmetadata', () => {
+          console.log('Promo Video loadedmetadata - attempting play');
+          attemptPromoPlay();
+        });
+        promoVideo.addEventListener('canplay', () => {
+          console.log('Promo Video canplay - attempting play');
+          attemptPromoPlay();
+        });
         promoVideo.addEventListener('error', (e) => {
           console.error('Promo Video error:', e);
           console.error('Promo Video error code:', promoVideo.error?.code);
@@ -2323,9 +2396,11 @@
         promoVideo.addEventListener('ended', function() {
           console.log('Promo Video ended, restarting');
           promoVideo.currentTime = 0;
-          promoVideo.play().catch(err => console.error('Play failed:', err));
+          attemptPromoPlay();
         });
-        promoVideo.play().catch(err => console.error('Promo Autoplay failed:', err));
+        
+        // Initial play attempt
+        attemptPromoPlay();
       } else {
         console.error('Promo Video element not found!');
       }
