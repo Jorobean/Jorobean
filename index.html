@@ -502,16 +502,13 @@
     }
 
     @media (min-width: 601px) {
-      .shoe-container:hover .wave-shoe-img,
-      .shoe-container.hover-triggered .wave-shoe-img {
-        transform: translate3d(-50%, -50%, 120px);
-        filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.4));
+      .shoe-container:hover .wave-shoe-img {
+        transform: translate3d(-50%, -50%, 0) scale(1.05);
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3));
       }
 
-      .shoe-container:hover .mountain-bg,
-      .shoe-container.hover-triggered .mountain-bg {
-        transform: translate3d(0, 0, -100px) scale(0.95);
-        filter: brightness(0.7);
+      .shoe-container:hover .mountain-bg {
+        filter: brightness(0.65);
       }
     }
     
@@ -555,13 +552,10 @@
       }
     }
 
-    @keyframes instant-fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    h1 {
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  /* Smooth transitions for shoe image */
+  .wave-shoe-img {
+    transition: opacity 0.3s ease-in-out;
+  }
       margin: clamp(15px, 3vw, 25px) 0 0 0;
       opacity: 0;
       transition: opacity 0.35s cubic-bezier(.4,0,.2,1);
@@ -1241,14 +1235,9 @@
       height: 100%;
       object-fit: cover;
       object-position: center center;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 0;
-      -webkit-transform: scale(1.1) translateZ(0);
-      transform: scale(1.1) translateZ(0);
-      filter: brightness(0.6);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      -webkit-perspective: 1000;
+      filter: brightness(0.5);
+      pointer-events: none;
       display: block;
       background: #000;
       perspective: 1000;
@@ -2085,20 +2074,15 @@
           <img src="image 7alt.webp" class="theme-logo logo-light" alt="Jorobean Trail icon (light mode)" width="240" height="64" style="width:240px; height:auto;" />
           <img src="image 7.webp" class="theme-logo logo-dark" alt="Jorobean Trail icon (dark mode)" width="240" height="64" style="width:240px; height:auto;" />
         </div>
-        <video class="mountain-bg" 
+        <video
+          class="mountain-bg"
           playsinline
           autoplay
           muted
           loop
           preload="auto"
-          poster="mount-poster.jpg"
-          width="1200" height="800"
-          id="mountainVideo"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
-          controlslist="nofullscreen noremoteplayback nodownload"
-          disablepictureinpicture
-          style="pointer-events: none;">
+          aria-hidden="true"
+          tabindex="-1">
           <source src="mount.webm" type="video/webm">
           <source src="mount.mp4" type="video/mp4">
         </video>
@@ -2157,10 +2141,35 @@
   </div>
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
-  <script src="js/colorTransition.js"></script>
   <script>
     // Color picker initialization
     const colorOptions = document.querySelectorAll('.color-option');
+    const shoeImage = document.querySelector('.wave-shoe-img');
+    
+    colorOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Update active state
+        colorOptions.forEach(opt => {
+          opt.classList.remove('active');
+          opt.setAttribute('aria-checked', 'false');
+        });
+        
+        option.classList.add('active');
+        option.setAttribute('aria-checked', 'true');
+        
+        // Fade out, update image, fade in
+        shoeImage.style.opacity = '0';
+        setTimeout(() => {
+          shoeImage.src = option.dataset.image;
+          shoeImage.srcset = `${option.dataset.image} 600w, ${option.dataset.image} 1200w`;
+          shoeImage.alt = `Jorobean Trail hiking shoe in ${option.dataset.name} featuring 3D printed design`;
+          shoeImage.style.opacity = '1';
+        }, 300);
+      });
+    });
     
     document.getElementById("copyright").textContent =
       `© ${new Date().getFullYear()} Jorobean — All rights reserved.`;
