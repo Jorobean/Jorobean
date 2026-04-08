@@ -1442,12 +1442,7 @@
       .wave-text-svg text {
         fill: white !important;
       }
-      .trail-logo {
-        content: url('image 7.webp') !important;
-      }
-      img[src*="image 7alt.webp"] {
-        content: url('image 7.webp');
-      }
+
     }
 
     .wave-text-svg {
@@ -2022,23 +2017,15 @@
   <div class="content-wrapper">
     <div class="shoe-container">
       <div class="shoe-image-container">
-        <div class="logo-subimages" style="display:flex; justify-content:center; gap:16px; margin-bottom:16px; width:100%; position:absolute; top:120px; left:0; right:0; z-index:10;">
-          <img src="image 7alt.webp" class="theme-logo logo-light" alt="Jorobean Trail icon (light mode)" width="240" height="64" style="width:240px; height:auto;" />
-          <img src="image 7.webp" class="theme-logo logo-dark" alt="Jorobean Trail icon (dark mode)" width="240" height="64" style="width:240px; height:auto;" />
-        </div>
-        <video
-          id="mountainVideo"
+
+        <img
+          id="mountainImage"
           class="mountain-bg"
-          playsinline
-          autoplay
-          muted
-          loop
-          preload="auto"
+          src="mount.webp"
+          alt="Mountain background"
           aria-hidden="true"
-          tabindex="-1">
-          <source src="mount.webm" type="video/webm">
-          <source src="mount.mp4" type="video/mp4">
-        </video>
+          tabindex="-1"
+          loading="lazy" />
         <img class="wave-shoe-img" src="trail-black.webp" 
          alt="Jorobean Trail shoe featuring 3D printed design and responsive cushioning" 
          width="600" height="400"
@@ -2312,100 +2299,7 @@
     </div>
   </div>
 
-  <!-- Video Playback Control -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Main video
-      const video = document.getElementById('mountainVideo');
-      console.log('Main Video element:', video);
-      console.log('Main Video src:', video?.src);
-      console.log('Main Video sources:', video?.querySelectorAll('source'));
-      
-      if (video) {
-        video.playbackRate = 0.75;
-        
-        const attemptPlay = () => {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => console.log('Main Video playing successfully'))
-              .catch(err => {
-                console.error('Main Video play failed:', err);
-              });
-          }
-        };
-        
-        video.addEventListener('loadstart', () => console.log('Main Video loadstart'));
-        video.addEventListener('loadedmetadata', () => {
-          console.log('Main Video loadedmetadata - attempting play');
-          attemptPlay();
-        });
-        video.addEventListener('canplay', () => {
-          console.log('Main Video canplay - attempting play');
-          attemptPlay();
-        });
-        video.addEventListener('error', (e) => {
-          console.error('Main Video error:', e);
-          console.error('Main Video error code:', video.error?.code);
-        });
-        video.addEventListener('ended', function() {
-          console.log('Main Video ended, restarting');
-          video.currentTime = 0;
-          attemptPlay();
-        });
-        
-        // Initial play attempt
-        attemptPlay();
-      } else {
-        console.error('Main Video element not found!');
-      }
-      
-      // Promo video
-      const promoVideo = document.getElementById('promoVideo');
-      console.log('Promo Video element:', promoVideo);
-      console.log('Promo Video src:', promoVideo?.src);
-      console.log('Promo Video sources:', promoVideo?.querySelectorAll('source'));
-      
-      if (promoVideo) {
-        promoVideo.playbackRate = 0.75;
-        
-        const attemptPromoPlay = () => {
-          const playPromise = promoVideo.play();
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => console.log('Promo Video playing successfully'))
-              .catch(err => {
-                console.error('Promo Video play failed:', err);
-              });
-          }
-        };
-        
-        promoVideo.addEventListener('loadstart', () => console.log('Promo Video loadstart'));
-        promoVideo.addEventListener('loadedmetadata', () => {
-          console.log('Promo Video loadedmetadata - attempting play');
-          attemptPromoPlay();
-        });
-        promoVideo.addEventListener('canplay', () => {
-          console.log('Promo Video canplay - attempting play');
-          attemptPromoPlay();
-        });
-        promoVideo.addEventListener('error', (e) => {
-          console.error('Promo Video error:', e);
-          console.error('Promo Video error code:', promoVideo.error?.code);
-        });
-        promoVideo.addEventListener('ended', function() {
-          console.log('Promo Video ended, restarting');
-          promoVideo.currentTime = 0;
-          attemptPromoPlay();
-        });
-        
-        // Initial play attempt
-        attemptPromoPlay();
-      } else {
-        console.error('Promo Video element not found!');
-      }
-    });
-  </script>
+
 
   <!-- COOKIE + GA LOGIC -->
   <script>
