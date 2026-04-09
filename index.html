@@ -2021,7 +2021,7 @@
         <img
           id="mountainImage"
           class="mountain-bg"
-          src="mount.webp"
+          src="hero/mount0.webp"
           alt="Mountain background"
           aria-hidden="true"
           tabindex="-1"
@@ -2082,6 +2082,28 @@
   <!-- Only one Instagram icon above for better mobile layout -->
   <script src="js/loading.js"></script>
   <script>
+    const heroImages = [
+      'hero/mount0.webp',
+      'hero/mount1.webp',
+      'hero/mount2.webp',
+      'hero/mount3.webp',
+      'hero/mount4.webp',
+      'hero/mount5.webp',
+      'hero/mount6.webp'
+    ];
+
+    const heroImageElement = document.getElementById('mountainImage');
+    if (heroImageElement) {
+      const storedIndex = localStorage.getItem('heroImageIndex');
+      const previousIndex = storedIndex !== null && !Number.isNaN(Number(storedIndex))
+        ? Number(storedIndex)
+        : -1;
+      const nextIndex = (previousIndex + 1) % heroImages.length;
+      localStorage.setItem('heroImageIndex', String(nextIndex));
+      heroImageElement.src = heroImages[nextIndex];
+      heroImageElement.srcset = `${heroImages[nextIndex]} 1200w`;
+    }
+
     // Color picker initialization
     const colorOptions = document.querySelectorAll('.color-option');
     const shoeImage = document.querySelector('.wave-shoe-img');
