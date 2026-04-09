@@ -10,7 +10,7 @@
     .logo-container {
       /* Position logo below status bar */
       top: env(safe-area-inset-top);
-      padding-top: 10px;
+      padding-top: 5px;
     }
 
     .content-wrapper {
