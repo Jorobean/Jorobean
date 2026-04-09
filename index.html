@@ -20,9 +20,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="mask-icon" href="/favicon.svg" color="#b71111">
+  <link rel="mask-icon" href="favicon.svg" color="#b71111">
   <!-- Web App Manifest -->
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Theme Colors -->
   <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#b71111" media="(prefers-color-scheme: dark)">
@@ -68,6 +68,20 @@
       --form-bg: #e1e1e1;
       --input-bg: #ffffff;
       --input-border: #ccc;
+      --hero-width-default: 70%;
+      --hero-width-sm: 60%;
+      --hero-max-width-sm: 800px;
+      --hero-width-md: 66%;
+      --hero-max-width-md: 880px;
+      --hero-width-lg: 76%;
+      --hero-max-width-lg: 1200px;
+      --promo-width-default: 66%;
+      --promo-width-sm: 56%;
+      --promo-max-width-sm: 760px;
+      --promo-width-md: 62%;
+      --promo-max-width-md: 820px;
+      --promo-width-lg: 72%;
+      --promo-max-width-lg: 960px;
       --cancel-btn-bg: #666;
       --cancel-btn-hover: #777;
       --footer-text: #555;
@@ -186,7 +200,7 @@
     }
 
     .logo-centered {
-      max-width: 520px;
+      max-width: 400px;
       width: 100%;
       left: 50%;
       transform: translateX(-50%);
@@ -210,7 +224,7 @@
           margin-top: -15px;
         }
       }    .logo-corner {
-      width: 100px;
+      width: 90px;
       left: 16px;
       top: 16px;
       opacity: 0;
@@ -430,8 +444,9 @@
       }
     }
 
+    .hero-width-locked,
     .shoe-container {
-      width: 75%;
+      width: var(--hero-width-default);
       min-height: auto;
       height: auto;
       margin: 0 auto;
@@ -449,23 +464,26 @@
 
     /* Responsive desktop sizing */
     @media (min-width: 1440px) {
+      .hero-width-locked,
       .shoe-container {
-        max-width: 1400px;
-        width: 80%;
+        max-width: var(--hero-max-width-lg);
+        width: var(--hero-width-lg);
       }
     }
 
     @media (min-width: 1024px) and (max-width: 1439px) {
+      .hero-width-locked,
       .shoe-container {
-        max-width: 1100px;
-        width: 70%;
+        max-width: var(--hero-max-width-md);
+        width: var(--hero-width-md);
       }
     }
 
     @media (min-width: 601px) and (max-width: 1023px) {
+      .hero-width-locked,
       .shoe-container {
-        max-width: 900px;
-        width: 60%;
+        max-width: var(--hero-max-width-sm);
+        width: var(--hero-width-sm);
       }
     }
     
@@ -483,7 +501,7 @@
     .wave-shoe-img {
       position: absolute;
       left: 50%;
-      top: 70%;
+      top: 78%;
       transform-style: preserve-3d;
       transform: translate3d(-50%, -50%, 0);
       width: auto;
@@ -540,7 +558,7 @@
         height: 20% !important;
         width: auto !important;
         transform: translate(-50%, -50%) !important;
-        top: 65% !important;
+        top: 72% !important;
       }
     }
 
@@ -1023,10 +1041,10 @@
         padding: 8px;
       }
       .logo-centered {
-        max-width: 420px;
+        max-width: 450px;
       }
       .logo-corner {
-        width: 70px;
+        width: 90px;
         left: 8px;
         top: 8px;
         z-index: 2000;
@@ -1115,8 +1133,6 @@
 
     /* Wave Text Container Styles */
     .shoe-container {
-      width: 100vw;
-      margin: 0 -32px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1160,8 +1176,8 @@
 
     @media (max-width: 600px) {
       .shoe-image-container {
-        height: 50vh;
-        min-height: 450px;
+        height: 46vh;
+        min-height: 320px;
         border-radius: 16px;
       }
     }
@@ -1180,10 +1196,15 @@
     
     @media (max-width: 600px) {
       .shoe-container {
-        margin-bottom: 80px;
+        width: 92vw;
+        margin-bottom: 12px !important;
+        padding-bottom: 0 !important;
       }
       .product-info-sections {
-        margin-top: 0;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        display: none;
+        height: 0;
       }
     }
 
@@ -1204,7 +1225,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center center;
+      object-position: top center;
       z-index: 0;
       filter: brightness(1.2);
       pointer-events: none;
@@ -2015,7 +2036,7 @@
     </div>
   </div>
   <div class="content-wrapper">
-    <div class="shoe-container">
+    <div class="shoe-container hero-width-locked">
       <div class="shoe-image-container">
 
         <img
@@ -2054,8 +2075,8 @@
   </div>
 
   <!-- Promo Details Section -->
-  <section class="promo-details-section" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0; margin-top: 0;" aria-label="Promotion Details">
-    <img src="Slide1.webp" alt="Slide 1" style="width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; margin-bottom: 20px; margin-top: 0; display: block;" class="slide-edge-to-edge">
+  <section class="promo-details-section hero-width-locked" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0; margin-top: 0;" aria-label="Promotion Details">
+    <img src="Slide1.webp" alt="Slide 1" style="width: 80%; max-width: 620px; margin: 0 auto 20px; display: block;" class="slide-edge-to-edge">
     <h2 class="promo-title" style="font-size: 2.5rem; margin-bottom: 30px;">SNEAKERCON EXCLUSIVE</h2>
     <p class="promo-description" style="color: white;">We're at SneakerCon! Drop your info to enter our exclusive drawing for limited-edition pairs. One lucky person will win — no purchase necessary.</p>
     
@@ -2085,11 +2106,7 @@
     const heroImages = [
       'hero/mount0.webp',
       'hero/mount1.webp',
-      'hero/mount2.webp',
-      'hero/mount3.webp',
-      'hero/mount4.webp',
-      'hero/mount5.webp',
-      'hero/mount6.webp'
+      'hero/mount2.webp'
     ];
 
     const heroImageElement = document.getElementById('mountainImage');
