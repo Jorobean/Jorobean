@@ -20,10 +20,6 @@ body {
   padding-top: max(var(--safe-area-top, 10px), 10px);
 }
 
-.content-wrapper {
-  padding-top: max(var(--safe-area-top, 0), 0);
-}
-
 @media (max-width: 600px) {
   body {
     min-height: calc(100vh - var(--safe-area-top, 0) - var(--safe-area-bottom, 0));
@@ -31,9 +27,5 @@ body {
   
   .logo-container {
     padding: max(var(--safe-area-top, 8px), 8px) var(--safe-area-right, 8px) 8px var(--safe-area-left, 8px);
-  }
-  
-  .shoe-container {
-    padding-top: max(var(--safe-area-top, 0), 0);
   }
 }

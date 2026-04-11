@@ -26,7 +26,7 @@ body.header-hidden .logo-container {
 }
 
 .logo-centered {
-  max-width: 520px;
+  max-width: 420px;
   width: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -35,7 +35,7 @@ body.header-hidden .logo-container {
 }
 
 .logo-corner {
-  width: 100px;
+  width: 84px;
   left: 16px;
   top: 16px;
   opacity: 0;

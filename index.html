@@ -68,20 +68,20 @@
       --form-bg: #e1e1e1;
       --input-bg: #ffffff;
       --input-border: #ccc;
-      --hero-width-default: 70%;
-      --hero-width-sm: 60%;
-      --hero-max-width-sm: 800px;
-      --hero-width-md: 66%;
-      --hero-max-width-md: 880px;
-      --hero-width-lg: 76%;
-      --hero-max-width-lg: 1200px;
-      --promo-width-default: 66%;
-      --promo-width-sm: 56%;
+      --hero-width-default: 78%;
+      --hero-width-sm: 68%;
+      --hero-max-width-sm: 820px;
+      --hero-width-md: 72%;
+      --hero-max-width-md: 900px;
+      --hero-width-lg: 84%;
+      --hero-max-width-lg: 1100px;
+      --promo-width-default: 62%;
+      --promo-width-sm: 52%;
       --promo-max-width-sm: 760px;
-      --promo-width-md: 62%;
-      --promo-max-width-md: 820px;
-      --promo-width-lg: 72%;
-      --promo-max-width-lg: 960px;
+      --promo-width-md: 58%;
+      --promo-max-width-md: 720px;
+      --promo-width-lg: 66%;
+      --promo-max-width-lg: 840px;
       --cancel-btn-bg: #666;
       --cancel-btn-hover: #777;
       --footer-text: #555;
@@ -432,11 +432,12 @@
       margin: 0;
       width: 100%;
       min-height: auto;
+      padding-top: 24px;
     }
 
     @media (min-width: 601px) {
       .content-wrapper {
-        padding: 8px 0 0 0;
+        padding: 72px 0 0 0;
         margin-bottom: 0;
         display: flex;
         justify-content: center;
@@ -458,8 +459,14 @@
       overflow: visible;
       gap: 16px;
       padding-bottom: 32px;
-      padding-right: calc(env(safe-area-inset-right) + 16px);
-      padding-left: calc(env(safe-area-inset-left) + 16px);
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    @media (min-width: 601px) {
+      .content-wrapper > .shoe-container {
+        margin-bottom: 24px;
+      }
     }
 
     /* Responsive desktop sizing */
@@ -488,8 +495,15 @@
     }
     
     @media (max-width: 600px) {
+      .shoe-container,
+      .promo-details-section {
+        width: 92vw !important;
+        max-width: 92vw !important;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
       .shoe-container {
-        width: calc(100% - 16px);
         min-height: auto;
         height: auto;
         gap: 16px;
@@ -505,7 +519,7 @@
       transform-style: preserve-3d;
       transform: translate3d(-50%, -50%, 0);
       width: auto;
-      height: 65%;
+      height: 22%;
       max-width: 65%;
       object-fit: contain;
       opacity: 1;
@@ -2040,7 +2054,7 @@
     </div>
   </div>
   <div class="content-wrapper">
-    <div class="shoe-container hero-width-locked">
+    <div class="shoe-container">
       <div class="shoe-image-container">
 
         <img
@@ -2078,7 +2092,7 @@
   </div>
 
   <!-- Promo Details Section -->
-  <section class="promo-details-section hero-width-locked" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0; margin-top: 0;" aria-label="Promotion Details">
+  <section class="promo-details-section shoe-container" style="background-image: url('Slide.webp'); background-size: 100% auto; background-repeat: no-repeat; background-position: top center; overflow: hidden; padding-top: 0; margin-top: 0;" aria-label="Promotion Details">
     <img src="Slide1.webp" alt="Slide 1" style="width: 80%; max-width: 620px; margin: 0 auto 20px; display: block;" class="slide-edge-to-edge">
     <h2 class="promo-title" style="font-size: 2.5rem; margin-bottom: 30px;">SNEAKERCON EXCLUSIVE</h2>
     <p class="promo-description" style="color: white;">We're at SneakerCon! Drop your info to enter our exclusive drawing for limited-edition pairs. One lucky person will win — no purchase necessary.</p>
@@ -2431,6 +2445,4 @@
     });
   </script>
 
-
-</body>
 </html>

@@ -107,6 +107,7 @@ class LoadingManager {
                 this.hide();
             });
         });
+    }
 
     setupAjaxInterceptor() {
         // Intercept fetch requests

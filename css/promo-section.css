@@ -3,7 +3,6 @@
   color: var(--text-color);
   border-radius: 20px;
   box-shadow: 0 4px 20px 0 var(--form-shadow-color);
-  width: min(820px, 94vw);
   margin: 0 auto 32px auto;
   padding: clamp(32px, 5vw, 48px) clamp(20px, 4vw, 40px);
   text-align: center;
@@ -14,6 +13,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 
 .promo-title {
   font-size: clamp(1.4rem, 2.5vw, 1.8rem);
@@ -94,7 +94,6 @@ form {
 
 @media (max-width: 600px) {
   .promo-details-section {
-    width: 92vw;
     padding: 24px 16px;
     border-radius: 16px;
   }

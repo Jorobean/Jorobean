@@ -10,17 +10,7 @@
     .logo-container {
       /* Position logo below status bar */
       top: env(safe-area-inset-top);
-      padding-top: 5px;
-    }
-
-    .content-wrapper {
-      /* Ensure content starts below status bar */
-      padding-top: env(safe-area-inset-top);
-    }
-
-    .shoe-container {
-      /* Adjust container for status bar */
-      padding-top: env(safe-area-inset-top);
+      padding-top: 10px;
     }
 
     /* Handle bottom safe area for home indicator */
